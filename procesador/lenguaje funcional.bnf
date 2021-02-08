@@ -21,100 +21,78 @@ Ejemplo:
 
 ______________________________________________________________________________
 
-<Programa>              ::= <lista_sentecias>
+<Programa>                ::= <lista_sentecias>
 
-<lista_sentecias>       ::= <lista_sentecias> <sentencia>;
-                         |  <sentencia>;
+<lista_sentecias>         ::= <lista_sentecias> <sentencia>;
+                           |  <sentencia>;
 
-<sentencia>             ::= <sentencia_declar_var>
-                         |  <sentencia_asign>
-                         |  <sentencia_declar_fun>
-                         |  <sentencia_plot>
+<sentencia>               ::= <sentencia_declar_valor>
+                           |  <sentencia_declar_fun>
+                           |  <sentencia_plot>
 
-<sentencia_declar_var>  ::= <lista_ident> : <tipo_basico>                  # Declaración variables
-                         |  <identificador> : <tipo_basico> = <expresion>  # Declaración y asignación
+<sentencia_declar_valor>  ::= <identificador> : <id_de_tipo> = <expresion>                # Declaración y asignación de una constante
 
-<sentencia_asign>       ::= <identificador> = <expresion>                  # Asignación variable
-                         |  <identificador>[<entero>] = <expresion>
-                         |  <identificador>[<entero>][<entero>] = <expresion>
+<sentencia_declar_fun>    ::= <identificador>(<lista_param>) : <id_de_tipo> = <expresion> # Definición función
 
-<sentencia_declar_fun>  ::= <identificador>(<lista_param>) : <tipo_basico> = <expresion> # Definición función
+<sentencia_plot>          ::= plot <lista_ident>
 
-<sentencia_plot>        ::= plot <lista_ident>
-
-<expresion>             ::= (<expresion>)
-                         |  if <expresion> then <expresion> else <expresion>
-                         |  <expresion> <op_binario> <expresion>
-                         |  <op_unario> <expresion>
-                         |  <vec_or_mat>(<lista_expresiones)      # ¿Meterlo todo con lista_expresiones y hacer después comprobación de tipo y tamaño (en caso de ser vectores)?
-                         #|  <vec_or_mat_2>(<expresion>)
-                         #|  <vec_or_mat_2>(<expresion>, <expresion>)
-                         #|  <vec_or_mat_3>(<expresion>)
-                         #|  <vec_or_mat_3>(<expresion>, <expresion>)
-                         #|  <vec_or_mat_3>(<expresion>, <expresion>, <expresion>)
-                         |  <funcion_predef>(<expresion>)
-                         |  <identificador>(<lista_expresiones>)
-                         |  <expresion>[<expresion>]
-                         |  <identificador>
-                         |  <numero_real>
-                         |  <constante_predefinida>
+<expresion>               ::= (<expresion>)
+                           |  if <expresion> then <expresion> else <expresion>
+                           |  <expresion> <op_binario> <expresion>
+                           |  <op_unario> <expresion>
+                           |  <identificador>(<lista_expresiones>)    # Incluye las funciones predefinidas
+                           |  <id_de_tipo>(<lista_expresiones>)       # Hay que incluirlo ya que se detecta vec2-3 y mat2-3 como id_de_tipo, en vez de idetificador
+                           |  <expresion>[<expresion>]
+                           |  <identificador>                         # Incluye las constantes predefinidas
+                           |  <numero_real>
                          
-<op_binario>            ::= +
-                         |  -
-                         |  *
-                         |  /
-                         |  %
-                         |  and
-                         |  or
-                         |  >
-                         |  <
-                         |  >=
-                         |  <=
-                         |  ==
-                         |  !=
-                         |  ^
+<op_binario>              ::= +
+                           |  -
+                           |  *
+                           |  /
+                           |  %
+                           |  and
+                           |  or
+                           |  >
+                           |  <
+                           |  >=
+                           |  <=
+                           |  ==
+                           |  !=
+                           |  ^
 
-<op_unario>             ::= -
-                         |  !
+<op_unario>               ::= -
+                           |  !
 
-<funcion_predef>        ::= cos | sin | tan | exp | log
+<lista_expresiones>       ::= <lista_expresiones>,<expresion>
+                           |  <expresion>
 
-<lista_expresiones>     ::= <lista_expresiones>,<expresion>
-                         |  <expresion>
+<lista_param>             ::= <lista_param>, <lista_ident> : <id_de_tipo> 
+                           |  <lista_ident> : <id_de_tipo>
 
-<lista_param>           ::= <lista_param>, <lista_ident> : <tipo_basico> 
-                         |  <lista_ident> : <tipo_basico>
+<lista_ident>             ::= <lista_ident>, <identificador>
+                           |  <identificador>
 
-<lista_ident>           ::= <lista_ident>, <identificador>
-                         |  <identificador>
+<id_de_tipo>              ::= int
+                           |  real
+                           |  bool
+                           |  vec2
+                           |  mat2
 
-<tipo_basico>           ::= int
-                         |  real
-                         |  bool
-                         |  <vec_or_mat>
-
-<vec_or_mat>            ::= <vec_or_mat_2> | <vec_or_mat_3> 
-
-<vec_or_mat_2>          ::= vec2 | mat2
-
-<vec_or_mat_3>          ::= vec3 | mat3
-
-<identificador>         ::= <letra><cadena>
-                         |  <letra>
+<identificador>           ::= <letra><cadena>
+                           |  <letra>
                          
-<cadena>                ::= <cadena><letra>
-                         |  <cadena><numero>
-                         |  <letra>
-                         |  <numero>
+<cadena>                  ::= <cadena><letra>
+                           |  <cadena><numero>
+                           |  <letra>
+                           |  <numero>
 
-<numero_real>           ::= <numero_entero>
-                         |  <numero_entero>.<numero_entero>
+<numero_real>             ::= <numero_entero>
+                           |  <numero_entero>.<numero_entero>
 
-<numero_entero>         ::= <numero_entero><numero>
-                         |  <numero>
+<numero_entero>           ::= <numero_entero><numero>
+                           |  <numero>
 
-<letra>                 ::= a | ... | z | A | ... | Z
+<letra>                   ::= a | ... | z | A | ... | Z
 
-<numero>                ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-
-<constante_predefinida> ::= PI | E
+<numero>                  ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
