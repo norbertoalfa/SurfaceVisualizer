@@ -30,9 +30,9 @@ ______________________________________________________________________________
                            |  <sentencia_declar_fun>
                            |  <sentencia_plot>
 
-<sentencia_declar_valor>  ::= <identificador> : <id_de_tipo> = <expresion>                # Declaración y asignación de una constante
+<sentencia_declar_valor>  ::= <identificador> : <identificador> = <expresion>                # Declaración y asignación de una constante
 
-<sentencia_declar_fun>    ::= <identificador>(<lista_param>) : <id_de_tipo> = <expresion> # Definición función
+<sentencia_declar_fun>    ::= <identificador>(<lista_param>) : <identificador> = <expresion> # Definición función
 
 <sentencia_plot>          ::= plot <lista_ident>
 
@@ -41,7 +41,6 @@ ______________________________________________________________________________
                            |  <expresion> <op_binario> <expresion>
                            |  <op_unario> <expresion>
                            |  <identificador>(<lista_expresiones>)    # Incluye las funciones predefinidas
-                           |  <id_de_tipo>(<lista_expresiones>)       # Hay que incluirlo ya que se detecta vec2-3 y mat2-3 como id_de_tipo, en vez de idetificador
                            |  <expresion>[<expresion>]
                            |  <identificador>                         # Incluye las constantes predefinidas
                            |  <numero_real>
@@ -67,17 +66,11 @@ ______________________________________________________________________________
 <lista_expresiones>       ::= <lista_expresiones>,<expresion>
                            |  <expresion>
 
-<lista_param>             ::= <lista_param>, <lista_ident> : <id_de_tipo> 
-                           |  <lista_ident> : <id_de_tipo>
+<lista_param>             ::= <lista_param>, <lista_ident> : <identificador> 
+                           |  <lista_ident> : <identificador>
 
 <lista_ident>             ::= <lista_ident>, <identificador>
                            |  <identificador>
-
-<id_de_tipo>              ::= int
-                           |  real
-                           |  bool
-                           |  vec2
-                           |  mat2
 
 <identificador>           ::= <letra><cadena>
                            |  <letra>
