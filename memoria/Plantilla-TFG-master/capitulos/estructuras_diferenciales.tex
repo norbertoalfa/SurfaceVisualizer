@@ -13,7 +13,23 @@
 			\item Un embebimiento $D^2 \rightarrow S$ que es diferenciable entorno a $\partial D^2$ puede isotoparse a un embebimiento diferenciable en todo $D^2$, quedando fijo en un entorno pequeño de $\partial D^2$.
 		\end{enumerate}
 	\end{teorema}
-	
+
+	\begin{proof}
+		Voy a proceder a la demostración de cada uno de los apartados: \\
+		\begin{enumerate}
+			\item Vamos a utilizar el ``truco del toro'', vemos el toro ($T$) como el espacio de órbitas $\mathbb{R}^2/\mathbb{Z}^2$, tomando el $0$ como imagen del $0\in \mathbb{R}^2$. Eliminamos un punto del toro, al que llamamos $T'$. \\
+				\\ Hacemos una inmersión de $T'$ en $\mathbb{R}^2$ manteniendo el $0$ y viendo $T'$ como el interior del disco unidad de $\mathbb{R}^2$ junto con dos 1-asas, que es un embebimiento en el disco (las asas se embeben por separado, se observa como se solapan en $\mathbb{R}^2$).\\
+				\\ Sea $h:\mathbb{R}^2 \rightarrow M$ embebimiento,por el cual $M$ induce una estructura diferenciable en $\mathbb{R}^2$, que denotaremos $S$. Por el mismo razonamiento (el embebimiento definido para $T'$), $\mathbb{R}^2$ con la estructura $S$ induce una estructura diferenciable en $T'$, que llamaremos $T'_S$.\\
+				\\ Sabemos por el \textbf{Hecho 3} que existe un conjunto compacto en $T'_S$ cuyo complemento es difeomorfo a $S^1\times \mathbb{R}$, lo que nos permite extender la estructura diferenciable de $T'$ a $T$, llamada $T_S$.\\
+				\\ Por el \textbf{Hecho 4} sabemos que toda estructura diferenciable del toro ($S^1\times S^1$) es difeomorfa a la estándar. Por tanto, existe un difeomorfismo $g: T_S \rightarrow T$. Podemos tomar $\widehat{g}:\mathbb{R}^2_S \rightarrow \mathbb{R}^2$ como la normalización de $g$ (llevar el $0$ en el $0$ y al verlo en $\mathbb{R}^2$ que también deje fijo $\mathbb{Z}^2$).\\
+				\\ Identificamos$\mathbb{R}^2$ con el interior del disco unidad de $\mathbb{R}^2$ mediante una reparametrización radial que es la identidad entorno al $0$, por lo que  $\widehat{g}$ se convierte en un automorfismo en el interior del disco, que tiende a ser también la identidad en el borde. Se puede extender a $G:\mathbb{R}^2 \rightarrow \mathbb{R}^2$, siendo la identidad fuera del interior del disco. Además, $G$ tiene la propiedad de comportarse igual que $g$ entorno al $0$, por como se ha construido la reparametrización.\\
+				\\ Por el truco de Alexander $G$ es isotópica a la identidad. Se puede obtener la isotopía $G_t$ variando el radio del disco, por lo que cuando el radio tiende a 0 $G_t$ tiende a ser la identidad ($G_0$). Para $t=1$, $G_1=G$.\\
+				\\ Definimos la isotopía para $h$ como $h_t=h\circ G_t^{-1}$, teniendo que $h_0=h$ por ser $G_0$ la identidad. $h_t$ se queda fija fuera del disco unidad ya que $G_t$ es la identidad en dicho conjunto. También tenemos que $h_t(0)=h(0)$ ya que para todo t, $G_t$ es la identidad entorno al $0$. $h_1$ es diferenciable entorno al $0$ respecto a la estructura diferenciable usual de $\mathbb{R}^2$ porque $G_1^{-1}=G^{-1}$ es un difeomorfismo de dicha estructura a $S$ entorno al $0$.
+			\item por hacer.
+			\item por hacer.
+		\end{enumerate}
+		
+	\end{proof}
 	\begin{corolario}
 		El teorema anterior sigue siendo cierto para un abierto de $\mathbb{R}^2$ en vez de para todo $\mathbb{R}^2$.
 	\end{corolario}
