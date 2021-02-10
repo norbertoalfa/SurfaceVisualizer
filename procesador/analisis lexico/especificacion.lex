@@ -51,7 +51,7 @@ cte 	{entero}|{real}|{bool}
 {real}            			{printf("LEXEMA: %s TOKEN: CONST ATRIBUTO: 1\n", yytext); return CONST;}
 {bool}						{printf("LEXEMA: %s TOKEN: CONST ATRIBUTO: 2\n", yytext); return CONST;}
 
-{ident}						{;}//printf("LEXEMA: %s TOKEN: IDENT\n", yytext); return IDENT;}
+{ident}						{printf("LEXEMA: %s TOKEN: IDENT\n", yytext); return IDENT;}
 
 [ \t]						{;}
 
