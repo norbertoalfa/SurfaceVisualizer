@@ -1,0 +1,3 @@
+/home/norberto/Escritorio/4o/1er/IG/P5/trabajo/cmake-unix/build/CMakeFiles/rebuild_cache.dir
+/home/norberto/Escritorio/4o/1er/IG/P5/trabajo/cmake-unix/build/CMakeFiles/pracs_ig_exe.dir
+/home/norberto/Escritorio/4o/1er/IG/P5/trabajo/cmake-unix/build/CMakeFiles/edit_cache.dir
