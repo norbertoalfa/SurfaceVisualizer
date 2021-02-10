@@ -43,7 +43,7 @@ ______________________________________________________________________________
                            |  <identificador>(<lista_expresiones>)    # Incluye las funciones predefinidas
                            |  <expresion>[<expresion>]
                            |  <identificador>                         # Incluye las constantes predefinidas
-                           |  <numero_real>
+                           |  <constante>
                          
 <op_binario>              ::= +
                            |  -
@@ -80,11 +80,17 @@ ______________________________________________________________________________
                            |  <letra>
                            |  <numero>
 
+<constante>               ::= <numero_entero>
+                           |  <numero_real>
+                           |  <bool>
+
 <numero_real>             ::= <numero_entero>
                            |  <numero_entero>.<numero_entero>
 
 <numero_entero>           ::= <numero_entero><numero>
                            |  <numero>
+
+<bool>                    ::= true | false
 
 <letra>                   ::= a | ... | z | A | ... | Z
 
