@@ -100,8 +100,12 @@ public:
     }
     // activate the shader
     // ------------------------------------------------------------------------
-    void use() 
+    void use(float step) 
     { 
+    	GLint loc = glGetUniformLocation(ID, "STEP");
+    	if (loc !=-1){
+    		glUniform1f(loc, step);
+    	}
         glUseProgram(ID); 
     }
     // utility uniform functions

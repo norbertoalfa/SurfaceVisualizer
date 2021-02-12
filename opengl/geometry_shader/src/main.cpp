@@ -70,6 +70,7 @@ int main()
     	for(int j=0; j<SIZE; j++){
     		points[2*(SIZE*i+j)] = step*((float)i);
     		points[2*(SIZE*i+j)+1] = step*((float)j);
+    		//std::cout << points[2*((SIZE-1)*i+j)] << " " << points[2*((SIZE-1)*i+j)+1] <<std::endl;
     	}
     }
     
@@ -96,7 +97,7 @@ int main()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
         // draw points
-        shader.use();
+        shader.use(step);
         glBindVertexArray(VAO);
         glDrawArrays(GL_POINTS, 0, SIZE*SIZE);
 
