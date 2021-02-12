@@ -62,7 +62,7 @@ int main()
          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
         -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
     };*/
-    const int SIZE = 20;
+    const int SIZE = 40;
     const int SIZE_POINT = 2; //5;
     float points[2*SIZE*SIZE];
     float step = 1.0/((float) SIZE);

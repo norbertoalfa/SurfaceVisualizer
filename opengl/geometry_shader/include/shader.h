@@ -102,9 +102,14 @@ public:
     // ------------------------------------------------------------------------
     void use(float step) 
     { 
-    	GLint loc = glGetUniformLocation(ID, "STEP");
-    	if (loc !=-1){
-    		glUniform1f(loc, step);
+    	GLint loc_step = glGetUniformLocation(ID, "STEP");
+    	GLint loc_color = glGetUniformLocation(ID, "COLOR");
+    	if (loc_step !=-1){
+    		glUniform1f(loc_step, step);
+    	}
+    	if (loc_color !=-1){
+    		float color[] = {0.0,0.0,1.0};
+    		glUniform3fv(loc_color, 1, (float*)color);
     	}
         glUseProgram(ID); 
     }

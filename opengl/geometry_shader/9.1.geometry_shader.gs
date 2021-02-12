@@ -11,7 +11,13 @@ uniform float STEP;
 //out vec3 fColor;
 
 vec4 f(vec4 v) {
-	return vec4(2*(v.x*v.x - 0.5), 2*(v.y*v.y -  0.5), 0.0, 1.0);
+	//float comp_x = abs(v.x-0.5)*(v.x-0.5);
+	//float comp_y = abs(v.y-0.5)*(v.y-0.5);
+	float comp_x = (v.x-0.5) + 0.13*cos(10*(v.y-0.5));
+	float comp_y = (v.y-0.5) + 0.1*cos(10*(v.x-0.5)+2);
+	
+	return vec4(2*(comp_x), 2*(comp_y), 0.0, 1.0);
+	//return vec4(2*(v.x*v.x - 0.5), 2*(v.y*v.y -  0.5), 0.0, 1.0);
 	//return v;
 }
 
