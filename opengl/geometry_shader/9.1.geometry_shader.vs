@@ -16,11 +16,16 @@ vec4 f(vec2 v) {
 	//float comp_x = abs(v.x-0.5)*(v.x-0.5);
 	//float comp_y = abs(v.y-0.5)*(v.y-0.5);
 	float pi=3.14159;
-	float a=2;
-	float r=0.75;
-	float comp_x = (radio_a+radio_r*cos(v.y*2*pi))*cos(v.x*2*pi); //cos(v.y*pi)*cos(v.x*2*pi);
-	float comp_y = (radio_a+radio_r*cos(v.y*2*pi))*sin(v.x*2*pi); //cos(v.y*pi)*sin(v.x*2*pi);
-	float comp_z = radio_r*sin(v.y*2*pi); //sin(v.y*pi);
+	
+	// Esfera
+	//float comp_x = cos(v.y*pi)*cos(v.x*2*pi);
+	//float comp_y = cos(v.y*pi)*sin(v.x*2*pi);
+	//float comp_z = sin(v.y*pi);
+	
+	// Toro
+	float comp_x = (radio_a+radio_r*cos(v.y*2*pi))*cos(v.x*2*pi);
+	float comp_y = (radio_a+radio_r*cos(v.y*2*pi))*sin(v.x*2*pi);
+	float comp_z = radio_r*sin(v.y*2*pi);
 	
 	return vec4(comp_x, comp_y, comp_z, 1.0);
 	//return vec4(v.x, v.y, v.x*v.x + v.y*v.y, 1.0);
