@@ -108,7 +108,7 @@ public:
     		glUniform1f(loc_step, step);
     	}
     	if (loc_color !=-1){
-    		float color[] = {0.0,0.0,1.0};
+    		float color[] = {0.0, 1.0, 0.0}; //{0.0,0.0,1.0};
     		glUniform3fv(loc_color, 1, (float*)color);
     	}
         glUseProgram(ID); 

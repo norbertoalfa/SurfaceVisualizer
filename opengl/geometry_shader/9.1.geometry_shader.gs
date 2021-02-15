@@ -16,9 +16,9 @@ vec4 f(vec4 v) {
 	float comp_x = (v.x-0.5) + 0.13*cos(10*(v.y-0.5));
 	float comp_y = (v.y-0.5) + 0.1*cos(10*(v.x-0.5)+2);
 	
-	return vec4(2*(comp_x), 2*(comp_y), 0.0, 1.0);
+	//return vec4(2*(comp_x), 2*(comp_y), 0.0, 1.0);
 	//return vec4(2*(v.x*v.x - 0.5), 2*(v.y*v.y -  0.5), 0.0, 1.0);
-	//return v;
+	return v;
 }
 
 void build_square(vec4 position, float step)

@@ -6,8 +6,25 @@ layout (location = 0) in vec2 aPos;
 //    vec3 color;
 //} vs_out;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+vec4 f(vec2 v) {
+	//float comp_x = abs(v.x-0.5)*(v.x-0.5);
+	//float comp_y = abs(v.y-0.5)*(v.y-0.5);
+	float pi=3.14159;
+	float comp_x = cos((v.y-0.5)*2*pi)*cos(v.x*2*pi);
+	float comp_y = cos((v.y-0.5)*2*pi)*sin(v.x*2*pi);
+	float comp_z = sin((v.y-0.5)*2*pi);
+	
+	return vec4(comp_x, comp_y, comp_z, 1.0);
+	//return vec4(v.x, v.y, v.x*v.x + v.y*v.y, 1.0);
+	//return v;
+}
+
 void main()
 {
     //vs_out.color = aColor;
-    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
+    gl_Position = projection * view * model * f(aPos - vec2(0.5, 0.5)); 
 }
