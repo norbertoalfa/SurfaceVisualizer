@@ -60,14 +60,6 @@ int main()
     // -------------------------
     Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs");//, "9.1.geometry_shader.gs");
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    /*float points[] = {
-        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
-        -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
-    };*/
     const int SIZE = 20;
     const int SIZE_POINT = 2; //5;
     
@@ -98,11 +90,9 @@ int main()
     		vertex[12*(SIZE*i+j)+9] = step*((float)(j+1));
     		vertex[12*(SIZE*i+j)+10] = step*((float)(i+1));
     		vertex[12*(SIZE*i+j)+11] = step*((float)(j+1));
-    		//std::cout << points[2*((SIZE-1)*i+j)] << " " << points[2*((SIZE-1)*i+j)+1] <<std::endl;
     	}
     }
     
-    //std::cout << vertex[sizeof(vertex)-2] << " " << vertex[sizeof(vertex)-1] <<std::endl;
     
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -122,11 +112,13 @@ int main()
     glEnableVertexAttribArray(1);
     //glBindVertexArray(0);
 	
-	shader.use(step);
+	shader.use();
 	
 	// pass projection matrix to shader
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     shader.setMat4("projection", projection); 
+    shader.setFloat("STEP", step);
+    shader.setVec3("COLOR", glm::vec3(0.0, 1.0, 0.0));
 	
     // render loop
     // -----------
@@ -143,15 +135,17 @@ int main()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
         // activate shader
-        shader.use(step);
+        shader.use();
         
         // camera/view transformation
         glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         float radius = 10.0f;
-        float camX   = sin(glfwGetTime()) * radius;
-        float camZ   = cos(glfwGetTime()) * radius;
+        float camX   = sin(glfwGetTime()/2) * radius;
+        float camZ   = cos(glfwGetTime()/2) * radius;
         view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         shader.setMat4("view", view);
+        shader.setFloat("radio_a", 2+camX/20);
+        shader.setFloat("radio_r", 0.5+camZ/40);
 
         // render boxes
         glBindVertexArray(VAO);
