@@ -68,6 +68,7 @@ sentencia_plot : PLOT lista_ident
 expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; }
           | IF expresion THEN expresion ELSE expresion	{ comprobarIF($1, $2, $3, &$$); }
           | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $2, &$$); }
+          | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }
           | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); }
           | OP_NEG expresion							{ TS_OpUNARIA($1, $2, &$$); }
           | expresion OP_SUMA expresion					{ TS_OpSUMARESTA($1, $2, $3, &$$); }
@@ -82,18 +83,19 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
           | error
 ;
 
-funcion : IDENT PAR_IZQ lista_expresiones PAR_DER		{ TS_FunCall($1, &$$); nParam=0; }
+llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, &$$); nParam=0; }
+;
 
 lista_expresiones : lista_expresiones COMA expresion	{ nParam++; TS_ComprobarPARAM($-1,$3, nParam); }
            		  | expresion							{ nParam++; TS_ComprobarPARAM($-1,$1, nParam); }
 ;
 
-lista_param : lista_param COMA lista_ident DOSPTOS IDENT
-            | lista_ident DOSPTOS IDENT
+lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{  }	// Asignar el tipo a las ultimas entradas.
+            | lista_ident DOSPTOS IDENT						{  }
 ;
 
-lista_ident : lista_ident COMA IDENT
-            | IDENT
+lista_ident : lista_ident COMA IDENT	{  }	// Introducir como desconocido y llevar la cuenta.
+            | IDENT						{  }
 ;
 
 constante : CONST_BOOL		{ $$.tipo = BOOLEANO; $$.dimension = 0; $$.tam = 0; }
