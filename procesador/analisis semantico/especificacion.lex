@@ -29,8 +29,7 @@ cte 	{entero}|{real}|{bool}
 "+"							{yylval.lex=strdup(yytext); return OP_SUMA;}
 "*"							{yylval.lex=strdup(yytext); yylval.atrib=0; return OP_MULTIP;}
 "/"							{yylval.lex=strdup(yytext); yylval.atrib=1; return OP_MULTIP;}
-"%"							{yylval.lex=strdup(yytext); yylval.atrib=2; return OP_MULTIP;}
-"^"							{yylval.lex=strdup(yytext); yylval.atrib=3; return OP_MULTIP;}
+"^"							{yylval.lex=strdup(yytext); yylval.atrib=2; return OP_MULTIP;}
 "and"						{yylval.lex=strdup(yytext); return OP_AND;}
 "or"						{yylval.lex=strdup(yytext); return OP_OR;}
 ">"							{yylval.lex=strdup(yytext); yylval.atrib=0; return OP_COMP;}
