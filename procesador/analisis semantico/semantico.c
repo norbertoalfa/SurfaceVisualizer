@@ -3,84 +3,77 @@
 #include <string.h>
 #include "semantico.h"
 
-entradaTS TS[MAX_IN];
-long int LIMIT = 0;
-int decVar = 0;
-int decParam = 0;
-int subProg = 0;
-dtipo globalType = DESCONOCIDO;
-dtipo switchType = DESCONOCIDO;
-int nParam = 0;
-int currentProc = -1;
+LIMIT = 0;
+declaracion = 0;
+decParam = 0;
+inFun = 0;
+globalType = DESCONOCIDO;
+globalDim = 0;
+globalTam = 0;
+nParam = 0;
+currentFun = -1;
 
 // Devuelve si el atributo es array o no
 int esArray(atributos e){
-
     return (e.dimension!=0);
 }
 
 // Devuelve si los dos posibles arrays que recibe tienen el mismo tamaño
 int igualSize(atributos e1, atributos e2){
-
-    return (e1.dimension == e2.dimension &&
-        e1.filas == e2.filas &&
-        e1.columnas == e2.columnas);
-
+    return (e1.dimension == e2.dimension && e1.tam == e2.tam);
 }
 
-int compatibleSize(atributos e1, atributos e2){
-
-    return (e1.dimension == e2.dimension &&
-        e1.filas == e2.filas &&
-        e1.columnas == e2.columnas);
-
-}
-
-int compatibleSizeMAT(atributos e1, atributos e2){
-
-    return (e1.dimension == e2.dimension &&
-        e1.columnas == e2.filas);
-
-}
-
-void comprobarSizeArray1D(atributos e, int s) {
+void comprobarSizeArray(atributos e, int s, int t=0) {
 	int j = TS_BuscarIDENT(e);
-	int dim = TS[j].filas;
+	int tam = TS[j].tam;
 	
 	if (j==-1) {
 		printf("(Error semántico, línea %d) Identificador no encontrado\n", linea);
 	} else {
 	
-		if (s < 0) {
+		if (s < 0 || t < 0) {
 			printf("(Error semántico, línea %d) Índice no permitido\n", linea);
-		} else if (s >= dim) {
-			printf("(Error semántico, línea %d) Índice no permitido\n", linea);
-		}
-	}
-}
-
-void comprobarSizeArray2D(atributos e, int s1, int s2) {
-	int j = TS_BuscarIDENT(e);
-	int dim1 = TS[j].filas, dim2 = TS[j].columnas;
-	
-	if (j==-1) {
-	printf("(Error semántico, línea %d) Identificador no encontrado\n", linea);
-	} else {
-	
-		if (s1 < 0 || s2 < 0) {
-			printf("(Error semántico, línea %d) Índice no permitido\n", linea);
-		} else if (s1 >= dim1 || s2 >= dim2) {
+		} else if (s >= tam || t >= tam) {
 			printf("(Error semántico, línea %d) Índice no permitido\n", linea);
 		}
 	}
 }
 
 // Guarda el tipo de la variable
-int setTipo(atributos value){
+int setTipo(atributos var, atributos tipo) {
+	globaDim = 0;
+	globalTam = 0;
 	
-    globalType = value.tipo;
-
-
+	if (strcmp(var.lex, "REAL") == 0) {
+		globalType = REAL;
+	} else if (strcmp(var.lex, "ENTERO") == 0) {
+		globalType = ENTERO;
+	} else if (strcmp(var.lex, "BOOL") == 0) {
+		globalType = BOOLEANO;
+	} else if (strcmp(var.lex, "VEC2") == 0) {
+		globalType = ARRAY;
+		globaDim = 1;
+		globalTam = 2;
+	} else if (strcmp(var.lex, "VEC3") == 0) {
+		globalType = ARRAY;
+		globaDim = 1;
+		globalTam = 3;
+	} else if (strcmp(var.lex, "MAT2") == 0) {
+		globalType = ARRAY;
+		globaDim = 2;
+		globalTam = 2;
+	} else if (strcmp(var.lex, "MAT3") == 0) {
+		globalType = ARRAY;
+		globaDim = 2;
+		globalTam = 3;
+	} else {
+		globalType = DESCONOCIDO;
+	}
+	
+	var.tipo = globalType;
+	var.dim = globaDim;
+	var.tam = globalTam;
+	
 }
 
 // Inserta una entrada en la tabla de símbolos
@@ -88,7 +81,6 @@ int TS_InsertaEntrada(entradaTS entrada){
 
     // Si se tienen más entradas de las que puede alojar la tabla de símbolos
     // dará un error, si no, se inserta
-    
 	if(LIMIT < MAX_IN) {
 		
 		TS[LIMIT].entrada=entrada.entrada;
@@ -96,14 +88,10 @@ int TS_InsertaEntrada(entradaTS entrada){
 		TS[LIMIT].tipo=entrada.tipo;
 		TS[LIMIT].nParam=entrada.nParam;
 		TS[LIMIT].dimension=entrada.dimension;
-		TS[LIMIT].filas=entrada.filas;
-		TS[LIMIT].columnas=entrada.columnas;
+		TS[LIMIT].tam=entrada.tam;
 
         // Se aumenta el contador de entradas
 		LIMIT++;
-
-        // Se muestra la tabla de símbolos por pantalla
-		//printTS();
 
 		return 1;
 
@@ -153,11 +141,11 @@ void TS_VaciarENTRADAS(){
 int TS_BuscarIDENT(atributos e){
 
     int i = LIMIT - 1;
-	int found = 0;
+	bool found = false;
 	
-	while (i > 0 && !found /*&& TS[i].entrada != MARCA*/) {
+	while (i > 0 && !found) {
 		if (TS[i].entrada == VAR && strcmp(e.lex, TS[i].lex) == 0) {
-			found = 1;
+			found = true;
 		} else{
 			i--;
 		}
@@ -186,8 +174,8 @@ int TS_BuscarNOMBRE(atributos e){
 	int found = 0;
 
 
-	while (i > 0 && !found /*&& TS[i].entrada != MARCA*/) {
-		if (TS[i].entrada == PROCEDIMIENTO && strcmp(e.lex, TS[i].lex) == 0) {
+	while (i > 0 && !found) {
+		if (TS[i].entrada == FUNCION && strcmp(e.lex, TS[i].lex) == 0) {
 			found = 1;
 		} else{
 			i--;
@@ -209,9 +197,9 @@ void TS_InsertaIDENT(atributos e){
     // Para añadir un id a la pila no se puede haber llegado al tope,
     // el id no puede existir y se deben estar declarando variables
 	int j = LIMIT-1;
-	int found = 0;
+	bool found = false;
 
-	if(j >= 0 && decVar == 1){
+	if(j >= 0 && declaracion == 1){
 		// Se obtiene la posición de la mark del bloque
 		while((TS[j].entrada != MARCA) && (j >= 0) && !found){
 
@@ -221,7 +209,7 @@ void TS_InsertaIDENT(atributos e){
 
 			} else{
 
-				found = 1;
+				found = true;
 				printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
 
 	 		}
@@ -237,8 +225,7 @@ void TS_InsertaIDENT(atributos e){
 			newIn.tipo = globalType;
 			newIn.nParam = 0;
 			newIn.dimension=e.dimension;
-			newIn.filas=e.filas;
-			newIn.columnas=e.columnas;
+			newIn.tam=e.tam;
 			TS_InsertaEntrada(newIn);
 
 		}
@@ -262,15 +249,11 @@ void TS_InsertaMARCA(){
 
     // Se añaden a la tabla de símbolos los parámetros de la función como las
     // variables locales de ese bloque
-	if(subProg == 1){
+	if(inFun == 1){
 
 		int j = LIMIT - 2, mark = 0, funct = 0;
 
 		while(j > 0 && TS[j].entrada == PARA_FORM){
-
-			/*printf("\n\n");
-			printipoEntrada(j);
-			printf("\n\n");*/
 
 			if(TS[j].entrada == PARA_FORM) {
 
@@ -294,20 +277,19 @@ void TS_InsertaMARCA(){
 
 }
 
-// Añade una entrada de subprograma
-void TS_InsertaSUBPROG(atributos e){
+// Añade una entrada de inFunrama
+void TS_InsertaFUN(atributos e){
 
-  entradaTS inSubProg;
-	inSubProg.entrada = PROCEDIMIENTO;
-	inSubProg.lex = e.lex;
-	inSubProg.nParam = 0;
-	inSubProg.dimension = 0;
-	inSubProg.filas = 0;
-	inSubProg.columnas = 0;
-	inSubProg.tipo = e.tipo;
+  entradaTS ininFun;
+	ininFun.entrada = FUNCION;
+	ininFun.lex = e.lex;
+	ininFun.nParam = 0;
+	ininFun.dimension = 0;
+	ininFun.tam = 0;
+	ininFun.tipo = e.tipo;
 
-	currentProc = LIMIT;
-	TS_InsertaEntrada(inSubProg);
+	currentFun = LIMIT;
+	TS_InsertaEntrada(ininFun);
 
 }
 
@@ -316,7 +298,7 @@ void TS_InsertaPARAMF(atributos e){
 
     int j = LIMIT - 1, found = 0;
 
-	while((j != currentProc)  && (!found) ){
+	while((j != currentFun)  && (!found) ){
 
 		if(strcmp(TS[j].lex, e.lex) != 0) {
 
@@ -339,8 +321,7 @@ void TS_InsertaPARAMF(atributos e){
 		newIn.tipo = globalType;
 		newIn.nParam = 0;
 		newIn.dimension = e.dimension;
-		newIn.filas = e.filas;
-		newIn.columnas = e.columnas;
+		newIn.tam = e.tam;
 		TS_InsertaEntrada(newIn);
 
 	}
@@ -350,10 +331,9 @@ void TS_InsertaPARAMF(atributos e){
 // Actualiza el número de parámetros de la función
 void TS_ActualizarNPARAM(atributos e){
 
-    TS[currentProc].nParam = nParam;
-	TS[currentProc].dimension=e.dimension;
-	TS[currentProc].filas=e.filas;
-	TS[currentProc].columnas=e.columnas;
+    TS[currentFun].nParam = nParam;
+	TS[currentFun].dimension=e.dimension;
+	TS[currentFun].tam=e.tam;
 
 }
 
@@ -363,55 +343,121 @@ void TS_getIDENT(atributos id, atributos* res){
     int index = TS_BuscarIDENT(id);
 	
 	if(index==-1) {
-        if(TS[index].entrada != PROCEDIMIENTO)
+        if(TS[index].entrada != FUNCION)
 		      printf("\n(Error semántico, línea %d) Identificador no encontrado %s.\n", linea, id.lex);
 	} else {
 
 		res->lex = strdup(TS[index].lex);
 		res->tipo = TS[index].tipo;
 		res->dimension = TS[index].dimension;
-		res->filas = TS[index].filas;
-		res->columnas = TS[index].columnas;
+		res->tam = TS[index].tam;
 
 	}
 
 }
 
-// Realiza la comprobación de la operación +, -
-void TS_OpMENOS(atributos op, atributos o, atributos* res){
+// Realiza la comprobación de la operación +, - y !
+void comprobarIF(atributos comp, atributos e1, atributos e2, atributos* res){
+	dtipo tipoActual;
+	
+	if (comp.tipo != BOOLEANO) {
+		printf("(Error semántico, línea %d) Se esperaba una expresión booleana para la comprobación.\n", linea);
+		return;
+	}
+	
+	if (e1.tipo != e2.tipo) {
+	
+		if ((e1.tipo == REAL && e2.tipo == ENTERO) || (e2.tipo == REAL && e1.tipo == ENTERO)) {
+			tipoActual = REAL;
+		} else {
+			printf("(Error semántico, línea %d) Se esperaban expresiones del mismo tipo.\n", linea);
+			return;
+		}
+		
+	} else {
+	
+		tipoActual = e1.tipo;
+		
+	}
+		
+	res->tipo = tipoActual;
+	res->dimension = e1.dimension;
+	res->tam = e1.tam;
 
-    if ((o.tipo != REAL && o.tipo != ENTERO) || esArray(o)) {
-		printf("(Error semántico, línea %d) Se esperaba una expresión entera o real.\n", linea);
+}
+
+// Realiza la comprobación de la operación +, - y !
+void comprobarIND(atributos e1, atributos e2, atributos* res){
+	dtipo tipoActual;
+	
+	if (!esArray(e1)) {
+		printf("(Error semántico, línea %d) Se esperaba un array.\n", linea);
+		return;
+	}
+	
+	if (e2.tipo != ENTERO) {
+		printf("(Error semántico, línea %d) Se esperaba un entero para el índice.\n", linea);
+		return;
+	}
+	
+	res->dimension = e1.dimension-1;
+	
+	if (res->dimension > 0) {
+		res->tipo = ARRAY;
+		res->tam = e1.tam;
+	} else {
+		res->tipo = REAL;
+		res->tam = 0;
 	}
 
-	res->tipo = o.tipo;
-	res->dimension = 0;
-	res->filas = 0;
-	res->columnas = 0;
+}
+
+// Realiza la comprobación de la operación +, - y !
+void TS_OpUNARIA(atributos op, atributos o, atributos* res){
+	if (strcmp(op.lex, "!") != 0) {
+		if (o.tipo != REAL && o.tipo != ENTERO && o.tipo != ARRAY) {
+			printf("(Error semántico, línea %d) Se esperaba una expresión entera, real o array.\n", linea);
+			return;
+		}
+		
+		res->tipo = o.tipo;
+		res->dimension = o.dimension;
+		res->tam = o.tam;
+		
+	} else {
+		
+		if (o.tipo != BOOLEANO || esArray(o)) {
+			printf("(Error semántico, línea %d) Se esperaba una expresión booleana.\n", linea);
+			return;
+		}
+		
+		res->tipo = BOOLEANO;
+		res->dimension = 0;
+		res->tam = 0;
+	
+	}
 
 }
 
 // Realiza la comprobación de la operación +, - binaria
 void TS_OpSUMARESTA(atributos o1, atributos op, atributos o2, atributos* res){
+	
+	dtipo tipoActual = REAL;
 
-    if (o1.tipo != o2.tipo) {
-	    printf("(Error semántico, línea %d) Las expresiones tienen que tener el mismo tipo.\n", linea);
-  		return;
-  	}
-
-	if (o1.tipo != ENTERO && o1.tipo != REAL) {
+	if ((o1.tipo != ENTERO && o1.tipo != REAL) || (o2.tipo != ENTERO && o2.tipo != REAL)) {
 		printf("(Error semántico, línea %d) Tipo inválido en la operación.\n", linea);
 		return;
+	} else if (o1.tipo == ENTERO && o2.tipo == ENTERO) {
+		tipoActual = ENTERO;
 	}
 
 	if (esArray(o1) && esArray(o2)){
 
 		if(igualSize(o1,o2)){
 
-			res->tipo = o1.tipo;
+			res->tipo = tipoActual;
 			res->dimension = o1.dimension;
-			res->filas = o1.filas;
-			res->columnas = o1.columnas;
+			res->tam = o1.tam;
 
 		} else {
 
@@ -420,55 +466,38 @@ void TS_OpSUMARESTA(atributos o1, atributos op, atributos o2, atributos* res){
 
 		}
 
-	} else {
+	} else if (!esArray(o1) && !esArray(o2)){
 
-		if (esArray(o1) && !esArray(o2)) {
+		res->tipo = tipoActual;
+		res->dimension = o2.dimension;
+		res->tam = o2.tam;
 
-			res->tipo = o1.tipo;
-			res->dimension = o1.dimension;
-			res->filas = o1.filas;
-			res->columnas = o1.columnas;
-
-		}
-
-		if (!esArray(o1) && esArray(o2)){
-
-			if (strcmp(op.lex,"-")==0){
-
-				printf("(Error semántico, línea %d) No se permite ésta operación entre array y escalar.\n", linea);
-				return;
-
-			} else {
-
-				res->tipo = o2.tipo;
-				res->dimension = o2.dimension;
-				res->filas = o2.filas;
-				res->columnas = o2.columnas;
-
-			}
-
-		}
-
+	}else {
+	
+		printf("(Error semántico, línea %d) No se permite ésta operación entre array y escalar.\n", linea);
+		return;
+		
 	}
+
 
 }
 
 // Realiza la comprobación de la operación *, /
-void TS_OpMULDIV(atributos o1, atributos op, atributos o2, atributos* res){
+void TS_OpMULTIP(atributos o1, atributos op, atributos o2, atributos* res){
 
-    if (o1.tipo != o2.tipo) {
-		printf("(Error semántico, línea %d) Las expresiones deben de ser del mismo tipo básico.\n", linea);
+    if (o1.tipo != ENTERO && o1.tipo != REAL && o1.tipo != ARRAY) {
+		printf("(Error semántico, línea %d) Tipo inválido para la operación.\n", linea);
 		return;
 	}
-
-	if (o1.tipo != ENTERO && o1.tipo != REAL) {
+	
+	if (o2.tipo != ENTERO && o2.tipo != REAL && o2.tipo != ARRAY) {
 		printf("(Error semántico, línea %d) Tipo inválido para la operación.\n", linea);
 		return;
 	}
 
 	if (esArray(o1) && esArray(o2)){
 
-		if(compatibleSize(o1,o2)){
+		if(igualSize(o1,o2)){
 
 			res->tipo = o1.tipo;
 			res->dimension = o1.dimension;
@@ -481,73 +510,32 @@ void TS_OpMULDIV(atributos o1, atributos op, atributos o2, atributos* res){
 			return;
 
 		}
+	} else if (esArray(o1) && !esArray(o2)){
+		
+		res->tipo = o1.tipo;
+		res->dimension = o1.dimension;
+		res->tam = o1.tam;
+		
+	} else if (!esArray(o1) && esArray(o2)){
+	
+		res->tipo = o2.tipo;
+		res->dimension = o2.dimension;
+		res->tam = o2.tam;
 
-	} else {
-
-		if (esArray(o1) && !esArray(o2)) {
-
-			res->tipo = o1.tipo;
-			res->dimension = o1.dimension;
-			res->filas = o1.filas;
-			res->columnas = o1.columnas;
-
-		}
-
-		if (!esArray(o1) && esArray(o2)){
-
-			if (strcmp(op.lex,"-")==0){
-
-				printf("(Error semántico, línea %d) No se permite ésta operación entre array y escalar.\n", linea);
-				return;
-
-			} else {
-
-				res->tipo = o2.tipo;
-				res->dimension = o2.dimension;
-				res->filas = o2.filas;
-				res->columnas = o2.columnas;
-
-			}
-
-		}
-
-	}
-
-}
-
-// Realiza la comprobación de la operación **, /
-void TS_OpMULMAT(atributos o1, atributos op, atributos o2, atributos* res){
-
-    if (o1.tipo != o2.tipo) {
-		printf("(Error semántico, línea %d) Las expresiones deben de ser del mismo tipo básico.\n", linea);
-		return;
-	}
-
-	if (o1.tipo != ENTERO && o1.tipo != REAL) {
-		printf("(Error semántico, línea %d) Tipo inválido para la operación.\n", linea);
-		return;
-	}
-
-	if (esArray(o1) && esArray(o2)){
-
-		if(compatibleSizeMAT(o1,o2)){
-
-			res->tipo = o1.tipo;
-			res->dimension = o1.dimension;
-			res->filas = o1.filas;
-			res->columnas = o2.columnas;
-
+	} else if (!esArray(o1) && !esArray(o2)) {
+	
+		if (o1.tipo == ENTERO && o2.tipo == ENTERO){
+		
+			res->tipo = ENTERO;
+			
 		} else {
-
-            printf("(Error semántico, línea %d) Los arrays deben de tener tamaños compatibles ('nº de columnas del 1º' = 'nº filas del 2º') y dimensión 2.\n", linea);
-			return;
-
+		
+			res->tipo = REAL;
+			
 		}
-
-	} else {
-
-		printf("(Error semántico, línea %d) Las dos expresiones deben de ser arrays.\n", linea);
-		return;
+		
+		res->dimension = o1.dimension;
+		res->tam = o1.tam;
 
 	}
 
@@ -567,8 +555,7 @@ void TS_OpAND(atributos o1, atributos op, atributos o2, atributos* res){
 
 	res->tipo = BOOLEANO;
 	res->dimension = 0;
-	res->filas = 0;
-	res->columnas = 0;
+	res->tam = 0;
 
 }
 
@@ -586,100 +573,58 @@ void TS_OpOR(atributos o1, atributos op, atributos o2, atributos* res){
 
 	res->tipo = BOOLEANO;
 	res->dimension = 0;
-	res->filas = 0;
-	res->columnas = 0;
-
-}
-
-// Realiza la comprobación de la operación ^
-void TS_OpXOR(atributos o1, atributos op, atributos o2, atributos* res){
-
-    if (o1.tipo != o2.tipo) {
-		printf("(Error semántico, línea %d) Las expresiones tienen que ser del mismo tipo básico.\n", linea);
-		return;
-	}
-	if (o1.tipo != BOOLEANO || esArray(o1) || esArray(o2)) {
-		printf("(Error semántico, línea %d) Se esperaba de tipo BOOLEANO.\n", linea);
-		return;
-	}
-
-	res->tipo = BOOLEANO;
-	res->dimension = 0;
-	res->filas = 0;
-	res->columnas = 0;
+	res->tam = 0;
 
 }
 
 // Realiza la comprobación de la operación ==, !=
 void TS_OpIGUAL(atributos o1, atributos op, atributos o2, atributos* res){
-
-    if (o1.tipo != o2.tipo) {
-		printf("(Error semántico, línea %d) Las expresiones tienen que ser del mismo tipo básico.\n", linea);
-		return;
-	}
-	if (esArray(o1) || esArray(o2)) {
+	
+	if ((o1.tipo != ENTERO && o1.tipo != REAL) || (o2.tipo != ENTERO && o2.tipo != REAL) || esArray(o1) || esArray(o2)) {
 		printf("(Error semántico, línea %d) Se esperaba de tipo ENTERO o REAL.\n", linea);
 		return;
 	}
 
 	res->tipo = BOOLEANO;
 	res->dimension = 0;
-	res->filas = 0;
-	res->columnas = 0;
+	res->tam = 0;
 
 }
 
 // Realiza la comprobación de la operación <, >, <=, >=, <>
 void TS_OpCOMP(atributos o1,atributos o ,atributos o2, atributos* res){
 
-
-    if (o1.tipo != o2.tipo) {
-
-      //printTS();
-      //printf("o1type =%s\n",o1.lex);
-      //printf("otype =%s\n",o.lex);
-      //printf("o2type =%s\n",o2.lex);
-
-		printf("(Error semántico, línea %d) Las expresiones tienen que ser del mismo tipo básico. Los tipos son %d y %d.\n", linea,o1.tipo,o2.tipo);
-		return;
-	}
-	if ((o1.tipo != ENTERO && o1.tipo != REAL) || esArray(o1) || esArray(o2)) {
+	if ((o1.tipo != ENTERO && o1.tipo != REAL) || (o2.tipo != ENTERO && o2.tipo != REAL) || esArray(o1) || esArray(o2)) {
 		printf("(Error semántico, línea %d) Se esperaba de tipo ENTERO o REAL.\n", linea);
 		return;
 	}
 
 	res->tipo = BOOLEANO;
 	res->dimension = 0;
-	res->filas = 0;
-	res->columnas = 0;
+	res->tam = 0;
 
 }
 
-
-
 // Realiza la comprobación de la llamada a una función
-void tsProcCall(atributos id, atributos* res){
+void tsFunCall(atributos id, atributos* res){
 
     int index = TS_BuscarNOMBRE(id);
 
 	if(index==-1) {
 
-		currentProc = -1;
-
+		currentFun = -1;
 		printf("(Error semántico, línea %d) Función: Identificador no encontrado %s.\n", linea, id.lex);
 
     } else {
 
 		if (nParam != TS[index].nParam) {
-      //printf("nParam = %d, TS[index].nParam=%d",nParam, TS[index].nParam);
 			printf("(Error semántico, línea %d) Número de parámetros no válido.\n", linea);
 		} else {
-			currentProc = index;
+			currentFun = index;
 			res->lex = strdup(TS[index].lex);
 			res->tipo = TS[index].tipo;
 			res->dimension = TS[index].dimension;
-			res->filas = TS[index].filas;
-			res->columnas = TS[index].columnas;
+			res->tam = TS[index].tam;
 
 		}
 
@@ -690,17 +635,18 @@ void tsProcCall(atributos id, atributos* res){
 // Realiza la comprobación de cada parámetro de una función
 void TS_ComprobarPARAM(atributos funID ,atributos param, int checkParam){
 
-  int f = TS_BuscarNOMBRE(funID);
-  int posParam = (f ) + (checkParam);
-  //printf("\n%d\t\n",posParam);
+	int f = TS_BuscarNOMBRE(funID);
+	int posParam = (f ) + (checkParam);
 	int error = checkParam;
 
 	if (param.tipo != TS[posParam].tipo) {
-		printf("(Error semántico, línea %d) Tipo de parámetro (%d) no válido.\n", linea, error);
-		return;
+		if (!(TS[posParam].tipo == REAL && param.tipo == ENTERO)) {
+			printf("(Error semántico, línea %d) Tipo de parámetro (%d) no válido.\n", linea, error);
+			return;
+		}
 	}
 
-	if (param.dimension != TS[posParam].dimension || param.filas != TS[posParam].filas  || param.columnas != TS[posParam].columnas) {
+	if (param.dimension != TS[posParam].dimension || param.tam != TS[posParam].tam) {
 		printf("(Error semántico, línea %d) Tamaño del parámetro (%d) no válido.\n", linea, error);
 		return;
 	}
@@ -728,10 +674,9 @@ void printTipo(dtipo tipo) {
 	if(tipo == 0) { t = "NO_ASIG"; }
 	if(tipo == 1) { t = "ENTERO"; }
 	if(tipo == 2) { t = "REAL"; }
-	if(tipo == 3) { t = "CARACTER"; }
-	if(tipo == 4) { t = "BOOLEANO"; }
-	if(tipo == 5) { t = "ARRAY"; }
-	if(tipo == 6) { t = "DESCONOCIDO"; }
+	if(tipo == 3) { t = "BOOLEANO"; }
+	if(tipo == 4) { t = "ARRAY"; }
+	if(tipo == 5) { t = "DESCONOCIDO"; }
 
 	printf("%s", t);
 
@@ -747,25 +692,23 @@ void printTS(){
 	fprintf(stderr, "--------------------------------\n");
 	while(j <= LIMIT-1) {
 		if(TS[j].entrada == 0) { e = "MARCA"; }
-		if(TS[j].entrada == 1) { e = "PROCEDIMIENTO"; }
+		if(TS[j].entrada == 1) { e = "FUNCION"; }
 		if(TS[j].entrada == 2) { e = "VAR"; }
 		if(TS[j].entrada == 3) { e = "PARA_FORM"; }
 
 		if(TS[j].tipo == 0) { t = "NO_ASIG"; }
 		if(TS[j].tipo == 1) { t = "ENTERO"; }
 		if(TS[j].tipo == 2) { t = "REAL"; }
-		if(TS[j].tipo == 3) { t = "CARACTER"; }
-		if(TS[j].tipo == 4) { t = "BOOLEANO"; }
-		if(TS[j].tipo == 5) { t = "ARRAY"; }
-		if(TS[j].tipo == 6) { t = "DESCONOCIDO"; }
+		if(TS[j].tipo == 3) { t = "BOOLEANO"; }
+		if(TS[j].tipo == 4) { t = "ARRAY"; }
+		if(TS[j].tipo == 5) { t = "DESCONOCIDO"; }
 		fprintf(stderr, "----ELEMENTO %d-----------------\n", j);
 		fprintf(stderr, "-Entrada: %-12s", e);
 		fprintf(stderr, "-Lexema: %-12s", TS[j].lex);
 		fprintf(stderr, "-tipo: %-10s", t);
 		fprintf(stderr, "-nParam: %-4d", TS[j].nParam);
 		fprintf(stderr, "-dimension: %-4d", TS[j].dimension);
-		fprintf(stderr, "-filas: %-4d", TS[j].filas);
-		fprintf(stderr, "columnas: %-4d\n", TS[j].columnas);
+		fprintf(stderr, "-tam: %-4d", TS[j].tam);
 		j++;
 	}
 	fprintf(stderr, "--------------------------------\n");
@@ -780,17 +723,15 @@ void printAtributo(atributos e, char *msg){
 	if(e.tipo == 0) { t = "NO_ASIG"; }
 	if(e.tipo == 1) { t = "ENTERO"; }
 	if(e.tipo == 2) { t = "REAL"; }
-	if(e.tipo == 3) { t = "CARACTER"; }
-	if(e.tipo == 4) { t = "BOOLEANO"; }
-	if(e.tipo == 5) { t = "ARRAY"; }
-	if(e.tipo == 6) { t = "DESCONOCIDO"; }
+	if(e.tipo == 3) { t = "BOOLEANO"; }
+	if(e.tipo == 4) { t = "ARRAY"; }
+	if(e.tipo == 5) { t = "DESCONOCIDO"; }
 	printf("------%s-------------------------\n", msg);
 	printf("-Atributos: %-4d", e.atrib);
 	printf("-Lexema: %-12s", e.lex);
 	printf("-tipo: %-10s", t);
 	printf("-dimension: %-4d", e.dimension);
-	printf("-filas: %-4d", e.filas);
-	printf("-columnas: %-4d\n", e.columnas);
+	printf("-tam: %-4d", e.tam);
 	printf("-------------------------------\n");
 
 }

@@ -5,7 +5,7 @@
 typedef enum {
 
 	MARCA = 0,
-	PROCEDIMIENTO,
+	FUNCION,
 	VAR,
 	PARA_FORM
 
@@ -18,7 +18,6 @@ typedef enum {
 	NO_ASIG = 0,
 	ENTERO,
 	REAL,
-	CARACTER,
 	BOOLEANO,
 	ARRAY,
 	DESCONOCIDO
@@ -32,12 +31,7 @@ typedef struct {
 	dtipo tipo;
 	unsigned int nParam;
 	unsigned int dimension;
-
-	// Número de filas
-	int filas;
-
-	// Número de columnas
-	int columnas;
+	int tam;
 
 } entradaTS;
 
@@ -47,58 +41,49 @@ typedef struct {
 	char *lex;
 	dtipo tipo;
 	unsigned int dimension;
-
-	// Tamaño de la dimensión 1
-	int filas;
-
-	// Tamaño de la dimensión 2
-	int columnas;
+	int tam;
 
 } atributos;
 
 #define YYSTYPE atributos
 #define MAX_IN 1000
 
-extern long int LIMIT;
+long int LIMIT;
 
 // Tabla de símbolos
-extern entradaTS TS[MAX_IN];
+entradaTS TS[MAX_IN];
 
 // Línea del fichero que se está analizando
-extern int linea;
+int linea;
 
-extern int yylineno;
+int yylineno;
 
-// 0: procedimientos
-// 1: declaración de variables
+int inFun;
+
+// 0: funciones
+// 1: declaración de constantes
 // 2: sentencia 
-extern int decVar;
+int declaracion;
 
-// 0: no está en la cabecera de un subprograma
-// 1: sí está en la cabecera de un subprograma
-extern int subProg;
+// 0: no se está declarando los parámetros de una función
+// 1: se están declararando los parámetros de una función
+int decParam;
 
-// 0: no se está declarando los parámetros de un procedimiento
-// 1: se están declararando los parámetros de un procedimiento
-extern int decParam;
+// Almacena el tipo de variable que se está declarando
+dtipo globalType;
 
-// Almacena el tipo en de variable que se está declarando
-extern dtipo globalType;
+int globalDim;
 
-// Indica el tipo de dato del switch
-extern dtipo switchType;
+int globalTam;
 
-// Cuenta el número de parámetros de un procedimiento
-extern int nParam;
+// Cuenta el número de parámetros de la función
+int nParam;
 
-// Índice de la tabla de símbolos del procedimiento que se está utilizando
-extern int currentProc;
+// Índice de la tabla de símbolos de la función que se está utilizando
+int currentFun;
 
 // Comprueba que el entero s no esté fuera del rango permitido para el array e
-void comprobarSizeArray1D(atributos e, int s);
-
-// Comprueba que los enteros s1 y s2 no estén fuera del rango permitido para el array e
-void comprobarSizeArray2D(atributos e, int s1, int s2);
+void comprobarSizeArray(atributos e, int s);
 
 // Comprueba si e es o no un array.
 int esArray(atributos e);
@@ -133,8 +118,7 @@ void TS_InsertaIDENT(atributos e);
 // Añade una marca de tope
 void TS_InsertaMARCA();
 
-// Añade una entrada de subprograma
-void TS_InsertaSUBPROG(atributos e);
+void TS_InsertaFUN(atributos e);
 
 // Añade una entrada de parametro formal
 void TS_InsertaPARAMF(atributos e);
@@ -145,14 +129,18 @@ void TS_ActualizarNPARAM(atributos e);
 // Devuelve el identificador
 void TS_getIDENT(atributos id, atributos* res);
 
-// Realiza la comprobación de la operación +, -
-void TS_OpMENOS(atributos op, atributos o, atributos* res);
+void comprobarIF(atributos comp, atributos e1, atributos e2, atributos* res);
+
+void comprobarIND(atributos e1, atributos e2, atributos* res);
+
+// Realiza la comprobación de la operación +, - y !
+void TS_OpUNARIA(atributos op, atributos o, atributos* res);
 
 // Realiza la comprobación de la operación +, - binaria
 void TS_OpSUMARESTA(atributos o1, atributos op, atributos o2, atributos* res);
 
 // Realiza la comprobación de la operación *, /
-void TS_OpMULDIV(atributos o1, atributos op, atributos o2, atributos* res);
+void TS_OpMULTIP(atributos o1, atributos op, atributos o2, atributos* res);
 
 // Realiza la comprobación de la operación &&
 void TS_OpAND(atributos o1, atributos op, atributos o2, atributos* res);
@@ -160,22 +148,16 @@ void TS_OpAND(atributos o1, atributos op, atributos o2, atributos* res);
 // Realiza la comprobación de la operación ||
 void TS_OpOR(atributos o1, atributos op, atributos o2, atributos* res);
 
-// Realiza la comprobación de la operación ^
-void TS_OpXOR(atributos o1, atributos op, atributos o2, atributos* res);
-
 // Realiza la comprobación de la operación ==, !=
 void TS_OpIGUAL(atributos o1, atributos op, atributos o2, atributos* res);
 
 // Realiza la comprobación de la operación <, >, <=, >=, <>
 void TS_OpCOMP(atributos o1,atributos o,atributos o2, atributos* res);
 
-// Realiza la comprobación de la operación **
-void TS_OpMULMAT(atributos o1,atributos o,atributos o2, atributos* res);
+// Realiza la comprobación de la llamada a una función
+void TS_FunCall(atributos id, atributos* res);
 
-// Realiza la comprobación de la llamada a un procedimiento
-void tsProcCall(atributos id, atributos* res);
-
-// Realiza la comprobación de cada parámetro de un procedimiento
+// Realiza la comprobación de cada parámetro de una función
 void TS_ComprobarPARAM(atributos funID,atributos param, int checkParam);
 
 // Muestra una entrada de la tabla de símbolos

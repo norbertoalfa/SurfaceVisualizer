@@ -2,6 +2,7 @@
 	#include <stdlib.h>
 	#include <stdio.h>
 	#include <string.h>
+	#include "semantico.h"
 	#define YYDEBUG 0
 
 	int yylex();  // Para evitar warning al compilar
@@ -53,35 +54,38 @@ sentencia : sentencia_declar_valor
           | error
 ;
 
-sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion
+sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($1, $3); TS_InsertaIDENT($1); 
+if($1.tipo != $5.tipo) { printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,$1.tipo,$5.tipo);} }
 ;
 
-sentencia_declar_fun : IDENT PAR_IZQ lista_param PAR_DER DOSPTOS IDENT ASIGN expresion
+sentencia_declar_fun : IDENT PAR_IZQ lista_param PAR_DER DOSPTOS IDENT ASIGN expresion { setTipo($1, $6); TS_InsertaFUN($1); 
+if($1.tipo != $8.tipo) { printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,$1.tipo,$8.tipo);} }
 ;
 
 sentencia_plot : PLOT lista_ident
 ;
 
-expresion : PAR_IZQ expresion PAR_DER
-          | IF expresion THEN expresion ELSE expresion
-          | IDENT PAR_IZQ lista_expresiones PAR_DER
-          | expresion COR_IZQ expresion COR_DER
-          | OP_MENOS expresion
-          | OP_NEG expresion
-          | expresion OP_SUMA expresion
-          | expresion OP_MENOS expresion
-          | expresion OP_MULTIP expresion
-          | expresion OP_IGUAL expresion
-          | expresion OP_COMP expresion
-          | expresion OP_OR expresion
-          | expresion OP_AND expresion
-          | IDENT
-          | constante
+expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; }
+          | IF expresion THEN expresion ELSE expresion	{ comprobarIF($1, $2, $3, &$$); }
+          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $2, &$$); }
+          | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); }
+          | OP_NEG expresion							{ TS_OpUNARIA($1, $2, &$$); }
+          | expresion OP_SUMA expresion					{ TS_OpSUMARESTA($1, $2, $3, &$$); }
+          | expresion OP_MENOS expresion				{ TS_OpSUMARESTA($1, $2, $3, &$$); }
+          | expresion OP_MULTIP expresion				{ TS_OpMULTIP($1, $2, $3, &$$); }
+          | expresion OP_IGUAL expresion				{ TS_OpIGUAL($1, $2, $3, &$$); }
+          | expresion OP_COMP expresion					{ TS_OpCOMP($1, $2, $3, &$$); }
+          | expresion OP_OR expresion					{ TS_OpOR($1, $2, $3, &$$); }
+          | expresion OP_AND expresion					{ TS_OpAND($1, $2, $3, &$$); }
+          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); }
+          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }
           | error
 ;
 
-lista_expresiones : lista_expresiones COMA expresion
-           		  | expresion
+funcion : IDENT PAR_IZQ lista_expresiones PAR_DER		{ TS_FunCall($1, &$$); nParam=0; }
+
+lista_expresiones : lista_expresiones COMA expresion	{ nParam++; TS_ComprobarPARAM($-1,$3, nParam); }
+           		  | expresion							{ nParam++; TS_ComprobarPARAM($-1,$1, nParam); }
 ;
 
 lista_param : lista_param COMA lista_ident DOSPTOS IDENT
@@ -92,9 +96,9 @@ lista_ident : lista_ident COMA IDENT
             | IDENT
 ;
 
-constante : CONST_BOOL
-          | CONST_ENTERO
-          | CONST_REAL
+constante : CONST_BOOL		{ $$.tipo = BOOLEANO; $$.dimension = 0; $$.tam = 0; }
+          | CONST_ENTERO	{ $$.tipo = ENTERO; $$.dimension = 0; $$.tam = 0; }
+          | CONST_REAL		{ $$.tipo = REAL; $$.dimension = 0; $$.tam = 0; }
 ;
 %%
 
