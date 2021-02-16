@@ -9,23 +9,30 @@ layout (location = 0) in vec2 aPos;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform float radio_a;
-uniform float radio_r;
+uniform float t_0;
+uniform float t_1;
 
 vec4 f(vec2 v) {
 	//float comp_x = abs(v.x-0.5)*(v.x-0.5);
 	//float comp_y = abs(v.y-0.5)*(v.y-0.5);
-	float pi=3.14159;
+	float pi=3.14;
 	
 	// Esfera
-	//float comp_x = cos(v.y*pi)*cos(v.x*2*pi);
-	//float comp_y = cos(v.y*pi)*sin(v.x*2*pi);
-	//float comp_z = sin(v.y*pi);
+	float comp_x = 2*cos(v.y*pi)*cos(v.x*2*pi);
+	float comp_y = 2*cos(v.y*pi)*sin(v.x*2*pi);
+	float comp_z = 2*sin(v.y*pi);
 	
 	// Toro
-	float comp_x = (radio_a+radio_r*cos(v.y*2*pi))*cos(v.x*2*pi);
-	float comp_y = (radio_a+radio_r*cos(v.y*2*pi))*sin(v.x*2*pi);
-	float comp_z = radio_r*sin(v.y*2*pi);
+	float radio_a = 2 + t_0/2;
+	float radio_r = 0.5 + t_1/4;
+	//float comp_x = (radio_a+radio_r*cos(v.y*2*pi))*cos(v.x*2*pi);
+	//float comp_y = (radio_a+radio_r*cos(v.y*2*pi))*sin(v.x*2*pi);
+	//float comp_z = radio_r*sin(v.y*2*pi);
+	
+	
+	//float comp_x = 4*v.y;
+	//float comp_y = 4*v.x;
+	//float comp_z = t_0*(v.x*v.x + v.y*v.y);
 	
 	return vec4(comp_x, comp_y, comp_z, 1.0);
 	//return vec4(v.x, v.y, v.x*v.x + v.y*v.y, 1.0);
