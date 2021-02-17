@@ -3,15 +3,17 @@
 #include <string.h>
 #include "semantico.h"
 
-LIMIT = 0;
-declaracion = 0;
-decParam = 0;
-inFun = 0;
-globalType = DESCONOCIDO;
-globalDim = 0;
-globalTam = 0;
-nParam = 0;
-currentFun = -1;
+entradaTS TS[MAX_IN];
+long int LIMIT = 0;
+int declaracion = 0;
+int decParam = 0;
+int inFun = 0;
+dtipo globalType = DESCONOCIDO;
+int globalDim = 0;
+int globalTam = 0;
+int nParam = 0;
+int parDesc = 0;
+int currentFun = -1;
 
 // Devuelve si el atributo es array o no
 int esArray(atributos e){
@@ -23,7 +25,7 @@ int igualSize(atributos e1, atributos e2){
     return (e1.dimension == e2.dimension && e1.tam == e2.tam);
 }
 
-void comprobarSizeArray(atributos e, int s, int t=0) {
+void comprobarSizeArray(atributos e, int s, int t){//=0) {
 	int j = TS_BuscarIDENT(e);
 	int tam = TS[j].tam;
 	
@@ -40,39 +42,91 @@ void comprobarSizeArray(atributos e, int s, int t=0) {
 }
 
 // Guarda el tipo de la variable
-int setTipo(atributos var, atributos tipo) {
-	globaDim = 0;
+int setTipo(atributos tipo) {
+	globalType = DESCONOCIDO;
+	globalDim = 0;
 	globalTam = 0;
 	
-	if (strcmp(var.lex, "REAL") == 0) {
+	if (strcmp(tipo.lex, "REAL") == 0) {
 		globalType = REAL;
-	} else if (strcmp(var.lex, "ENTERO") == 0) {
+	} else if (strcmp(tipo.lex, "ENTERO") == 0) {
 		globalType = ENTERO;
-	} else if (strcmp(var.lex, "BOOL") == 0) {
+	} else if (strcmp(tipo.lex, "BOOL") == 0) {
 		globalType = BOOLEANO;
-	} else if (strcmp(var.lex, "VEC2") == 0) {
+	} else if (strcmp(tipo.lex, "VEC2") == 0) {
 		globalType = ARRAY;
-		globaDim = 1;
+		globalDim = 1;
 		globalTam = 2;
-	} else if (strcmp(var.lex, "VEC3") == 0) {
+	} else if (strcmp(tipo.lex, "VEC3") == 0) {
 		globalType = ARRAY;
-		globaDim = 1;
+		globalDim = 1;
 		globalTam = 3;
-	} else if (strcmp(var.lex, "MAT2") == 0) {
+	} else if (strcmp(tipo.lex, "MAT2") == 0) {
 		globalType = ARRAY;
-		globaDim = 2;
+		globalDim = 2;
 		globalTam = 2;
-	} else if (strcmp(var.lex, "MAT3") == 0) {
+	} else if (strcmp(tipo.lex, "MAT3") == 0) {
 		globalType = ARRAY;
-		globaDim = 2;
+		globalDim = 2;
 		globalTam = 3;
-	} else {
-		globalType = DESCONOCIDO;
 	}
 	
-	var.tipo = globalType;
-	var.dim = globaDim;
-	var.tam = globalTam;
+	return 1;	
+}
+
+int setTipoDesc(){
+	globalType = DESCONOCIDO;
+	globalDim = 0;
+	globalTam = 0;
+	
+	parDesc++;
+	
+	return 1;
+}
+
+// Añade un id
+void actualizaTipoDesc(atributos tipo){
+	globalType = DESCONOCIDO;
+	globalDim = 0;
+	globalTam = 0;
+	
+	if (strcmp(tipo.lex, "REAL") == 0) {
+		globalType = REAL;
+	} else if (strcmp(tipo.lex, "ENTERO") == 0) {
+		globalType = ENTERO;
+	} else if (strcmp(tipo.lex, "BOOL") == 0) {
+		globalType = BOOLEANO;
+	} else if (strcmp(tipo.lex, "VEC2") == 0) {
+		globalType = ARRAY;
+		globalDim = 1;
+		globalTam = 2;
+	} else if (strcmp(tipo.lex, "VEC3") == 0) {
+		globalType = ARRAY;
+		globalDim = 1;
+		globalTam = 3;
+	} else if (strcmp(tipo.lex, "MAT2") == 0) {
+		globalType = ARRAY;
+		globalDim = 2;
+		globalTam = 2;
+	} else if (strcmp(tipo.lex, "MAT3") == 0) {
+		globalType = ARRAY;
+		globalDim = 2;
+		globalTam = 3;
+	}
+	
+	int j = parDesc;
+	
+	//assert(j<LIMIT);
+
+	// Se obtiene la posición de la mark del bloque
+	while((TS[j].tipo == DESCONOCIDO) && (j >= 0)){
+		TS[j].tipo = globalType;
+		TS[j].dimension = globalDim;
+		TS[j].tam = globalTam;
+		j--;
+	}
+	
+	parDesc = 0;
 	
 }
 
@@ -141,11 +195,11 @@ void TS_VaciarENTRADAS(){
 int TS_BuscarIDENT(atributos e){
 
     int i = LIMIT - 1;
-	bool found = false;
+	int found = 0;
 	
 	while (i > 0 && !found) {
 		if (TS[i].entrada == VAR && strcmp(e.lex, TS[i].lex) == 0) {
-			found = true;
+			found = 1;
 		} else{
 			i--;
 		}
@@ -197,7 +251,7 @@ void TS_InsertaIDENT(atributos e){
     // Para añadir un id a la pila no se puede haber llegado al tope,
     // el id no puede existir y se deben estar declarando variables
 	int j = LIMIT-1;
-	bool found = false;
+	int found = 0;
 
 	if(j >= 0 && declaracion == 1){
 		// Se obtiene la posición de la mark del bloque
@@ -209,7 +263,7 @@ void TS_InsertaIDENT(atributos e){
 
 			} else{
 
-				found = true;
+				found = 1;
 				printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
 
 	 		}
@@ -224,8 +278,8 @@ void TS_InsertaIDENT(atributos e){
 			newIn.lex = e.lex;
 			newIn.tipo = globalType;
 			newIn.nParam = 0;
-			newIn.dimension=e.dimension;
-			newIn.tam=e.tam;
+			newIn.dimension=globalDim;
+			newIn.tam=globalTam;
 			TS_InsertaEntrada(newIn);
 
 		}
@@ -242,14 +296,13 @@ void TS_InsertaMARCA(){
 	inInitScope.tipo = DESCONOCIDO;
 	inInitScope.nParam = 0;
 	inInitScope.dimension = 0;
-	inInitScope.filas = 0;
-	inInitScope.columnas = 0;
+	inInitScope.tam = 0;
 	
 	TS_InsertaEntrada(inInitScope);
 
     // Se añaden a la tabla de símbolos los parámetros de la función como las
     // variables locales de ese bloque
-	if(inFun == 1){
+	/*if(inFun == 1){
 
 		int j = LIMIT - 2, mark = 0, funct = 0;
 
@@ -263,8 +316,7 @@ void TS_InsertaMARCA(){
 				newIn.tipo = TS[j].tipo;
 				newIn.nParam = TS[j].nParam;
 				newIn.dimension = TS[j].dimension;
-				newIn.filas = TS[j].filas;
-				newIn.columnas = TS[j].columnas;
+				newIn.tam = TS[j].tam;
 				TS_InsertaEntrada(newIn);
 
 			}
@@ -273,23 +325,42 @@ void TS_InsertaMARCA(){
 
 		}
 
-	}
+	}*/
 
 }
 
-// Añade una entrada de inFunrama
+// Añade una entrada de una función
 void TS_InsertaFUN(atributos e){
+	
+	int j = LIMIT-1;
+	int found = 0;
 
-  entradaTS ininFun;
-	ininFun.entrada = FUNCION;
-	ininFun.lex = e.lex;
-	ininFun.nParam = 0;
-	ininFun.dimension = 0;
-	ininFun.tam = 0;
-	ininFun.tipo = e.tipo;
+	// Se obtiene la posición de la mark del bloque
+	while((j >= 0) && !found){
+
+		if(strcmp(TS[j].lex, e.lex) != 0){
+
+			j--;
+
+		} else{
+
+			found = 1;
+			printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
+
+ 		}
+
+	}
+	
+  	entradaTS inFun;
+	inFun.entrada = FUNCION;
+	inFun.lex = e.lex;
+	inFun.nParam = 0;
+	inFun.dimension = 0;
+	inFun.tam = 0;
+	inFun.tipo = e.tipo;
 
 	currentFun = LIMIT;
-	TS_InsertaEntrada(ininFun);
+	TS_InsertaEntrada(inFun);
 
 }
 
@@ -329,8 +400,9 @@ void TS_InsertaPARAMF(atributos e){
 }
 
 // Actualiza el número de parámetros de la función
-void TS_ActualizarNPARAM(atributos e){
+void TS_ActualizarFun(atributos e){
 
+    TS[currentFun].tipo = e.tipo;
     TS[currentFun].nParam = nParam;
 	TS[currentFun].dimension=e.dimension;
 	TS[currentFun].tam=e.tam;
@@ -501,8 +573,7 @@ void TS_OpMULTIP(atributos o1, atributos op, atributos o2, atributos* res){
 
 			res->tipo = o1.tipo;
 			res->dimension = o1.dimension;
-			res->filas = o1.filas;
-			res->columnas = o2.columnas;
+			res->tam = o1.tam;
 
 		} else {
 
@@ -606,7 +677,7 @@ void TS_OpCOMP(atributos o1,atributos o ,atributos o2, atributos* res){
 }
 
 // Realiza la comprobación de la llamada a una función
-void tsFunCall(atributos id, atributos* res){
+void TS_FunCall(atributos id, atributos* res){
 
     int index = TS_BuscarNOMBRE(id);
 
@@ -665,7 +736,7 @@ void printEntrada(int row){
 
     entradaTS e = TS[row];
 	printf("\n\nTipo Entrada: %d\nLexema: %s\nTipo Dato: %d\nNum Parametros: %d\nDimensiones[i][j]: %d[%d][%d]\n",
-		e.entrada, e.lex, e.tipo, e.nParam, e.dimension, e.filas, e.columnas);
+		e.entrada, e.lex, e.tipo, e.nParam, e.dimension, e.tam, e.tam);
 
 }
 

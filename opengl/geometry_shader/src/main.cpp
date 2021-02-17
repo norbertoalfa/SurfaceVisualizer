@@ -144,8 +144,8 @@ int main()
         float camZ   = cos(glfwGetTime()/2) * radius;
         view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         shader.setMat4("view", view);
-        shader.setFloat("radio_a", 2+camX/20);
-        shader.setFloat("radio_r", 0.5+camZ/40);
+        shader.setFloat("t_0", sin(glfwGetTime()/2));
+        shader.setFloat("t_1", cos(glfwGetTime()/2));
 
         // render boxes
         glBindVertexArray(VAO);

@@ -54,12 +54,17 @@ sentencia : sentencia_declar_valor
           | error
 ;
 
-sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($1, $3); TS_InsertaIDENT($1); 
+sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_InsertaIDENT($1); 
 if($1.tipo != $5.tipo) { printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,$1.tipo,$5.tipo);} }
 ;
 
-sentencia_declar_fun : IDENT PAR_IZQ lista_param PAR_DER DOSPTOS IDENT ASIGN expresion { setTipo($1, $6); TS_InsertaFUN($1); 
-if($1.tipo != $8.tipo) { printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,$1.tipo,$8.tipo);} }
+sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { TS_ActualizarFun($7); TS_InsertaMARCA(); } ASIGN expresion {	
+										if(TS[currentFun].tipo != $10.tipo) { 
+											printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",
+																								linea,TS[currentFun].tipo,$10.tipo);
+										}
+										TS_VaciarENTRADAS(); nParam = 0;
+									 }
 ;
 
 sentencia_plot : PLOT lista_ident
@@ -90,12 +95,12 @@ lista_expresiones : lista_expresiones COMA expresion	{ nParam++; TS_ComprobarPAR
            		  | expresion							{ nParam++; TS_ComprobarPARAM($-1,$1, nParam); }
 ;
 
-lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{  }	// Asignar el tipo a las ultimas entradas.
-            | lista_ident DOSPTOS IDENT						{  }
+lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{ actualizaTipoDesc($5); }	// Asignar el tipo a las ultimas entradas.
+            | lista_ident DOSPTOS IDENT						{ actualizaTipoDesc($3); }
 ;
 
-lista_ident : lista_ident COMA IDENT	{  }	// Introducir como desconocido y llevar la cuenta.
-            | IDENT						{  }
+lista_ident : lista_ident COMA IDENT	{ nParam++; setTipoDesc(); TS_InsertaIDENT($3); }	// Introducir como desconocido y llevar la cuenta.
+            | IDENT						{ nParam++; setTipoDesc(); TS_InsertaIDENT($1); }
 ;
 
 constante : CONST_BOOL		{ $$.tipo = BOOLEANO; $$.dimension = 0; $$.tam = 0; }
