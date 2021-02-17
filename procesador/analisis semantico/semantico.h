@@ -48,42 +48,47 @@ typedef struct {
 #define YYSTYPE atributos
 #define MAX_IN 1000
 
-long int LIMIT;
+extern long int LIMIT;
 
 // Tabla de símbolos
 entradaTS TS[MAX_IN];
 
 // Línea del fichero que se está analizando
-int linea;
+extern int linea;
 
-int yylineno;
+extern int yylineno;
 
-int inFun;
+extern int inFun;
 
 // 0: funciones
 // 1: declaración de constantes
 // 2: sentencia 
-int declaracion;
+extern int declaracion;
 
 // 0: no se está declarando los parámetros de una función
 // 1: se están declararando los parámetros de una función
-int decParam;
+extern int decParam;
 
 // Almacena el tipo de variable que se está declarando
-dtipo globalType;
+extern dtipo globalType;
 
-int globalDim;
 
-int globalTam;
+extern int globalDim;
+
+
+extern int globalTam;
 
 // Cuenta el número de parámetros de la función
-int nParam;
+extern int nParam;
+
+
+extern int parDesc;
 
 // Índice de la tabla de símbolos de la función que se está utilizando
-int currentFun;
+extern int currentFun;
 
 // Comprueba que el entero s no esté fuera del rango permitido para el array e
-void comprobarSizeArray(atributos e, int s);
+void comprobarSizeArray(atributos e, int s, int t);
 
 // Comprueba si e es o no un array.
 int esArray(atributos e);
@@ -92,7 +97,13 @@ int esArray(atributos e);
 int igualSize(atributos e1, atributos e2);
 
 // Guarda el tipo de la variable
-int setTipo(atributos value);
+int setTipo(atributos tipo);
+
+
+int setTipoDesc();
+
+
+void actualizaTipoDesc(atributos tipo);
 
 // Devuelve la entrada de la tabla de símbolos cuyo identificador coincide con el de e. 
 entradaTS getEntrada(atributos e);
@@ -118,18 +129,21 @@ void TS_InsertaIDENT(atributos e);
 // Añade una marca de tope
 void TS_InsertaMARCA();
 
+
 void TS_InsertaFUN(atributos e);
 
 // Añade una entrada de parametro formal
 void TS_InsertaPARAMF(atributos e);
 
-// Actualiza el número de parámetros del procedimiento
-void TS_ActualizarNPARAM(atributos e);
+// Actualiza el número de parámetros de la función y el tipo
+void TS_ActualizarFun(atributos e);
 
 // Devuelve el identificador
 void TS_getIDENT(atributos id, atributos* res);
 
+
 void comprobarIF(atributos comp, atributos e1, atributos e2, atributos* res);
+
 
 void comprobarIND(atributos e1, atributos e2, atributos* res);
 
