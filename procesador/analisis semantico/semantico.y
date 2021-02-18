@@ -54,17 +54,10 @@ sentencia : sentencia_declar_valor
           | error
 ;
 
-sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_InsertaIDENT($1); 
-if($1.tipo != $5.tipo) { printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,$1.tipo,$5.tipo);} }
+sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_InsertaIDENT($1); comprobarTipoCte($5); }
 ;
 
-sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { TS_ActualizarFun($7); TS_InsertaMARCA(); } ASIGN expresion {	
-										if(TS[currentFun].tipo != $10.tipo) { 
-											printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",
-																								linea,TS[currentFun].tipo,$10.tipo);
-										}
-										TS_VaciarENTRADAS(); nParam = 0;
-									 }
+sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
 ;
 
 sentencia_plot : PLOT lista_ident
@@ -72,7 +65,7 @@ sentencia_plot : PLOT lista_ident
 
 expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; }
           | IF expresion THEN expresion ELSE expresion	{ comprobarIF($1, $2, $3, &$$); }
-          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $2, &$$); }
+          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); }
           | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }
           | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); }
           | OP_NEG expresion							{ TS_OpUNARIA($1, $2, &$$); }
@@ -88,19 +81,19 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
           | error
 ;
 
-llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, &$$); nParam=0; }
+llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, &$$); nArg=0; }
 ;
 
-lista_expresiones : lista_expresiones COMA expresion	{ nParam++; TS_ComprobarPARAM($-1,$3, nParam); }
-           		  | expresion							{ nParam++; TS_ComprobarPARAM($-1,$1, nParam); }
+lista_expresiones : lista_expresiones COMA expresion	{ nArg++; TS_ComprobarPARAM($-1,$3, nArg); }
+           		  | expresion							{ nArg++; TS_ComprobarPARAM($-1,$1, nArg); }
 ;
 
 lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{ actualizaTipoDesc($5); }	// Asignar el tipo a las ultimas entradas.
             | lista_ident DOSPTOS IDENT						{ actualizaTipoDesc($3); }
 ;
 
-lista_ident : lista_ident COMA IDENT	{ nParam++; setTipoDesc(); TS_InsertaIDENT($3); }	// Introducir como desconocido y llevar la cuenta.
-            | IDENT						{ nParam++; setTipoDesc(); TS_InsertaIDENT($1); }
+lista_ident : lista_ident COMA IDENT	{ nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF($3); }	// Introducir como desconocido y llevar la cuenta.
+            | IDENT						{ decParam=1; nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF($1); }
 ;
 
 constante : CONST_BOOL		{ $$.tipo = BOOLEANO; $$.dimension = 0; $$.tam = 0; }
@@ -118,5 +111,7 @@ void yyerror(const char* s) {
 
 int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
+  initializeTS();
+  
   return yyparse() ;
 }

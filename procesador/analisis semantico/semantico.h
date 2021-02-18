@@ -82,10 +82,16 @@ extern int globalTam;
 extern int nParam;
 
 
+extern int nArg;
+
+
 extern int parDesc;
 
 // Índice de la tabla de símbolos de la función que se está utilizando
 extern int currentFun;
+
+
+void initializeTS();
 
 // Comprueba que el entero s no esté fuera del rango permitido para el array e
 void comprobarSizeArray(atributos e, int s, int t);
@@ -136,10 +142,16 @@ void TS_InsertaFUN(atributos e);
 void TS_InsertaPARAMF(atributos e);
 
 // Actualiza el número de parámetros de la función y el tipo
-void TS_ActualizarFun(atributos e);
+void TS_ActualizarFun();
 
 // Devuelve el identificador
 void TS_getIDENT(atributos id, atributos* res);
+
+
+void comprobarTipoCte(atributos idTipo);
+
+
+void comprobarTipoFun(atributos idTipo);
 
 
 void comprobarIF(atributos comp, atributos e1, atributos e2, atributos* res);

@@ -453,9 +453,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    44,    44,    47,    48,    51,    52,    53,    54,    57,
-      61,    61,    61,    70,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      91,    94,    95,    98,    99,   102,   103,   106,   107,   108
+      60,    60,    60,    63,    66,    67,    68,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
+      84,    87,    88,    91,    92,    95,    96,    99,   100,   101
 };
 #endif
 
@@ -1286,187 +1286,180 @@ yyreduce:
     {
         case 9:
 #line 57 "semantico.y" /* yacc.c:1646  */
-    { setTipo((yyvsp[-2])); TS_InsertaIDENT((yyvsp[-4])); 
-if((yyvsp[-4]).tipo != (yyvsp[0]).tipo) { printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,(yyvsp[-4]).tipo,(yyvsp[0]).tipo);} }
-#line 1292 "y.tab.c" /* yacc.c:1646  */
+    { setTipo((yyvsp[-2])); TS_InsertaIDENT((yyvsp[-4])); comprobarTipoCte((yyvsp[0])); }
+#line 1291 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 61 "semantico.y" /* yacc.c:1646  */
+#line 60 "semantico.y" /* yacc.c:1646  */
     {setTipoDesc(); TS_InsertaFUN((yyvsp[0])); }
-#line 1298 "y.tab.c" /* yacc.c:1646  */
+#line 1297 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 61 "semantico.y" /* yacc.c:1646  */
-    { TS_ActualizarFun((yyvsp[0])); TS_InsertaMARCA(); }
-#line 1304 "y.tab.c" /* yacc.c:1646  */
+#line 60 "semantico.y" /* yacc.c:1646  */
+    { setTipo((yyvsp[0])); TS_ActualizarFun(); TS_InsertaMARCA(); }
+#line 1303 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 61 "semantico.y" /* yacc.c:1646  */
-    {	
-										if(TS[currentFun].tipo != (yyvsp[0]).tipo) { 
-											printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",
-																								linea,TS[currentFun].tipo,(yyvsp[0]).tipo);
-										}
-										TS_VaciarENTRADAS(); nParam = 0;
-									 }
-#line 1316 "y.tab.c" /* yacc.c:1646  */
+#line 60 "semantico.y" /* yacc.c:1646  */
+    {	comprobarTipoFun((yyvsp[0])); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
+#line 1309 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 73 "semantico.y" /* yacc.c:1646  */
+#line 66 "semantico.y" /* yacc.c:1646  */
     { (yyval).tipo=(yyvsp[-1]).tipo; (yyval).dimension=(yyvsp[-1]).dimension; (yyval).tam=(yyvsp[-1]).tam; }
-#line 1322 "y.tab.c" /* yacc.c:1646  */
+#line 1315 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 74 "semantico.y" /* yacc.c:1646  */
+#line 67 "semantico.y" /* yacc.c:1646  */
     { comprobarIF((yyvsp[-5]), (yyvsp[-4]), (yyvsp[-3]), &(yyval)); }
-#line 1328 "y.tab.c" /* yacc.c:1646  */
+#line 1321 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 75 "semantico.y" /* yacc.c:1646  */
-    { comprobarIND((yyvsp[-3]), (yyvsp[-2]), &(yyval)); }
-#line 1334 "y.tab.c" /* yacc.c:1646  */
+#line 68 "semantico.y" /* yacc.c:1646  */
+    { comprobarIND((yyvsp[-3]), (yyvsp[-1]), &(yyval)); }
+#line 1327 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 76 "semantico.y" /* yacc.c:1646  */
+#line 69 "semantico.y" /* yacc.c:1646  */
     { (yyval).tipo=(yyvsp[0]).tipo; (yyval).dimension=(yyvsp[0]).dimension; (yyval).tam=(yyvsp[0]).tam; }
-#line 1340 "y.tab.c" /* yacc.c:1646  */
+#line 1333 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 77 "semantico.y" /* yacc.c:1646  */
+#line 70 "semantico.y" /* yacc.c:1646  */
     { TS_OpUNARIA((yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1346 "y.tab.c" /* yacc.c:1646  */
+#line 1339 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 78 "semantico.y" /* yacc.c:1646  */
+#line 71 "semantico.y" /* yacc.c:1646  */
     { TS_OpUNARIA((yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1352 "y.tab.c" /* yacc.c:1646  */
+#line 1345 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 79 "semantico.y" /* yacc.c:1646  */
+#line 72 "semantico.y" /* yacc.c:1646  */
     { TS_OpSUMARESTA((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1358 "y.tab.c" /* yacc.c:1646  */
+#line 1351 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 80 "semantico.y" /* yacc.c:1646  */
+#line 73 "semantico.y" /* yacc.c:1646  */
     { TS_OpSUMARESTA((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1364 "y.tab.c" /* yacc.c:1646  */
+#line 1357 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 81 "semantico.y" /* yacc.c:1646  */
+#line 74 "semantico.y" /* yacc.c:1646  */
     { TS_OpMULTIP((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1370 "y.tab.c" /* yacc.c:1646  */
+#line 1363 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 82 "semantico.y" /* yacc.c:1646  */
+#line 75 "semantico.y" /* yacc.c:1646  */
     { TS_OpIGUAL((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1376 "y.tab.c" /* yacc.c:1646  */
+#line 1369 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 83 "semantico.y" /* yacc.c:1646  */
+#line 76 "semantico.y" /* yacc.c:1646  */
     { TS_OpCOMP((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1382 "y.tab.c" /* yacc.c:1646  */
+#line 1375 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 84 "semantico.y" /* yacc.c:1646  */
+#line 77 "semantico.y" /* yacc.c:1646  */
     { TS_OpOR((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1388 "y.tab.c" /* yacc.c:1646  */
+#line 1381 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 85 "semantico.y" /* yacc.c:1646  */
+#line 78 "semantico.y" /* yacc.c:1646  */
     { TS_OpAND((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]), &(yyval)); }
-#line 1394 "y.tab.c" /* yacc.c:1646  */
+#line 1387 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 86 "semantico.y" /* yacc.c:1646  */
+#line 79 "semantico.y" /* yacc.c:1646  */
     { declaracion=0; TS_getIDENT((yyvsp[0]), &(yyval)); }
-#line 1400 "y.tab.c" /* yacc.c:1646  */
+#line 1393 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 87 "semantico.y" /* yacc.c:1646  */
+#line 80 "semantico.y" /* yacc.c:1646  */
     { (yyval).tipo=(yyvsp[0]).tipo; (yyval).dimension=(yyvsp[0]).dimension; (yyval).tam=(yyvsp[0]).tam; }
-#line 1406 "y.tab.c" /* yacc.c:1646  */
+#line 1399 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 91 "semantico.y" /* yacc.c:1646  */
-    { TS_FunCall((yyvsp[-3]), &(yyval)); nParam=0; }
-#line 1412 "y.tab.c" /* yacc.c:1646  */
+#line 84 "semantico.y" /* yacc.c:1646  */
+    { TS_FunCall((yyvsp[-3]), &(yyval)); nArg=0; }
+#line 1405 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 94 "semantico.y" /* yacc.c:1646  */
-    { nParam++; TS_ComprobarPARAM((yyvsp[(-1) - (3)]),(yyvsp[0]), nParam); }
-#line 1418 "y.tab.c" /* yacc.c:1646  */
+#line 87 "semantico.y" /* yacc.c:1646  */
+    { nArg++; TS_ComprobarPARAM((yyvsp[(-1) - (3)]),(yyvsp[0]), nArg); }
+#line 1411 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 95 "semantico.y" /* yacc.c:1646  */
-    { nParam++; TS_ComprobarPARAM((yyvsp[(-1) - (1)]),(yyvsp[0]), nParam); }
-#line 1424 "y.tab.c" /* yacc.c:1646  */
+#line 88 "semantico.y" /* yacc.c:1646  */
+    { nArg++; TS_ComprobarPARAM((yyvsp[(-1) - (1)]),(yyvsp[0]), nArg); }
+#line 1417 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 98 "semantico.y" /* yacc.c:1646  */
+#line 91 "semantico.y" /* yacc.c:1646  */
     { actualizaTipoDesc((yyvsp[0])); }
-#line 1430 "y.tab.c" /* yacc.c:1646  */
+#line 1423 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 99 "semantico.y" /* yacc.c:1646  */
+#line 92 "semantico.y" /* yacc.c:1646  */
     { actualizaTipoDesc((yyvsp[0])); }
-#line 1436 "y.tab.c" /* yacc.c:1646  */
+#line 1429 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 102 "semantico.y" /* yacc.c:1646  */
-    { nParam++; setTipoDesc(); TS_InsertaIDENT((yyvsp[0])); }
-#line 1442 "y.tab.c" /* yacc.c:1646  */
+#line 95 "semantico.y" /* yacc.c:1646  */
+    { nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF((yyvsp[0])); }
+#line 1435 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 103 "semantico.y" /* yacc.c:1646  */
-    { nParam++; setTipoDesc(); TS_InsertaIDENT((yyvsp[0])); }
-#line 1448 "y.tab.c" /* yacc.c:1646  */
+#line 96 "semantico.y" /* yacc.c:1646  */
+    { decParam=1; nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF((yyvsp[0])); }
+#line 1441 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 106 "semantico.y" /* yacc.c:1646  */
+#line 99 "semantico.y" /* yacc.c:1646  */
     { (yyval).tipo = BOOLEANO; (yyval).dimension = 0; (yyval).tam = 0; }
-#line 1454 "y.tab.c" /* yacc.c:1646  */
+#line 1447 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 107 "semantico.y" /* yacc.c:1646  */
+#line 100 "semantico.y" /* yacc.c:1646  */
     { (yyval).tipo = ENTERO; (yyval).dimension = 0; (yyval).tam = 0; }
-#line 1460 "y.tab.c" /* yacc.c:1646  */
+#line 1453 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 108 "semantico.y" /* yacc.c:1646  */
+#line 101 "semantico.y" /* yacc.c:1646  */
     { (yyval).tipo = REAL; (yyval).dimension = 0; (yyval).tam = 0; }
-#line 1466 "y.tab.c" /* yacc.c:1646  */
+#line 1459 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1470 "y.tab.c" /* yacc.c:1646  */
+#line 1463 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1694,7 +1687,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 110 "semantico.y" /* yacc.c:1906  */
+#line 103 "semantico.y" /* yacc.c:1906  */
 
 
 #include "lex.yy.c"
@@ -1706,5 +1699,7 @@ void yyerror(const char* s) {
 
 int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
+  initializeTS();
+  
   return yyparse() ;
 }

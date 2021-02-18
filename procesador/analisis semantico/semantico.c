@@ -12,6 +12,7 @@ dtipo globalType = DESCONOCIDO;
 int globalDim = 0;
 int globalTam = 0;
 int nParam = 0;
+int nArg = 0;
 int parDesc = 0;
 int currentFun = -1;
 
@@ -47,25 +48,25 @@ int setTipo(atributos tipo) {
 	globalDim = 0;
 	globalTam = 0;
 	
-	if (strcmp(tipo.lex, "REAL") == 0) {
+	if (strcmp(tipo.lex, "real") == 0) {
 		globalType = REAL;
-	} else if (strcmp(tipo.lex, "ENTERO") == 0) {
+	} else if (strcmp(tipo.lex, "entero") == 0) {
 		globalType = ENTERO;
-	} else if (strcmp(tipo.lex, "BOOL") == 0) {
+	} else if (strcmp(tipo.lex, "bool") == 0) {
 		globalType = BOOLEANO;
-	} else if (strcmp(tipo.lex, "VEC2") == 0) {
+	} else if (strcmp(tipo.lex, "vec2") == 0) {
 		globalType = ARRAY;
 		globalDim = 1;
 		globalTam = 2;
-	} else if (strcmp(tipo.lex, "VEC3") == 0) {
+	} else if (strcmp(tipo.lex, "vec3") == 0) {
 		globalType = ARRAY;
 		globalDim = 1;
 		globalTam = 3;
-	} else if (strcmp(tipo.lex, "MAT2") == 0) {
+	} else if (strcmp(tipo.lex, "mat2") == 0) {
 		globalType = ARRAY;
 		globalDim = 2;
 		globalTam = 2;
-	} else if (strcmp(tipo.lex, "MAT3") == 0) {
+	} else if (strcmp(tipo.lex, "mat3") == 0) {
 		globalType = ARRAY;
 		globalDim = 2;
 		globalTam = 3;
@@ -79,8 +80,6 @@ int setTipoDesc(){
 	globalDim = 0;
 	globalTam = 0;
 	
-	parDesc++;
-	
 	return 1;
 }
 
@@ -90,40 +89,41 @@ void actualizaTipoDesc(atributos tipo){
 	globalDim = 0;
 	globalTam = 0;
 	
-	if (strcmp(tipo.lex, "REAL") == 0) {
+	if (strcmp(tipo.lex, "real") == 0) {
 		globalType = REAL;
-	} else if (strcmp(tipo.lex, "ENTERO") == 0) {
+	} else if (strcmp(tipo.lex, "entero") == 0) {
 		globalType = ENTERO;
-	} else if (strcmp(tipo.lex, "BOOL") == 0) {
+	} else if (strcmp(tipo.lex, "bool") == 0) {
 		globalType = BOOLEANO;
-	} else if (strcmp(tipo.lex, "VEC2") == 0) {
+	} else if (strcmp(tipo.lex, "vec2") == 0) {
 		globalType = ARRAY;
 		globalDim = 1;
 		globalTam = 2;
-	} else if (strcmp(tipo.lex, "VEC3") == 0) {
+	} else if (strcmp(tipo.lex, "vec3") == 0) {
 		globalType = ARRAY;
 		globalDim = 1;
 		globalTam = 3;
-	} else if (strcmp(tipo.lex, "MAT2") == 0) {
+	} else if (strcmp(tipo.lex, "mat2") == 0) {
 		globalType = ARRAY;
 		globalDim = 2;
 		globalTam = 2;
-	} else if (strcmp(tipo.lex, "MAT3") == 0) {
+	} else if (strcmp(tipo.lex, "mat3") == 0) {
 		globalType = ARRAY;
 		globalDim = 2;
 		globalTam = 3;
 	}
 	
-	int j = parDesc;
+	
+	int j = LIMIT-parDesc;
 	
 	//assert(j<LIMIT);
 
 	// Se obtiene la posición de la mark del bloque
-	while((TS[j].tipo == DESCONOCIDO) && (j >= 0)){
+	while((TS[j].tipo == DESCONOCIDO) && (j < LIMIT)){
 		TS[j].tipo = globalType;
 		TS[j].dimension = globalDim;
 		TS[j].tam = globalTam;
-		j--;
+		j++;
 	}
 	
 	parDesc = 0;
@@ -197,7 +197,7 @@ int TS_BuscarIDENT(atributos e){
     int i = LIMIT - 1;
 	int found = 0;
 	
-	while (i > 0 && !found) {
+	while (i >= 0 && !found) {
 		if (TS[i].entrada == VAR && strcmp(e.lex, TS[i].lex) == 0) {
 			found = 1;
 		} else{
@@ -253,9 +253,9 @@ void TS_InsertaIDENT(atributos e){
 	int j = LIMIT-1;
 	int found = 0;
 
-	if(j >= 0 && declaracion == 1){
+	if(j >= 0){ //&& declaracion == 1){
 		// Se obtiene la posición de la mark del bloque
-		while((TS[j].entrada != MARCA) && (j >= 0) && !found){
+		while((j >= 0) && !found){
 
 			if(strcmp(TS[j].lex, e.lex) != 0){
 
@@ -285,6 +285,7 @@ void TS_InsertaIDENT(atributos e){
 		}
 
 	}
+
 }
 
 // Añade una mark de tope
@@ -302,30 +303,30 @@ void TS_InsertaMARCA(){
 
     // Se añaden a la tabla de símbolos los parámetros de la función como las
     // variables locales de ese bloque
-	/*if(inFun == 1){
+	//if(inFun == 1){
 
-		int j = LIMIT - 2, mark = 0, funct = 0;
+	int j = LIMIT - 2, mark = 0, funct = 0;
 
-		while(j > 0 && TS[j].entrada == PARA_FORM){
+	while(j > 0 && TS[j].entrada == PARA_FORM){
 
-			if(TS[j].entrada == PARA_FORM) {
+		if(TS[j].entrada == PARA_FORM) {
 
-				entradaTS newIn;
-				newIn.entrada = VAR;
-				newIn.lex = TS[j].lex;
-				newIn.tipo = TS[j].tipo;
-				newIn.nParam = TS[j].nParam;
-				newIn.dimension = TS[j].dimension;
-				newIn.tam = TS[j].tam;
-				TS_InsertaEntrada(newIn);
-
-			}
-
-			j--;
+			entradaTS newIn;
+			newIn.entrada = VAR;
+			newIn.lex = TS[j].lex;
+			newIn.tipo = TS[j].tipo;
+			newIn.nParam = TS[j].nParam;
+			newIn.dimension = TS[j].dimension;
+			newIn.tam = TS[j].tam;
+			TS_InsertaEntrada(newIn);
 
 		}
 
-	}*/
+		j--;
+
+	}
+
+	//}
 
 }
 
@@ -383,6 +384,21 @@ void TS_InsertaPARAMF(atributos e){
         }
 
 	}
+	
+	while((j >= 0) && !found){
+
+		if(strcmp(TS[j].lex, e.lex) != 0 || TS[j].entrada == PARA_FORM){
+
+			j--;
+
+		} else {
+
+			found = 1;
+			printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
+
+ 		}
+
+	}
 
 	if(!found) {
 
@@ -391,8 +407,8 @@ void TS_InsertaPARAMF(atributos e){
 		newIn.lex = e.lex;
 		newIn.tipo = globalType;
 		newIn.nParam = 0;
-		newIn.dimension = e.dimension;
-		newIn.tam = e.tam;
+		newIn.dimension=globalDim;
+		newIn.tam=globalTam;
 		TS_InsertaEntrada(newIn);
 
 	}
@@ -400,12 +416,12 @@ void TS_InsertaPARAMF(atributos e){
 }
 
 // Actualiza el número de parámetros de la función
-void TS_ActualizarFun(atributos e){
+void TS_ActualizarFun(){
 
-    TS[currentFun].tipo = e.tipo;
+    TS[currentFun].tipo = globalType;
     TS[currentFun].nParam = nParam;
-	TS[currentFun].dimension=e.dimension;
-	TS[currentFun].tam=e.tam;
+	TS[currentFun].dimension=globalDim;
+	TS[currentFun].tam=globalTam;
 
 }
 
@@ -424,6 +440,24 @@ void TS_getIDENT(atributos id, atributos* res){
 		res->dimension = TS[index].dimension;
 		res->tam = TS[index].tam;
 
+	}
+
+}
+
+// Realiza la comprobación de la operación +, - y !
+void comprobarTipoCte(atributos idTipo){
+	if(TS[LIMIT-1].tipo != idTipo.tipo) {
+		if (!(TS[LIMIT-1].tipo == REAL && idTipo.tipo == ENTERO) && !(idTipo.tipo == REAL && TS[LIMIT-1].tipo == ENTERO)) 
+			printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,TS[LIMIT-1].tipo,idTipo.tipo);
+	}
+
+}
+
+// Realiza la comprobación de la operación +, - y !
+void comprobarTipoFun(atributos idTipo){
+	if(TS[currentFun].tipo != idTipo.tipo) {
+		if (!(TS[currentFun].tipo == REAL && idTipo.tipo == ENTERO) && !(idTipo.tipo == REAL && TS[currentFun].tipo == ENTERO)) 
+			printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,TS[currentFun].tipo,idTipo.tipo);
 	}
 
 }
@@ -516,7 +550,7 @@ void TS_OpSUMARESTA(atributos o1, atributos op, atributos o2, atributos* res){
 	
 	dtipo tipoActual = REAL;
 
-	if ((o1.tipo != ENTERO && o1.tipo != REAL) || (o2.tipo != ENTERO && o2.tipo != REAL)) {
+	if ((o1.tipo != ENTERO && o1.tipo != REAL && o1.tipo != ARRAY) || (o2.tipo != ENTERO && o2.tipo != REAL && o1.tipo != ARRAY)) {
 		printf("(Error semántico, línea %d) Tipo inválido en la operación.\n", linea);
 		return;
 	} else if (o1.tipo == ENTERO && o2.tipo == ENTERO) {
@@ -527,7 +561,7 @@ void TS_OpSUMARESTA(atributos o1, atributos op, atributos o2, atributos* res){
 
 		if(igualSize(o1,o2)){
 
-			res->tipo = tipoActual;
+			res->tipo = o1.tipo;
 			res->dimension = o1.dimension;
 			res->tam = o1.tam;
 
@@ -724,6 +758,68 @@ void TS_ComprobarPARAM(atributos funID ,atributos param, int checkParam){
 
 }
 
+void initializeTS() {
+	//// Constantes predefinidas
+	// E
+	entradaTS numE;
+	numE.entrada = VAR;
+	numE.lex = strdup("E");
+	numE.tipo = REAL;
+	numE.nParam = 0;
+	numE.dimension=0;
+	numE.tam=0;
+	TS_InsertaEntrada(numE);
+	
+	// PI
+	entradaTS numPI;
+	numPI.entrada = VAR;
+	numPI.lex = strdup("PI");
+	numPI.tipo = REAL;
+	numPI.nParam = 0;
+	numPI.dimension=0;
+	numPI.tam=0;
+	TS_InsertaEntrada(numPI);
+	
+	// Funciones predefinidas
+	// cos
+	entradaTS funCos;
+	funCos.entrada = FUNCION;
+	funCos.lex = strdup("cos");
+	funCos.tipo = REAL;
+	funCos.nParam = 1;
+	funCos.dimension=0;
+	funCos.tam=0;
+	TS_InsertaEntrada(funCos);
+	
+	entradaTS paramCos;
+	paramCos.entrada = PARA_FORM;
+	paramCos.lex = strdup("x");
+	paramCos.tipo = REAL;
+	paramCos.nParam = 0;
+	paramCos.dimension=0;
+	paramCos.tam=0;
+	TS_InsertaEntrada(paramCos);
+	
+	// sin
+	entradaTS funSin;
+	funSin.entrada = FUNCION;
+	funSin.lex = strdup("sin");
+	funSin.tipo = REAL;
+	funSin.nParam = 1;
+	funSin.dimension=0;
+	funSin.tam=0;
+	TS_InsertaEntrada(funSin);
+	
+	entradaTS paramSin;
+	paramSin.entrada = PARA_FORM;
+	paramSin.lex = strdup("x");
+	paramSin.tipo = REAL;
+	paramSin.nParam = 0;
+	paramSin.dimension=0;
+	paramSin.tam=0;
+	TS_InsertaEntrada(paramSin);
+}
+
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -773,7 +869,7 @@ void printTS(){
 		if(TS[j].tipo == 3) { t = "BOOLEANO"; }
 		if(TS[j].tipo == 4) { t = "ARRAY"; }
 		if(TS[j].tipo == 5) { t = "DESCONOCIDO"; }
-		fprintf(stderr, "----ELEMENTO %d-----------------\n", j);
+		fprintf(stderr, "\n----ELEMENTO %d-----------------\n", j);
 		fprintf(stderr, "-Entrada: %-12s", e);
 		fprintf(stderr, "-Lexema: %-12s", TS[j].lex);
 		fprintf(stderr, "-tipo: %-10s", t);
@@ -782,7 +878,7 @@ void printTS(){
 		fprintf(stderr, "-tam: %-4d", TS[j].tam);
 		j++;
 	}
-	fprintf(stderr, "--------------------------------\n");
+	fprintf(stderr, "\n--------------------------------\n");
 
 }
 
