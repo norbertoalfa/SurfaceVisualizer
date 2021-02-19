@@ -1304,7 +1304,7 @@ yyreduce:
 
   case 12:
 #line 60 "semantico.y" /* yacc.c:1646  */
-    {	comprobarTipoFun((yyvsp[0])); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
+    {	comprobarTipoFun((yyvsp[-9]), (yyvsp[0])); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
 #line 1309 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1316,7 +1316,7 @@ yyreduce:
 
   case 15:
 #line 67 "semantico.y" /* yacc.c:1646  */
-    { comprobarIF((yyvsp[-5]), (yyvsp[-4]), (yyvsp[-3]), &(yyval)); }
+    { comprobarIF((yyvsp[-4]), (yyvsp[-2]), (yyvsp[0]), &(yyval)); }
 #line 1321 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1400,19 +1400,19 @@ yyreduce:
 
   case 30:
 #line 84 "semantico.y" /* yacc.c:1646  */
-    { TS_FunCall((yyvsp[-3]), &(yyval)); nArg=0; }
+    { TS_FunCall((yyvsp[-3]), (yyvsp[-1]), &(yyval)); }
 #line 1405 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
 #line 87 "semantico.y" /* yacc.c:1646  */
-    { nArg++; TS_ComprobarPARAM((yyvsp[(-1) - (3)]),(yyvsp[0]), nArg); }
+    { (yyval).nArg=(yyvsp[-2]).nArg + 1; TS_ComprobarPARAM((yyvsp[(-1) - (3)]),(yyvsp[0]), (yyval).nArg); }
 #line 1411 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 88 "semantico.y" /* yacc.c:1646  */
-    { nArg++; TS_ComprobarPARAM((yyvsp[(-1) - (1)]),(yyvsp[0]), nArg); }
+    { (yyval).nArg=1; TS_ComprobarPARAM((yyvsp[(-1) - (1)]),(yyvsp[0]), (yyval).nArg); }
 #line 1417 "y.tab.c" /* yacc.c:1646  */
     break;
 

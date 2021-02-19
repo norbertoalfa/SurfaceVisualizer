@@ -42,6 +42,7 @@ typedef struct {
 	dtipo tipo;
 	unsigned int dimension;
 	int tam;
+	int nArg;
 
 } atributos;
 
@@ -151,7 +152,7 @@ void TS_getIDENT(atributos id, atributos* res);
 void comprobarTipoCte(atributos idTipo);
 
 
-void comprobarTipoFun(atributos idTipo);
+void comprobarTipoFun(atributos idFun, atributos idTipo);
 
 
 void comprobarIF(atributos comp, atributos e1, atributos e2, atributos* res);
@@ -181,7 +182,7 @@ void TS_OpIGUAL(atributos o1, atributos op, atributos o2, atributos* res);
 void TS_OpCOMP(atributos o1,atributos o,atributos o2, atributos* res);
 
 // Realiza la comprobación de la llamada a una función
-void TS_FunCall(atributos id, atributos* res);
+void TS_FunCall(atributos id, atributos argFun, atributos* res);
 
 // Realiza la comprobación de cada parámetro de una función
 void TS_ComprobarPARAM(atributos funID,atributos param, int checkParam);

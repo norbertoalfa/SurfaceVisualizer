@@ -339,7 +339,7 @@ void TS_InsertaFUN(atributos e){
 	// Se obtiene la posición de la mark del bloque
 	while((j >= 0) && !found){
 
-		if(strcmp(TS[j].lex, e.lex) != 0){
+		if((strcmp(TS[j].lex, e.lex) != 0) || (TS[j].entrada == PARA_FORM)){
 
 			j--;
 
@@ -347,6 +347,7 @@ void TS_InsertaFUN(atributos e){
 
 			found = 1;
 			printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
+			printTS();
 
  		}
 
@@ -447,17 +448,21 @@ void TS_getIDENT(atributos id, atributos* res){
 // Realiza la comprobación de la operación +, - y !
 void comprobarTipoCte(atributos idTipo){
 	if(TS[LIMIT-1].tipo != idTipo.tipo) {
-		if (!(TS[LIMIT-1].tipo == REAL && idTipo.tipo == ENTERO) && !(idTipo.tipo == REAL && TS[LIMIT-1].tipo == ENTERO)) 
+		if (!(TS[LIMIT-1].tipo == REAL && idTipo.tipo == ENTERO)) {
 			printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,TS[LIMIT-1].tipo,idTipo.tipo);
+		}
 	}
 
 }
 
 // Realiza la comprobación de la operación +, - y !
-void comprobarTipoFun(atributos idTipo){
-	if(TS[currentFun].tipo != idTipo.tipo) {
-		if (!(TS[currentFun].tipo == REAL && idTipo.tipo == ENTERO) && !(idTipo.tipo == REAL && TS[currentFun].tipo == ENTERO)) 
-			printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,TS[currentFun].tipo,idTipo.tipo);
+void comprobarTipoFun(atributos idFun, atributos idTipo){
+	int index = TS_BuscarNOMBRE(idFun);
+	
+	if(TS[index].tipo != idTipo.tipo) {
+		if (!(TS[index].tipo == REAL && idTipo.tipo == ENTERO)) {
+			printf("(Error semántico, línea %d) Los tipos no coinciden (%d) y (%d).\n",linea,TS[index].tipo,idTipo.tipo);
+		}
 	}
 
 }
@@ -592,12 +597,12 @@ void TS_OpSUMARESTA(atributos o1, atributos op, atributos o2, atributos* res){
 void TS_OpMULTIP(atributos o1, atributos op, atributos o2, atributos* res){
 
     if (o1.tipo != ENTERO && o1.tipo != REAL && o1.tipo != ARRAY) {
-		printf("(Error semántico, línea %d) Tipo inválido para la operación.\n", linea);
+		printf("(Error semántico, línea %d) Tipo inválido para la operación o1: %d.\n", linea, o1.tipo);
 		return;
 	}
 	
 	if (o2.tipo != ENTERO && o2.tipo != REAL && o2.tipo != ARRAY) {
-		printf("(Error semántico, línea %d) Tipo inválido para la operación.\n", linea);
+		printf("(Error semántico, línea %d) Tipo inválido para la operación o2: %d.\n", linea, o2.tipo);
 		return;
 	}
 
@@ -609,6 +614,11 @@ void TS_OpMULTIP(atributos o1, atributos op, atributos o2, atributos* res){
 			res->dimension = o1.dimension;
 			res->tam = o1.tam;
 
+		} else if ((o1.dimension==2) && (o2.dimension==1) && (o1.tam == o2.tam)) {
+			res->tipo = o2.tipo;
+			res->dimension = o2.dimension;
+			res->tam = o2.tam;
+		
 		} else {
 
             printf("(Error semántico, línea %d) Los arrays deben de tener el mismo tamaño y dimensión.\n", linea);
@@ -711,28 +721,49 @@ void TS_OpCOMP(atributos o1,atributos o ,atributos o2, atributos* res){
 }
 
 // Realiza la comprobación de la llamada a una función
-void TS_FunCall(atributos id, atributos* res){
+void TS_FunCall(atributos id, atributos argFun, atributos* res){
 
-    int index = TS_BuscarNOMBRE(id);
-
-	if(index==-1) {
-
-		currentFun = -1;
-		printf("(Error semántico, línea %d) Función: Identificador no encontrado %s.\n", linea, id.lex);
-
+    int index;
+    
+	currentFun = -1;
+	res->tipo = ARRAY;
+		res->lex = strdup(id.lex);
+	
+    if (strcmp(id.lex, "vec2") == 0) {
+		res->dimension = 1;
+		res->tam = 2;
+    } else if (strcmp(id.lex, "vec3") == 0) {
+		res->dimension = 1;
+		res->tam = 3;
+    } else if (strcmp(id.lex, "mat2") == 0) {
+		res->dimension = 2;
+		res->tam = 2;
+    } else if (strcmp(id.lex, "mat3") == 0) {
+		res->dimension = 2;
+		res->tam = 3;
     } else {
+		index = TS_BuscarNOMBRE(id);
 
-		if (nParam != TS[index].nParam) {
-			printf("(Error semántico, línea %d) Número de parámetros no válido.\n", linea);
+		if(index==-1) {
+
+			currentFun = -1;
+			printf("(Error semántico, línea %d) Función: Identificador no encontrado %s.\n", linea, id.lex);
+
 		} else {
-			currentFun = index;
-			res->lex = strdup(TS[index].lex);
-			res->tipo = TS[index].tipo;
-			res->dimension = TS[index].dimension;
-			res->tam = TS[index].tam;
+
+			if (argFun.nArg != TS[index].nParam) {
+				printf("(Error semántico, línea %d) Número de parámetros no válido: %d != %d.\n", linea, argFun.nArg, TS[index].nParam);
+				printTS();
+			} else {
+				currentFun = index;
+				res->lex = strdup(TS[index].lex);
+				res->tipo = TS[index].tipo;
+				res->dimension = TS[index].dimension;
+				res->tam = TS[index].tam;
+
+			}
 
 		}
-
 	}
 
 }
@@ -740,10 +771,18 @@ void TS_FunCall(atributos id, atributos* res){
 // Realiza la comprobación de cada parámetro de una función
 void TS_ComprobarPARAM(atributos funID ,atributos param, int checkParam){
 
-	int f = TS_BuscarNOMBRE(funID);
-	int posParam = (f ) + (checkParam);
-	int error = checkParam;
-
+	int f;
+	int posParam;
+	int error;
+	
+	if ((strcmp(funID.lex, "vec2") == 0) || (strcmp(funID.lex, "vec3") == 0) || (strcmp(funID.lex, "mat2") == 0) || (strcmp(funID.lex, "mat3") == 0)) {
+    	return;
+    }
+	
+	f = TS_BuscarNOMBRE(funID);
+	posParam = (f ) + (checkParam);
+	error = checkParam;
+	
 	if (param.tipo != TS[posParam].tipo) {
 		if (!(TS[posParam].tipo == REAL && param.tipo == ENTERO)) {
 			printf("(Error semántico, línea %d) Tipo de parámetro (%d) no válido.\n", linea, error);

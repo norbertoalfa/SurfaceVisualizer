@@ -57,14 +57,14 @@ sentencia : sentencia_declar_valor
 sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_InsertaIDENT($1); comprobarTipoCte($5); }
 ;
 
-sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
+sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($1, $10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
 ;
 
 sentencia_plot : PLOT lista_ident
 ;
 
 expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; }
-          | IF expresion THEN expresion ELSE expresion	{ comprobarIF($1, $2, $3, &$$); }
+          | IF expresion THEN expresion ELSE expresion	{ comprobarIF($2, $4, $6, &$$); }
           | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); }
           | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }
           | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); }
@@ -81,11 +81,11 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
           | error
 ;
 
-llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, &$$); nArg=0; }
+llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, $3, &$$); }
 ;
 
-lista_expresiones : lista_expresiones COMA expresion	{ nArg++; TS_ComprobarPARAM($-1,$3, nArg); }
-           		  | expresion							{ nArg++; TS_ComprobarPARAM($-1,$1, nArg); }
+lista_expresiones : lista_expresiones COMA expresion	{ $$.nArg=$1.nArg + 1; TS_ComprobarPARAM($-1,$3, $$.nArg); }
+           		  | expresion							{ $$.nArg=1; TS_ComprobarPARAM($-1,$1, $$.nArg); }
 ;
 
 lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{ actualizaTipoDesc($5); }	// Asignar el tipo a las ultimas entradas.

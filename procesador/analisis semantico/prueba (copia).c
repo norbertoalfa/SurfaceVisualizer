@@ -8,7 +8,7 @@ mat_rot(t : real)	: mat3 = mat3(vec3(cos(t), sin(t), 0), vec3(-sin(t), cos(t), 0
 est_pos(a : real) : bool = if a>0 then true else false;
 
 x(u,v : real) 	: real = if v>1 then cos(PI*u) else v*cos(PI*u);
-y(u,v : real) 	: real = if v>1 then sen(PI*u) else (if v<1 then v*sen(PI*u) else sin(PI*u));
+y(u,v : real) 	: real = if v>1 then sin(PI*u) else (if v<1 then v*sin(PI*u) else sin(PI*u));
 z(u,v : real,
   t1,t2 : real) : real = t1*h(v+t2);
 
