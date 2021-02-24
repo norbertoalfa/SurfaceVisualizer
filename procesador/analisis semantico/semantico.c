@@ -222,7 +222,7 @@ entradaTS getEntrada(atributos e) {
 }
 
 // Busca una entrada según el nombre
-int TS_BuscarNOMBRE(atributos e){
+int TS_BuscarFUN(atributos e){
 
     int i = LIMIT - 1;
 	int found = 0;
@@ -237,7 +237,7 @@ int TS_BuscarNOMBRE(atributos e){
 	}
 
 	if(!found) {
-		printf("(Error semántico, línea %d) Identificador no declarado: %s\n", linea, e.lex);
+		printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, e.lex);
 		return -1;
 	} else {
 		return i;
@@ -347,7 +347,6 @@ void TS_InsertaFUN(atributos e){
 
 			found = 1;
 			printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
-			printTS();
 
  		}
 
@@ -416,6 +415,60 @@ void TS_InsertaPARAMF(atributos e){
 
 }
 
+
+void TS_InsertaPLOT(atributos id){
+
+    int j = LIMIT - 1, found = 0;
+    int index;
+    int validParam = 1;
+
+	while((j != currentFun)  && (!found) ){
+
+		if(strcmp(TS[j].lex, id.lex) != 0) {
+
+			j--;
+
+		} else{
+
+			found = 1;
+			printf("Error semántico(%d): El parámetro ya existe: %s\n", linea, id.lex);
+
+        }
+
+	}
+	
+	index = TS_BuscarFUN(id);
+	j = index + TS[index].nParam;
+	
+	while (j!=index && validParam) {
+		if (TS[j].tipo != REAL) {
+			validParam = 0;
+		} else {
+			j--;
+		}
+	}
+	
+	if(index!=-1) {
+		if (TS[index].nParam<2) {
+		    printf("\n(Error semántico, línea %d) El número de parámetros de la función a dibujar %s debe ser al menos 2.\n", linea, id.lex);
+		} else if (!validParam) {
+		    printf("\n(Error semántico, línea %d) Todos los parámetros de la función %s deben ser de tipo real.\n", linea, id.lex);
+		} else {
+
+			entradaTS newIn;
+			newIn.entrada = PARA_FORM;
+			newIn.lex = TS[index].lex;
+			newIn.tipo = TS[index].tipo;
+			newIn.nParam = TS[index].nParam;
+			newIn.dimension=TS[index].dimension;
+			newIn.tam=TS[index].tam;
+			TS_InsertaEntrada(newIn);
+
+		}
+	}
+
+}
+
 // Actualiza el número de parámetros de la función
 void TS_ActualizarFun(){
 
@@ -457,7 +510,7 @@ void comprobarTipoCte(atributos idTipo){
 
 // Realiza la comprobación de la operación +, - y !
 void comprobarTipoFun(atributos idFun, atributos idTipo){
-	int index = TS_BuscarNOMBRE(idFun);
+	int index = TS_BuscarFUN(idFun);
 	
 	if(TS[index].tipo != idTipo.tipo) {
 		if (!(TS[index].tipo == REAL && idTipo.tipo == ENTERO)) {
@@ -742,7 +795,7 @@ void TS_FunCall(atributos id, atributos argFun, atributos* res){
 		res->dimension = 2;
 		res->tam = 3;
     } else {
-		index = TS_BuscarNOMBRE(id);
+		index = TS_BuscarFUN(id);
 
 		if(index==-1) {
 
@@ -753,7 +806,6 @@ void TS_FunCall(atributos id, atributos argFun, atributos* res){
 
 			if (argFun.nArg != TS[index].nParam) {
 				printf("(Error semántico, línea %d) Número de parámetros no válido: %d != %d.\n", linea, argFun.nArg, TS[index].nParam);
-				printTS();
 			} else {
 				currentFun = index;
 				res->lex = strdup(TS[index].lex);
@@ -779,7 +831,7 @@ void TS_ComprobarPARAM(atributos funID ,atributos param, int checkParam){
     	return;
     }
 	
-	f = TS_BuscarNOMBRE(funID);
+	f = TS_BuscarFUN(funID);
 	posParam = (f ) + (checkParam);
 	error = checkParam;
 	

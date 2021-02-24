@@ -127,8 +127,8 @@ void TS_VaciarENTRADAS();
 // Busca una entrada según el identificador
 int TS_BuscarIDENT(atributos e);
 
-// Busca una entrada según el nombre
-int TS_BuscarNOMBRE(atributos e);
+// Busca una entrada de una función
+int TS_BuscarFUN(atributos e);
 
 // Añade un identificador
 void TS_InsertaIDENT(atributos e);
@@ -141,6 +141,9 @@ void TS_InsertaFUN(atributos e);
 
 // Añade una entrada de parametro formal
 void TS_InsertaPARAMF(atributos e);
+
+
+void TS_InsertaPLOT(atributos id);
 
 // Actualiza el número de parámetros de la función y el tipo
 void TS_ActualizarFun();

@@ -13,10 +13,10 @@ z(u,v : real,
   t1,t2 : real) : real = t1*h(v+t2);
 
 f(u,v : real,
-  t1,t2 : real) : real = vec3(x(u,v), y(u,v), z(u,v,t1,t2) + const_new);
+  t1,t2 : real) : vec3 = vec3(x(u,v), y(u,v), z(u,v,t1,t2) + const_new);
   
 g(u,v : real,
-  t1 : real) 	: real = mat_rot(t1) * vec3(x(u,v), y(u,v), z(u,v,0.1,0.5) + mat_rot(t1)[0][0]);
+  t1 : real) 	: vec3 = mat_rot(t1) * vec3(x(u,v), y(u,v), z(u,v,0.1,0.5) + mat_rot(t1)[0][0]);
 
 plot f, g;  // Las primeras variables siempre van a ser las que recorren el cuadrado [0,1]x[0,1], 
             //el resto es para controlar las homotopías (modificables en tiempo de ejecución)

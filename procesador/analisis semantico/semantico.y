@@ -60,7 +60,8 @@ sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_I
 sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($1, $10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
 ;
 
-sentencia_plot : PLOT lista_ident
+sentencia_plot : sentencia_plot COMA IDENT	{ TS_InsertaPLOT($3); }
+			   | PLOT IDENT					{ setTipoDesc(); TS_InsertaFUN($1); TS_InsertaPLOT($2); }
 ;
 
 expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; }
