@@ -65,41 +65,43 @@ int main()
     
     float step = 1.0/((float) SIZE);
     
-    float vertex[2*(SIZE+1)*(SIZE+1) +2];
-    for(int i=0; i<SIZE+1; i++){
-    	for(int j=0; j<SIZE+1; j++){
-    		vertex[2*((SIZE+1)*i+j)] = step*((float)i);
-    		vertex[2*((SIZE+1)*i+j)+1] = step*((float)j);
-    		//std::cout << vertex[2*((SIZE-1)*i+j)] << " " << vertex[2*((SIZE-1)*i+j)+1] <<std::endl;
-    	}
-    }
-    
-    unsigned int indices[6*SIZE*SIZE];
+    /*float points[2*SIZE*SIZE];
     for(int i=0; i<SIZE; i++){
     	for(int j=0; j<SIZE; j++){
-    		indices[6*(SIZE*i+j)] = (SIZE+1)*i+j;
-    		indices[6*(SIZE*i+j)+1] = (SIZE+1)*i+j+1;
-    		indices[6*(SIZE*i+j)+2] = (SIZE+1)*(i+1)+j;
+    		points[2*(SIZE*i+j)] = step*((float)i);
+    		points[2*(SIZE*i+j)+1] = step*((float)j);
+    		//std::cout << points[2*((SIZE-1)*i+j)] << " " << points[2*((SIZE-1)*i+j)+1] <<std::endl;
+    	}
+    }*/
+    
+    float vertex[12*SIZE*SIZE + 2];
+    for(int i=0; i<SIZE; i++){
+    	for(int j=0; j<SIZE; j++){
+    		vertex[12*(SIZE*i+j)] = step*((float)i);
+    		vertex[12*(SIZE*i+j)+1] = step*((float)j);
+    		vertex[12*(SIZE*i+j)+2] = step*((float)i);
+    		vertex[12*(SIZE*i+j)+3] = step*((float)(j+1));
+    		vertex[12*(SIZE*i+j)+4] = step*((float)(i+1));
+    		vertex[12*(SIZE*i+j)+5] = step*((float)j);
     		
-    		indices[6*(SIZE*i+j)+3] = (SIZE+1)*(i+1)+j;
-    		indices[6*(SIZE*i+j)+4] = (SIZE+1)*i+j+1;
-    		indices[6*(SIZE*i+j)+5] = (SIZE+1)*(i+1)+j+1;
+    		vertex[12*(SIZE*i+j)+6] = step*((float)(i+1));
+    		vertex[12*(SIZE*i+j)+7] = step*((float)j);
+    		vertex[12*(SIZE*i+j)+8] = step*((float)i);
+    		vertex[12*(SIZE*i+j)+9] = step*((float)(j+1));
+    		vertex[12*(SIZE*i+j)+10] = step*((float)(i+1));
+    		vertex[12*(SIZE*i+j)+11] = step*((float)(j+1));
     	}
     }
     
     
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
     
     glBindVertexArray(VAO);
     
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), &vertex, GL_STATIC_DRAW);
-    
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
     
     // position atribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, SIZE_POINT * sizeof(float), 0);
@@ -107,9 +109,8 @@ int main()
     
     // texture coord attribute
     //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, SIZE_POINT * sizeof(float), (void*)(2 * sizeof(float)));
-    //glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glEnableVertexAttribArray(1);
+    //glBindVertexArray(0);
 	
 	shader.use();
 	
@@ -156,7 +157,7 @@ int main()
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
         shader.setMat4("model", model);
 
-        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertex));
         
         //glBindVertexArray(VAO);
         //glDrawArrays(GL_POINTS, 0, SIZE*SIZE);
@@ -171,7 +172,6 @@ int main()
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
     return 0;

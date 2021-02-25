@@ -36,7 +36,7 @@ vec4 f(vec2 v) {
 	
 	return vec4(comp_x, comp_y, comp_z, 1.0);
 	//return vec4(v.x, v.y, v.x*v.x + v.y*v.y, 1.0);
-	//return v;
+	//return vec4(v.x, v.y, 0.0, 1.0);
 }
 
 void main()

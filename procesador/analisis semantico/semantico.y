@@ -1,3 +1,6 @@
+%require "3.2"
+%language "c++"
+
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
