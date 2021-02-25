@@ -1287,6 +1287,12 @@ namespace yy {
 #include "lex.yy.c"
 //#include "error.y"
 
+namespace yy {
+	auto parser::error(const std::string& msg) -> void {
+		std::cerr << msg << '/n';
+	}
+}
+
 void yyerror(const char* s) {
 	printf("\n(Línea %d) %s\n", linea, s);
 }
@@ -1295,5 +1301,7 @@ int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
   initializeTS();
   
-  return yyparse() ;
+  yy::parser parse();
+  
+  return parse() ;
 }
