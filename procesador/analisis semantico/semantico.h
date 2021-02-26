@@ -1,3 +1,6 @@
+#ifndef SEMANTICO_H
+#define SEMANTICO_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -39,8 +42,8 @@ typedef struct {
 struct nodo{
 
 	char *lex;
-	struct nodo *izq;
-	struct nodo *der;
+	struct nodo *children[3];
+	int nChild;
 
 };
 
@@ -203,6 +206,9 @@ void TS_FunCall(atributos id, atributos argFun, atributos* res);
 // Realiza la comprobación de cada parámetro de una función
 void TS_ComprobarPARAM(atributos funID,atributos param, int checkParam);
 
+
+void escribeFun(atributos fun, atributos e1);
+
 // Muestra una entrada de la tabla de símbolos
 void printEntrada(int row);
 
@@ -215,3 +221,4 @@ void printTS();
 // Muestra un atributo recibido
 void printAtributo(atributos e, char *t);
 
+#endif

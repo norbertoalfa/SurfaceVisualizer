@@ -911,6 +911,9 @@ void initializeTS() {
 	TS_InsertaEntrada(paramSin);
 }
 
+
+void escribeFun(atributos fun, atributos e1){}
+
 //
 ////////////////////////////////////////////////////////////////////////////////
 

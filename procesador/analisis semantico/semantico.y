@@ -6,6 +6,7 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "semantico.h"
+	#include "nodo.h"
 	#define YYDEBUG 0
 
 	int yylex();  // Para evitar warning al compilar
@@ -60,28 +61,28 @@ sentencia : sentencia_declar_valor
 sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_InsertaIDENT($1); comprobarTipoCte($5); }
 ;
 
-sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($1, $10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; }
+sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($1, $10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun($1, $10); }
 ;
 
 sentencia_plot : sentencia_plot COMA IDENT	{ TS_InsertaPLOT($3); }
 			   | PLOT IDENT					{ setTipoDesc(); TS_InsertaFUN($1); TS_InsertaPLOT($2); }
 ;
 
-expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; }
-          | IF expresion THEN expresion ELSE expresion	{ comprobarIF($2, $4, $6, &$$); }
-          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); }
-          | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }
-          | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); }
-          | OP_NEG expresion							{ TS_OpUNARIA($1, $2, &$$); }
-          | expresion OP_SUMA expresion					{ TS_OpSUMARESTA($1, $2, $3, &$$); }
-          | expresion OP_MENOS expresion				{ TS_OpSUMARESTA($1, $2, $3, &$$); }
-          | expresion OP_MULTIP expresion				{ TS_OpMULTIP($1, $2, $3, &$$); }
-          | expresion OP_IGUAL expresion				{ TS_OpIGUAL($1, $2, $3, &$$); }
-          | expresion OP_COMP expresion					{ TS_OpCOMP($1, $2, $3, &$$); }
-          | expresion OP_OR expresion					{ TS_OpOR($1, $2, $3, &$$); }
-          | expresion OP_AND expresion					{ TS_OpAND($1, $2, $3, &$$); }
-          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); }//$$.nodoPropio=crearNodo($1); }
-          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }//$$.nodoPropio=crearNodo($1); }
+expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; $$.nodoPropio=$2.nodoPropio; }
+          | IF expresion THEN expresion ELSE expresion	{ comprobarIF($2, $4, $6, &$$); $$.nodoPropio=crearNodoIf($2,$4,$6); }
+          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); $$.nodoPropio=crearNodoIndex($1,$3); }
+          | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; $$.nodoPropio=$1.nodoPropio; }
+          | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); $$.nodoPropio=crearNodoOpUn($1,$2); }
+          | OP_NEG expresion							{ TS_OpUNARIA($1, $2, &$$); $$.nodoPropio=crearNodoOpUn($1,$2); }
+          | expresion OP_SUMA expresion					{ TS_OpSUMARESTA($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | expresion OP_MENOS expresion				{ TS_OpSUMARESTA($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | expresion OP_MULTIP expresion				{ TS_OpMULTIP($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | expresion OP_IGUAL expresion				{ TS_OpIGUAL($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | expresion OP_COMP expresion					{ TS_OpCOMP($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | expresion OP_OR expresion					{ TS_OpOR($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | expresion OP_AND expresion					{ TS_OpAND($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1,$2,$3); }
+          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); $$.nodoPropio=crearNodo($1); }
+          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; $$.nodoPropio=crearNodo($1); }
           | error
 ;
 
