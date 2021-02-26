@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <shader.h>
+#include <camera.h>
 
 #include <iostream>
 
@@ -58,7 +59,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs");//, "9.1.geometry_shader.gs");
+    Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs", "9.1.geometry_shader.gs");
 
     const int SIZE = 20;
     const int SIZE_POINT = 2; //5;
@@ -104,6 +105,9 @@ int main()
     // position atribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, SIZE_POINT * sizeof(float), 0);
     glEnableVertexAttribArray(0);
+    // normal atribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, SIZE_POINT * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(0);
     
     // texture coord attribute
     //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, SIZE_POINT * sizeof(float), (void*)(2 * sizeof(float)));
@@ -117,7 +121,7 @@ int main()
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     shader.setMat4("projection", projection); 
     shader.setFloat("STEP", step);
-    shader.setVec3("COLOR", glm::vec3(0.0, 1.0, 0.0));
+    //shader.setVec3("COLOR", glm::vec3(0.0, 1.0, 0.0));
 	
     // render loop
     // -----------
@@ -131,7 +135,7 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
         // activate shader
         shader.use();
@@ -143,6 +147,11 @@ int main()
         float camZ   = cos(glfwGetTime()/2) * radius;
         view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         shader.setMat4("view", view);
+        shader.setVec3("objectColor", 0.1f, 0.75f, 0.1f);
+        shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        shader.setVec3("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
+        shader.setVec3("viewPos", glm::vec3(camX, 0.0f, camZ));
+        
         shader.setFloat("t_0", sin(glfwGetTime()/2));
         shader.setFloat("t_1", cos(glfwGetTime()/2));
 
@@ -161,9 +170,6 @@ int main()
     	shader.setInt("funPlot", 1);
         glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
         
-        //glBindVertexArray(VAO);
-        //glDrawArrays(GL_POINTS, 0, SIZE*SIZE);
-
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);

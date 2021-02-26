@@ -1,43 +1,26 @@
-#version 330 core
-layout (points) in;
-layout (triangle_strip, max_vertices = 4) out;
+#version 440
+layout (triangles) in;
+layout (triangle_strip, max_vertices = 3) out;
 
-uniform float STEP;
+in vData {vec3 FragPos;} vertices[];
 
-//in VS_OUT {
-//    vec3 color;
-//} gs_in[];
+out fData {vec3 FragPos; vec3 Normal;} frag;
 
-//out vec3 fColor;
+uniform mat4 model;
 
-vec4 f(vec4 v) {
-	//float comp_x = abs(v.x-0.5)*(v.x-0.5);
-	//float comp_y = abs(v.y-0.5)*(v.y-0.5);
-	float comp_x = (v.x-0.5) + 0.13*cos(10*(v.y-0.5));
-	float comp_y = (v.y-0.5) + 0.1*cos(10*(v.x-0.5)+2);
-	
-	//return vec4(2*(comp_x), 2*(comp_y), 0.0, 1.0);
-	//return vec4(2*(v.x*v.x - 0.5), 2*(v.y*v.y -  0.5), 0.0, 1.0);
-	return v;
-}
+void main() {
+    vec3 a = ( gl_in[1].gl_Position - gl_in[0].gl_Position ).xyz;
+    vec3 b = ( gl_in[2].gl_Position - gl_in[0].gl_Position ).xyz;
+    vec3 norm = normalize( cross( b, a ) );
 
-void build_square(vec4 position, float step)
-{    
-    //fColor = gs_in[0].color; // gs_in[0] since there's only one input vertex
-    gl_Position = f(position);// + vec4(-0.2, -0.2, 0.0, 0.0); // 1:bottom-left   
-    EmitVertex();   
-    gl_Position = f(position + vec4( step, 0.0, 0.0, 0.0)); //vec4( 0.2, -0.2, 0.0, 0.0); // 2:bottom-right
-    EmitVertex();
-    gl_Position = f(position + vec4( 0.0, step, 0.0, 0.0)); //vec4(-0.2,  0.2, 0.0, 0.0); // 3:top-left
-    EmitVertex();
-    gl_Position = f(position + vec4( step,  step, 0.0, 0.0)); // 4:top-right
-    EmitVertex();
-    //gl_Position = position + vec4( 0.0,  0.4, 0.0, 0.0); // 5:top
-    //fColor = vec3(1.0, 1.0, 1.0);
-    //EmitVertex();
-    EndPrimitive();
-}
+    for( int i=0; i<gl_in.length( ); i++ )
+    {
+        gl_Position = gl_in[i].gl_Position;
+        frag.FragPos = vertices[i].FragPos;
+        frag.Normal = mat3(transpose(inverse(model))) * norm;
+        EmitVertex( );
+    }
 
-void main() {  
-    build_square(gl_in[0].gl_Position, STEP);
+    EndPrimitive( );
+    
 }
