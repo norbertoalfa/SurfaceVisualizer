@@ -17,7 +17,7 @@ void main() {
     {
         gl_Position = gl_in[i].gl_Position;
         frag.FragPos = vertices[i].FragPos;
-        frag.Normal = mat3(transpose(inverse(model))) * norm;
+        frag.Normal = mat3(transpose(inverse(model))) * norm; //vec3(gl_Position[0], gl_Position[1], gl_Position[2]);
         EmitVertex( );
     }
 

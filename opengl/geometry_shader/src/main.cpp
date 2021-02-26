@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
+#include <GL/gl.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -61,7 +62,7 @@ int main()
     // -------------------------
     Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs", "9.1.geometry_shader.gs");
 
-    const int SIZE = 20;
+    const int SIZE = 40;
     const int SIZE_POINT = 2; //5;
     
     float step = 1.0/((float) SIZE);
@@ -122,7 +123,7 @@ int main()
     shader.setMat4("projection", projection); 
     shader.setFloat("STEP", step);
     //shader.setVec3("COLOR", glm::vec3(0.0, 1.0, 0.0));
-	
+    
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
