@@ -80,8 +80,8 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
           | expresion OP_COMP expresion					{ TS_OpCOMP($1, $2, $3, &$$); }
           | expresion OP_OR expresion					{ TS_OpOR($1, $2, $3, &$$); }
           | expresion OP_AND expresion					{ TS_OpAND($1, $2, $3, &$$); }
-          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); }
-          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }
+          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); }//$$.nodoPropio=crearNodo($1); }
+          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; }//$$.nodoPropio=crearNodo($1); }
           | error
 ;
 

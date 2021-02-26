@@ -35,6 +35,18 @@ typedef struct {
 
 } entradaTS;
 
+
+struct nodo{
+
+	char *lex;
+	struct nodo *izq;
+	struct nodo *der;
+
+};
+
+typedef struct nodo nodo;
+
+
 typedef struct {
 
 	int atrib;
@@ -43,6 +55,7 @@ typedef struct {
 	unsigned int dimension;
 	int tam;
 	int nArg;
+	nodo *nodoPropio;
 
 } atributos;
 

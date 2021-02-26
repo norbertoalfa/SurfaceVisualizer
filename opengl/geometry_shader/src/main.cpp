@@ -155,7 +155,10 @@ int main()
         float angle = 20.0f*0;
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
         shader.setMat4("model", model);
-
+		
+    	shader.setInt("funPlot", 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+    	shader.setInt("funPlot", 1);
         glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
         
         //glBindVertexArray(VAO);
