@@ -45,7 +45,7 @@
 %start programa
 
 %%
-programa : lista_sentencias
+programa : lista_sentencias { closeInter(); }
 ;
 
 lista_sentencias : lista_sentencias sentencia PTOCOMA
@@ -89,8 +89,8 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
 llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, $3, &$$); }
 ;
 
-lista_expresiones : lista_expresiones COMA expresion	{ $$.nArg=$1.nArg + 1; TS_ComprobarPARAM($-1,$3, $$.nArg); }
-           		  | expresion							{ $$.nArg=1; TS_ComprobarPARAM($-1,$1, $$.nArg); }
+lista_expresiones : lista_expresiones COMA expresion	{ $$.nArg=$1.nArg + 1; TS_ComprobarPARAM($-1,$3, $$.nArg); actualizaNodo($-1.nodoPropio, $3); }
+           		  | expresion							{ $$.nArg=1; TS_ComprobarPARAM($-1,$1, $$.nArg); $-1.nodoPropio=crearNodoFun($-1); actualizaNodo($-1.nodoPropio, $1); }
 ;
 
 lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{ actualizaTipoDesc($5); }	// Asignar el tipo a las ultimas entradas.
@@ -117,6 +117,7 @@ void yyerror(const char* s) {
 int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
   initializeTS();
+  generaFich();
   
   return yyparse() ;
 }

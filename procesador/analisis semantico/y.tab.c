@@ -1387,194 +1387,200 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 2:
+#line 48 "semantico.y"
+                            { closeInter(); }
+#line 1394 "y.tab.c"
+    break;
+
   case 9:
 #line 61 "semantico.y"
                                                              { setTipo(yyvsp[-2]); TS_InsertaIDENT(yyvsp[-4]); comprobarTipoCte(yyvsp[0]); }
-#line 1394 "y.tab.c"
+#line 1400 "y.tab.c"
     break;
 
   case 10:
 #line 64 "semantico.y"
                              {setTipoDesc(); TS_InsertaFUN(yyvsp[0]); }
-#line 1400 "y.tab.c"
+#line 1406 "y.tab.c"
     break;
 
   case 11:
 #line 64 "semantico.y"
                                                                                                             { setTipo(yyvsp[0]); TS_ActualizarFun(); TS_InsertaMARCA(); }
-#line 1406 "y.tab.c"
+#line 1412 "y.tab.c"
     break;
 
   case 12:
 #line 64 "semantico.y"
                                                                                                                                                                                     {	comprobarTipoFun(yyvsp[-9], yyvsp[0]); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun(yyvsp[-9], yyvsp[0]); }
-#line 1412 "y.tab.c"
+#line 1418 "y.tab.c"
     break;
 
   case 13:
 #line 67 "semantico.y"
                                                 { TS_InsertaPLOT(yyvsp[0]); }
-#line 1418 "y.tab.c"
+#line 1424 "y.tab.c"
     break;
 
   case 14:
 #line 68 "semantico.y"
                                                                         { setTipoDesc(); TS_InsertaFUN(yyvsp[-1]); TS_InsertaPLOT(yyvsp[0]); }
-#line 1424 "y.tab.c"
+#line 1430 "y.tab.c"
     break;
 
   case 15:
 #line 71 "semantico.y"
                                                                         { yyval.tipo=yyvsp[-1].tipo; yyval.dimension=yyvsp[-1].dimension; yyval.tam=yyvsp[-1].tam; yyval.nodoPropio=yyvsp[-1].nodoPropio; }
-#line 1430 "y.tab.c"
+#line 1436 "y.tab.c"
     break;
 
   case 16:
 #line 72 "semantico.y"
                                                         { comprobarIF(yyvsp[-4], yyvsp[-2], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoIf(yyvsp[-4],yyvsp[-2],yyvsp[0]); }
-#line 1436 "y.tab.c"
+#line 1442 "y.tab.c"
     break;
 
   case 17:
 #line 73 "semantico.y"
                                                                 { comprobarIND(yyvsp[-3], yyvsp[-1], &yyval); yyval.nodoPropio=crearNodoIndex(yyvsp[-3],yyvsp[-1]); }
-#line 1442 "y.tab.c"
+#line 1448 "y.tab.c"
     break;
 
   case 18:
 #line 74 "semantico.y"
                                                                                         { yyval.tipo=yyvsp[0].tipo; yyval.dimension=yyvsp[0].dimension; yyval.tam=yyvsp[0].tam; yyval.nodoPropio=yyvsp[0].nodoPropio; }
-#line 1448 "y.tab.c"
+#line 1454 "y.tab.c"
     break;
 
   case 19:
 #line 75 "semantico.y"
                                                                                 { TS_OpUNARIA(yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpUn(yyvsp[-1],yyvsp[0]); }
-#line 1454 "y.tab.c"
+#line 1460 "y.tab.c"
     break;
 
   case 20:
 #line 76 "semantico.y"
                                                                                 { TS_OpUNARIA(yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpUn(yyvsp[-1],yyvsp[0]); }
-#line 1460 "y.tab.c"
+#line 1466 "y.tab.c"
     break;
 
   case 21:
 #line 77 "semantico.y"
                                                                         { TS_OpSUMARESTA(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1466 "y.tab.c"
+#line 1472 "y.tab.c"
     break;
 
   case 22:
 #line 78 "semantico.y"
                                                                         { TS_OpSUMARESTA(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1472 "y.tab.c"
+#line 1478 "y.tab.c"
     break;
 
   case 23:
 #line 79 "semantico.y"
                                                                         { TS_OpMULTIP(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1478 "y.tab.c"
+#line 1484 "y.tab.c"
     break;
 
   case 24:
 #line 80 "semantico.y"
                                                                         { TS_OpIGUAL(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1484 "y.tab.c"
+#line 1490 "y.tab.c"
     break;
 
   case 25:
 #line 81 "semantico.y"
                                                                         { TS_OpCOMP(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1490 "y.tab.c"
+#line 1496 "y.tab.c"
     break;
 
   case 26:
 #line 82 "semantico.y"
                                                                         { TS_OpOR(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1496 "y.tab.c"
+#line 1502 "y.tab.c"
     break;
 
   case 27:
 #line 83 "semantico.y"
                                                                         { TS_OpAND(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2],yyvsp[-1],yyvsp[0]); }
-#line 1502 "y.tab.c"
+#line 1508 "y.tab.c"
     break;
 
   case 28:
 #line 84 "semantico.y"
                                                                                                 { declaracion=0; TS_getIDENT(yyvsp[0], &yyval); yyval.nodoPropio=crearNodo(yyvsp[0]); }
-#line 1508 "y.tab.c"
+#line 1514 "y.tab.c"
     break;
 
   case 29:
 #line 85 "semantico.y"
                                                                                         { yyval.tipo=yyvsp[0].tipo; yyval.dimension=yyvsp[0].dimension; yyval.tam=yyvsp[0].tam; yyval.nodoPropio=crearNodo(yyvsp[0]); }
-#line 1514 "y.tab.c"
+#line 1520 "y.tab.c"
     break;
 
   case 31:
 #line 89 "semantico.y"
                                                                 { TS_FunCall(yyvsp[-3], yyvsp[-1], &yyval); }
-#line 1520 "y.tab.c"
+#line 1526 "y.tab.c"
     break;
 
   case 32:
 #line 92 "semantico.y"
-                                                        { yyval.nArg=yyvsp[-2].nArg + 1; TS_ComprobarPARAM(yyvsp[(-1) - (3)],yyvsp[0], yyval.nArg); }
-#line 1526 "y.tab.c"
+                                                        { yyval.nArg=yyvsp[-2].nArg + 1; TS_ComprobarPARAM(yyvsp[(-1) - (3)],yyvsp[0], yyval.nArg); actualizaNodo(yyvsp[(-1) - (3)].nodoPropio, yyvsp[0]); }
+#line 1532 "y.tab.c"
     break;
 
   case 33:
 #line 93 "semantico.y"
-                                                                                        { yyval.nArg=1; TS_ComprobarPARAM(yyvsp[(-1) - (1)],yyvsp[0], yyval.nArg); }
-#line 1532 "y.tab.c"
+                                                                                        { yyval.nArg=1; TS_ComprobarPARAM(yyvsp[(-1) - (1)],yyvsp[0], yyval.nArg); yyvsp[(-1) - (1)].nodoPropio=crearNodoFun(yyvsp[(-1) - (1)]); actualizaNodo(yyvsp[(-1) - (1)].nodoPropio, yyvsp[0]); }
+#line 1538 "y.tab.c"
     break;
 
   case 34:
 #line 96 "semantico.y"
                                                                 { actualizaTipoDesc(yyvsp[0]); }
-#line 1538 "y.tab.c"
+#line 1544 "y.tab.c"
     break;
 
   case 35:
 #line 97 "semantico.y"
                                                                                 { actualizaTipoDesc(yyvsp[0]); }
-#line 1544 "y.tab.c"
+#line 1550 "y.tab.c"
     break;
 
   case 36:
 #line 100 "semantico.y"
                                         { nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF(yyvsp[0]); }
-#line 1550 "y.tab.c"
+#line 1556 "y.tab.c"
     break;
 
   case 37:
 #line 101 "semantico.y"
                                                                 { decParam=1; nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF(yyvsp[0]); }
-#line 1556 "y.tab.c"
+#line 1562 "y.tab.c"
     break;
 
   case 38:
 #line 104 "semantico.y"
                                 { yyval.tipo = BOOLEANO; yyval.dimension = 0; yyval.tam = 0; }
-#line 1562 "y.tab.c"
+#line 1568 "y.tab.c"
     break;
 
   case 39:
 #line 105 "semantico.y"
                                 { yyval.tipo = ENTERO; yyval.dimension = 0; yyval.tam = 0; }
-#line 1568 "y.tab.c"
+#line 1574 "y.tab.c"
     break;
 
   case 40:
 #line 106 "semantico.y"
                                 { yyval.tipo = REAL; yyval.dimension = 0; yyval.tam = 0; }
-#line 1574 "y.tab.c"
+#line 1580 "y.tab.c"
     break;
 
 
-#line 1578 "y.tab.c"
+#line 1584 "y.tab.c"
 
       default: break;
     }
@@ -1819,6 +1825,7 @@ void yyerror(const char* s) {
 int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
   initializeTS();
+  generaFich();
   
   return yyparse() ;
 }

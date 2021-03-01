@@ -780,7 +780,7 @@ void TS_FunCall(atributos id, atributos argFun, atributos* res){
     
 	currentFun = -1;
 	res->tipo = ARRAY;
-		res->lex = strdup(id.lex);
+	res->lex = strdup(id.lex);
 	
     if (strcmp(id.lex, "vec2") == 0) {
 		res->dimension = 1;
@@ -911,8 +911,6 @@ void initializeTS() {
 	TS_InsertaEntrada(paramSin);
 }
 
-
-void escribeFun(atributos fun, atributos e1){}
 
 //
 ////////////////////////////////////////////////////////////////////////////////

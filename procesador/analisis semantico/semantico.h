@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+//const int LIMIT_FUN = 10;
+
 typedef enum {
 
 	MARCA = 0,
@@ -38,12 +40,22 @@ typedef struct {
 
 } entradaTS;
 
+// tipos de datos
+typedef enum {
+
+	NODO_OP = 0,
+	NODO_FUN,
+	NODO_IND,
+	NODO_IF
+
+} tipoNodo;
 
 struct nodo{
 
 	char *lex;
-	struct nodo *children[3];
+	struct nodo *children[10];
 	int nChild;
+	tipoNodo tipo;
 
 };
 
