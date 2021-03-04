@@ -1,0 +1,9 @@
+//Ejemplo    
+pi : real = 3.14;
+
+
+g(u, v : real) : vec3 = 2*vec3(cos(v*pi)*cos(u*2*pi), cos(v*pi)*sin(u*2*pi), sin(v*pi));
+
+f(u,v :real) : vec3 = g(u-0.5, v-0.5);
+
+plot f;

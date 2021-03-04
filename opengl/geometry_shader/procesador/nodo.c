@@ -87,7 +87,7 @@ void generaFich(){
   	sent = (char *) malloc(1000);
   	sent[0]=0;
   	
-    file = fopen("vertex.s","w");
+    file = fopen("../shaders/vertex.s","w");
   	
     sprintf(sent,"#version 440 core\n");
     sprintf(sent,"%slayout (location = 0) in vec2 aPos;\n\n", sent);

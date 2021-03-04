@@ -1,4 +1,7 @@
-all: bin/prueba
+all: shader prueba
+	
+	
+prueba: bin/prueba
 	./bin/prueba
 
 bin/prueba: obj/main.o obj/glad.o
@@ -9,6 +12,12 @@ obj/main.o: src/main.cpp
 
 obj/glad.o: src/glad.c
 	g++ -o obj/glad.o -c src/glad.c -I./include
+	
+shader: parametrizacion.in
+	cd ./procesador/ && $(MAKE)
+	cd ..
 
 clean:
 	rm -rf bin/* obj/*
+	cd ./procesador/ && $(MAKE) clean
+	cd ..

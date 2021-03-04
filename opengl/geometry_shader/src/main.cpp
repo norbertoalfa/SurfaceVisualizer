@@ -60,7 +60,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs", "9.1.geometry_shader.gs");
+    //Shader shader("9.1.geometry_shader.vs", "9.1.geometry_shader.fs", "9.1.geometry_shader.gs");
+    Shader shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
 
     const int SIZE = 40;
     const int SIZE_POINT = 2; //5;
@@ -153,8 +154,13 @@ int main()
         shader.setVec3("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
         shader.setVec3("viewPos", glm::vec3(camX, 0.0f, camZ));
         
-        shader.setFloat("t_0", sin(glfwGetTime()/2));
-        shader.setFloat("t_1", cos(glfwGetTime()/2));
+        GLfloat params[10];
+        params[0] = sin(glfwGetTime()/2);
+        params[1] = cos(glfwGetTime()/2);
+        
+        shader.setArray("param_t", params, sizeof(params));
+        //shader.setFloat("t_0", sin(glfwGetTime()/2));
+        //shader.setFloat("t_1", cos(glfwGetTime()/2));
 
         // render boxes
         glBindVertexArray(VAO);

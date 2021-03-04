@@ -163,6 +163,11 @@ public:
     {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
+    // ------------------------------------------------------------------------
+    void setArray(const std::string &name, const GLfloat v[], int tam) const
+    {
+        glUniform1fv(glGetUniformLocation(ID, name.c_str()), tam, v);
+    }
 
 private:
     // utility function for checking shader compilation/linking errors.
