@@ -1,5 +1,3 @@
-
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
@@ -11,15 +9,114 @@
 
 #include <shader.h>
 #include <camera.h>
+#include <settings.h>
+#include <light.h>
+#include <object.h>
 
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+// Settings
+Settings settings;
+bool someChange = true;
+bool perDisplace = false;
+
+// Camera
+Camera camera(glm::vec3(0.0f,0.0f,10.0f));
+float lastX = settings.getWidth() / 2.0f;
+float lastY = settings.getHeight() / 2.0f;
+bool firstMouse = true;
+
+// timing
+float deltaTime = 0.0f;	
+float lastFrame = 0.0f;
+
+// Light properties
+Light light;
+
+// Object properties
+Object object;
+
+
+// Functions
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+        
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    	camera.processKeyboard(FORWARD, deltaTime);
+    	settings.setViewChange();
+	}
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    	camera.processKeyboard(BACKWARD, deltaTime);
+    	settings.setViewChange();
+	}
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    	camera.processKeyboard(LEFT, deltaTime);
+    	settings.setViewChange();
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    	camera.processKeyboard(RIGHT, deltaTime);
+    	settings.setViewChange();
+    }
+    
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+    	perDisplace = true;
+    	settings.setViewChange();
+    }
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
+    	perDisplace = false;
+    	firstMouse = true;
+    	//settings.setViewChange();
+    }
+    
+}
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
+    settings.setWidth(width);
+    settings.setHeight(height);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (perDisplace) {
+		if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+
+		float xoffset = -xpos + lastX;
+		float yoffset = -lastY + ypos; // reversed since y-coordinates go from bottom to top
+
+		lastX = xpos;
+		lastY = ypos;
+
+		camera.processMouseMovement(xoffset, yoffset);
+		settings.setViewChange();
+    }
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    camera.processMouseScroll(yoffset);
+    settings.setViewChange();
+}
+
 
 int main()
 {
@@ -36,7 +133,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(settings.getWidth(), settings.getHeight(), "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -45,7 +142,12 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    
+    // tell GLFW to capture our mouse
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -120,15 +222,35 @@ int main()
 	shader.use();
 	
 	// pass projection matrix to shader
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    shader.setMat4("projection", projection); 
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)settings.getWidth() / (float)settings.getHeight(), 0.1f, 100.0f);
+	glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 model = glm::mat4(1.0f);
+    
+    float angle = 20.0f*0;
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+	
+    shader.setMat4("projection", projection);
+    shader.setMat4("view", view);
+    shader.setMat4("model", model);
+    
+    shader.setVec3("objectColor", object.getColor());
+    shader.setVec3("lightColor", light.getColor());
+    shader.setVec3("lightPos", light.getPos());
+    shader.setVec3("viewPos", camera.Position);
+    
     shader.setFloat("STEP", step);
-    //shader.setVec3("COLOR", glm::vec3(0.0, 1.0, 0.0));
     
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+    	// per-frame time logic
+        // --------------------
+    	float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        
     	//input
     	processInput(window);
     	
@@ -137,49 +259,91 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if (settings.getActivePolMode()) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
 		
         // activate shader
-        shader.use();
+        shader.use();	//?
         
         // camera/view transformation
-        glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        float radius = 10.0f;
-        float camX   = sin(glfwGetTime()/2) * radius;
-        float camZ   = cos(glfwGetTime()/2) * radius;
-        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        shader.setMat4("view", view);
-        shader.setVec3("objectColor", 0.1f, 0.75f, 0.1f);
-        shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        shader.setVec3("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
-        shader.setVec3("viewPos", glm::vec3(camX, 0.0f, camZ));
+        if (settings.getAutoRotation()) {
+		    /*float radius, camX, camZ;
+    		radius = 10.0f;
+		    camX   = sin(glfwGetTime()/2) * radius;
+		    camZ   = cos(glfwGetTime()/2) * radius;
+		    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 1.0f, 0.0f));*/
+		    view = camera.getAutoRotViewMatrix();
+		    shader.setMat4("view", view);
+       		someChange = true;
+		} else if (settings.getViewChange()) {
+			view = camera.getViewMatrix();
+			shader.setMat4("view", view);
+			settings.switchViewChange();
+       		someChange = true;
+		}
+        
+        if (settings.getChProjection()) {
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)settings.getWidth() / (float)settings.getHeight(), 0.1f, 100.0f);
+			shader.setMat4("projection", projection);
+			settings.switchChProjection();
+       		someChange = true;
+        }
+        
+        if (object.getColorChange()){
+        	shader.setVec3("objectColor", object.getColor());
+        	object.switchColorChange();
+       		someChange = true;
+		}
+        
+        if (light.getColorChange()){
+        	shader.setVec3("lightColor", light.getColor());
+        	light.switchColorChange();
+       		someChange = true;
+        }
+        
+        if (light.getPosChange()){
+        	shader.setVec3("lightPos", light.getPos());
+        	light.switchPosChange();
+       		someChange = true;
+        }
+        
+        if (camera.getPosChange()){
+        	shader.setVec3("viewPos", camera.Position);
+        	camera.switchPosChange();
+       		someChange = true;
+        }
         
         GLfloat params[10];
         params[0] = sin(glfwGetTime()/2);
         params[1] = cos(glfwGetTime()/2);
         
         shader.setArray("param_t", params, sizeof(params));
-        //shader.setFloat("t_0", sin(glfwGetTime()/2));
-        //shader.setFloat("t_1", cos(glfwGetTime()/2));
 
         // render boxes
         glBindVertexArray(VAO);
         
         // calculate the model matrix for each object and pass it to shader before drawing
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        float angle = 20.0f*0;
-        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        shader.setMat4("model", model);
+        if (settings.getModelChange()) {
+       		shader.setMat4("model", model);
+       		settings.switchModelChange();
+       		someChange = true;
+       	}
 		
-    	shader.setInt("funPlot", 0);
-        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-    	shader.setInt("funPlot", 1);
-        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		if (someChange) {
+			shader.setInt("funPlot", 0);
+		    glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		    
+			shader.setInt("funPlot", 1);
+		    glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		    
+        	glfwSwapBuffers(window);
+       		someChange = false;
+       		
+        }
         
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
@@ -192,27 +356,3 @@ int main()
     glfwTerminate();
     return 0;
 }
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-    /*glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustrum(-xval, +xval, -yval, +yval, -10, +10);
-    gluLookAt();
-    glMatrixMode(GL_MODELVIEW);*/
-}
-
-

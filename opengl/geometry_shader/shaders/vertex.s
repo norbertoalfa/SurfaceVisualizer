@@ -9,7 +9,7 @@ uniform mat4 projection;
 uniform float param_t[10];
 uniform int funPlot;
 
-float pi = 3.14;
+float pi = 3.14159;
 
 vec3 g(float u, float v) {
 	return 2 *  vec3( cos(v * pi) *  cos(u * 2 * pi),  cos(v * pi) *  sin(u * 2 * pi),  sin(v * pi));
