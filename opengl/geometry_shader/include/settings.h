@@ -37,6 +37,6 @@ class Settings {
 		unsigned int getHeight() { return SCR_HEIGHT; }
 		
 		void updateSomeChange(){
-			someChange =  someChange || getActivePolMode() || getAutoRotation();
+			someChange =  someChange || getAutoRotation();
 		}
 };
