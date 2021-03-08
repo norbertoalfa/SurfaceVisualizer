@@ -7,7 +7,7 @@ prueba: bin/prueba
 bin/prueba: obj/main.o obj/glad.o
 	g++ -o bin/prueba obj/main.o obj/glad.o -W -Wall -Werror -lGLEW -lglut -lglfw -lGL -ldl -I./include
 
-obj/main.o: src/main.cpp
+obj/main.o: src/main.cpp include/settings.h include/camera.h include/object.h include/light.h
 	g++ -o obj/main.o -c src/main.cpp -I./include 
 
 obj/glad.o: src/glad.c

@@ -22,7 +22,7 @@ const float YAW         = -90.0f;
 const float PITCH       =  0.0f;
 const float SPEED       =  2.5f;
 const float SENSITIVITY =  0.1f;
-const float ZOOM        =  1.0f;//45.0f;
+const float ZOOM        =  8.0f;//45.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
@@ -73,18 +73,16 @@ public:
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 getViewMatrix()
     {
-        return glm::lookAt(Position + Zoom*Front, Position + (Zoom+1)*Front, Up);
+        //return glm::lookAt(Position + Zoom*Front, Position + (Zoom+1)*Front, Up);
+        return glm::lookAt(Position + Zoom*Front, Position, Up);
     }
     
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 getAutoRotViewMatrix()
     {
-    	float radius, camX, camZ;
-		radius = 10.0f;
-	    camX   = sin(glfwGetTime()/2) * radius;
-	    camZ   = cos(glfwGetTime()/2) * radius;
+	    processMouseRotate(10.0f, 0.0f);
 	    
-        return glm::lookAt(glm::vec3(camX, 0.0f, camZ),Position + Front,Up);
+        return getViewMatrix();
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -99,16 +97,32 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
+        
+        posChange = true;
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
+    void processMouseDisplace(float xoffset, float yoffset)
+    {
+        xoffset *= MouseSensitivity*0.1f;
+        yoffset *= MouseSensitivity*0.1f;
+		
+		Position += xoffset*glm::cross(Up, Front) + yoffset*Up;
+        posChange = true;
+
+        // update Front, Right and Up Vectors using the updated Euler angles
+        updateCameraVectors();
+    }
+    
+    
+    void processMouseRotate(float xoffset, float yoffset, GLboolean constrainPitch = true)
     {
         xoffset *= MouseSensitivity;
         yoffset *= MouseSensitivity;
 
-        Yaw   += xoffset;
+        Yaw   -= xoffset;
         Pitch += yoffset;
+        posChange = true;
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
         if (constrainPitch)
@@ -127,10 +141,20 @@ public:
     void processMouseScroll(float yoffset)
     {
         Zoom += (float)yoffset;
-        if (Zoom < -50.0f)
-            Zoom = -50.0f;
-        if (Zoom > 5.0f)
+        if (Zoom < 5.0f)
             Zoom = 5.0f;
+        if (Zoom > 50.0f)
+            Zoom = 50.0f;
+    }
+    
+    void reset()
+    {
+        Position = glm::vec3(0.0f, 0.0f, 0.0f);
+        WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        Yaw = YAW;
+        Pitch = PITCH;
+        updateCameraVectors();
+        posChange = true;
     }
 
 private:

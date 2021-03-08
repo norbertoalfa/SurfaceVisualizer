@@ -20,12 +20,16 @@
 Settings settings;
 bool someChange = true;
 bool perDisplace = false;
+bool perRotate = false;
+int totalFPlot = 1;
 
 // Camera
-Camera camera(glm::vec3(0.0f,0.0f,10.0f));
+Camera camera(glm::vec3(0.0f,0.0f,0.0f));
 float lastX = settings.getWidth() / 2.0f;
 float lastY = settings.getHeight() / 2.0f;
 bool firstMouse = true;
+bool firstTime_R = false;
+bool firstTime_P = false;
 
 // timing
 float deltaTime = 0.0f;	
@@ -63,6 +67,27 @@ void processInput(GLFWwindow *window)
     	settings.setViewChange();
     }
     
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+    	firstTime_R = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		firstTime_P = true;
+    }
+    
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE) {
+    	if (firstTime_R) {
+    		settings.switchAutoRot();
+    		firstTime_R = false;
+    	}
+    }
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE) {
+    	if (firstTime_P) {
+    		settings.switchPolMode();
+    		someChange = true;
+    		firstTime_P = false;
+    	}
+    }
+    
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
     	perDisplace = true;
     	settings.setViewChange();
@@ -70,7 +95,20 @@ void processInput(GLFWwindow *window)
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
     	perDisplace = false;
     	firstMouse = true;
-    	//settings.setViewChange();
+    }
+    
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+    	perRotate = true;
+    	settings.setViewChange();
+    }
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE){
+    	perRotate = false;
+    	firstMouse = true;
+    }
+    
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
+    	camera.reset();
+    	settings.setViewChange();
     }
     
 }
@@ -91,6 +129,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (perDisplace) {
+	
 		if (firstMouse)
 		{
 			lastX = xpos;
@@ -104,7 +143,25 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		lastX = xpos;
 		lastY = ypos;
 
-		camera.processMouseMovement(xoffset, yoffset);
+		camera.processMouseDisplace(xoffset, yoffset);
+		settings.setViewChange();
+		
+    } else if (perRotate) {
+    
+    	if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+
+		float xoffset = -xpos + lastX;
+		float yoffset = -lastY + ypos; // reversed since y-coordinates go from bottom to top
+
+		lastX = xpos;
+		lastY = ypos;
+
+		camera.processMouseRotate(xoffset, yoffset);
 		settings.setViewChange();
     }
 }
@@ -146,7 +203,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
     
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -261,6 +318,8 @@ int main()
         
         if (settings.getActivePolMode()) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		
         // activate shader
@@ -268,11 +327,6 @@ int main()
         
         // camera/view transformation
         if (settings.getAutoRotation()) {
-		    /*float radius, camX, camZ;
-    		radius = 10.0f;
-		    camX   = sin(glfwGetTime()/2) * radius;
-		    camZ   = cos(glfwGetTime()/2) * radius;
-		    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ),glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3(0.0f, 1.0f, 0.0f));*/
 		    view = camera.getAutoRotViewMatrix();
 		    shader.setMat4("view", view);
        		someChange = true;
@@ -331,11 +385,10 @@ int main()
        	}
 		
 		if (someChange) {
-			shader.setInt("funPlot", 0);
-		    glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-		    
-			shader.setInt("funPlot", 1);
-		    glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+			for (int i=0; i<totalFPlot; i++) {
+				shader.setInt("funPlot", i);
+				glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		    }
 		    
         	glfwSwapBuffers(window);
        		someChange = false;

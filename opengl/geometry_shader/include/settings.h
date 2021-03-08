@@ -26,7 +26,7 @@ class Settings {
 		
 		void setHeight(unsigned int height) { SCR_HEIGHT = height; projectionChange = true; }
 		
-		void switchActivePolMode() { activePolMode = !activePolMode; }
+		void switchPolMode() { activePolMode = !activePolMode; }
 		
 		void switchChProjection() { projectionChange = !projectionChange; }
 		
