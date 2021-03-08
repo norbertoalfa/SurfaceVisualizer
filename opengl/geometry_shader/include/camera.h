@@ -66,7 +66,7 @@ public:
         posChange = false;
     }
     
-    void switchPosChange() { posChange = !posChange; }
+    void setPosChange(bool change) { posChange = change; }
     
     bool getPosChange() { return posChange; }
 

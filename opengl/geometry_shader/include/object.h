@@ -12,7 +12,7 @@ class Object {
 		
 		void setColor(glm::vec3 objColor) {	color = objColor; colorChange = true; }
 		
-		void switchColorChange() { colorChange = !colorChange; }
+		void setColorChange(bool change) { colorChange = change; }
 				
 		glm::vec3 getColor() { return color; }
 		

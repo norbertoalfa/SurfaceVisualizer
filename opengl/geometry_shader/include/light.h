@@ -17,9 +17,9 @@ class Light {
 		
 		void setColor(glm::vec3 color) { lightColor = color; colorChange = true; }
 		
-		void switchPosChange() { posChange = !posChange; }
+		void setPosChange(bool change) { posChange = change; }
 		
-		void switchColorChange() { colorChange = !colorChange; }
+		void setColorChange(bool change) { colorChange = change; }
 		
 		glm::vec3 getPos() { return lightPos; }
 		
