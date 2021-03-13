@@ -4,6 +4,10 @@ pi : real = 3.14159;
 
 g(u, v : real) : vec3 = 2*vec3(cos(v*pi)*cos(u*2*pi), cos(v*pi)*sin(u*2*pi), sin(v*pi));
 
+h(u, v :real) : vec3 = 2*vec3(u, v, cos(10*u) + cos(10*v));
+
 f(u,v :real) : vec3 = g(u-0.5, v-0.5);
+
+//f(u,v, t0, t1 :real) : vec3 = h(u-t0, v-t1);
 
 plot f;

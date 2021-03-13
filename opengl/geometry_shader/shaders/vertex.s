@@ -15,6 +15,10 @@ vec3 g(float u, float v) {
 	return 2 *  vec3( cos(v * pi) *  cos(u * 2 * pi),  cos(v * pi) *  sin(u * 2 * pi),  sin(v * pi));
 }
 
+vec3 h(float u, float v) {
+	return 2 *  vec3(u, v,  cos(10 * u) +  cos(10 * v));
+}
+
 vec3 f(float u, float v) {
 	return  g(u - 0.5, v - 0.5);
 }

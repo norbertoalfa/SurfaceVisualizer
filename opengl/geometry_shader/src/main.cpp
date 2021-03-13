@@ -4,7 +4,6 @@
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
 
-#include <GL/glew.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
@@ -89,21 +88,25 @@ static void glfw_error_callback(int error, const char* description)
 // ---------------------------------------------------------------------------------------------------------
 void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
         
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     	camera.processKeyboard(FORWARD, deltaTime);
     	settings.setSomeChange(true);
 	}
+	
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
     	camera.processKeyboard(BACKWARD, deltaTime);
     	settings.setSomeChange(true);
 	}
+	
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
     	camera.processKeyboard(LEFT, deltaTime);
     	settings.setSomeChange(true);
     }
+    
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
     	camera.processKeyboard(RIGHT, deltaTime);
     	settings.setSomeChange(true);
@@ -113,6 +116,7 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
     	firstTime_R = true;
     	settings.setSomeChange(true);
     }
+    
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		firstTime_P = true;
 		settings.setSomeChange(true);
@@ -124,6 +128,7 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
     		firstTime_R = false;
     	}
     }
+    
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE) {
     	if (firstTime_P) {
     		settings.switchPolMode();
@@ -140,11 +145,11 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
 
 void processMouseKey(GLFWwindow* window, int button, int action, int mods)
 {
-    
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
     	perDisplace = true;
     	settings.setSomeChange(true);
     }
+    
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
     	perDisplace = false;
     	firstMouse = true;
@@ -154,6 +159,7 @@ void processMouseKey(GLFWwindow* window, int button, int action, int mods)
     	perRotate = true;
     	settings.setSomeChange(true);
     }
+    
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE){
     	perRotate = false;
     	firstMouse = true;
@@ -163,7 +169,6 @@ void processMouseKey(GLFWwindow* window, int button, int action, int mods)
     	camera.reset();
     	settings.setSomeChange(true);
     }
-    
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -180,9 +185,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (perDisplace) {
-	
-		if (firstMouse)
-		{
+		if (firstMouse) {
 			lastX = xpos;
 			lastY = ypos;
 			firstMouse = false;
@@ -199,8 +202,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		
     } else if (perRotate) {
     
-    	if (firstMouse)
-		{
+    	if (firstMouse) {
 			lastX = xpos;
 			lastY = ypos;
 			firstMouse = false;
@@ -242,6 +244,7 @@ void updateUniforms(){
 int openGLInit(){
 	// glfw: initialize and configure
     const char* glsl_version = "#version 130";
+    
     glfwSetErrorCallback(glfw_error_callback);
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -254,12 +257,14 @@ int openGLInit(){
 
     // glfw window creation
     window = glfwCreateWindow(settings.getWidth(), settings.getHeight(), "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
+        
         return -1;
     }
+    
     glfwMakeContextCurrent(window);
     
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -269,16 +274,10 @@ int openGLInit(){
 	glfwSetScrollCallback(window, scroll_callback);
     
     // glad: load all OpenGL function pointers
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
+        
         return -1;
-    }
-    
-    if (glewInit() != GLEW_OK)
-    {
-        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return 1;
     }
     
     glfwSwapInterval(1); // Enable vsync
@@ -300,17 +299,17 @@ int openGLInit(){
 }
 
 void plainDeclar(){
-    for(int i=0; i<SIZE+1; i++){
-    	for(int j=0; j<SIZE+1; j++){
-    		vertex[2*((SIZE+1)*i+j)] = step*((float)i);
-    		vertex[2*((SIZE+1)*i+j)+1] = step*((float)j);
+    for(int i = 0; i < SIZE + 1; i++){
+    	for(int j = 0; j < SIZE + 1; j++){
+    		vertex[2 * ((SIZE + 1) * i + j)] = step * ((float) i);
+    		vertex[2 * ((SIZE + 1) * i + j) + 1] = step * ((float) j);
     		//std::cout << vertex[2*((SIZE-1)*i+j)] << " " << vertex[2*((SIZE-1)*i+j)+1] <<std::endl;
     	}
     }
     
-    for(int i=0; i<SIZE; i++){
-    	for(int j=0; j<SIZE; j++){
-    		indices[6*(SIZE*i+j)] = (SIZE+1)*i+j;
+    for(int i = 0; i < SIZE; i++){
+    	for(int j = 0; j < SIZE; j++){
+    		indices[6 * (SIZE * i + j)] = (SIZE + 1) * i + j;
     		indices[6*(SIZE*i+j)+1] = (SIZE+1)*i+j+1;
     		indices[6*(SIZE*i+j)+2] = (SIZE+1)*(i+1)+j;
     		
@@ -430,7 +429,8 @@ void visualizarInterfaz(){
 
 }
 
-int main() {
+int main()
+{
 	openGLInit();
     plainDeclar();
     shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
@@ -439,8 +439,7 @@ int main() {
 	updateUniforms();
     
     // render loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
     	// per-frame time logic
     	float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -452,8 +451,10 @@ int main() {
         // render
     	visualizarInterfaz();
     	render();
-    	for (int i=0; i<2; i++)
+    	
+    	for (int i=0; i<2; i++) {
 			visualizarInterfaz();
+		}
 		
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     	glfwSwapBuffers(window);
