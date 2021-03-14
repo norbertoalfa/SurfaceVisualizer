@@ -48,6 +48,7 @@ typedef enum {
 	NODO_OP = 0,
 	NODO_FUN,
 	NODO_IND,
+	NODO_PAREN,
 	NODO_IF
 
 } tipoNodo;

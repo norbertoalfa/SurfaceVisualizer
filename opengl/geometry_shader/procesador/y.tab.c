@@ -1437,7 +1437,7 @@ yyreduce:
 
   case 15:
 #line 71 "semantico.y"
-                                                                        { yyval.tipo=yyvsp[-1].tipo; yyval.dimension=yyvsp[-1].dimension; yyval.tam=yyvsp[-1].tam; yyval.nodoPropio=yyvsp[-1].nodoPropio; }
+                                                                        { yyval.tipo=yyvsp[-1].tipo; yyval.dimension=yyvsp[-1].dimension; yyval.tam=yyvsp[-1].tam; yyval.nodoPropio=crearNodoParen(yyvsp[-1]); }
 #line 1442 "y.tab.c"
     break;
 
@@ -1832,6 +1832,8 @@ int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
   initializeTS();
   generaFich();
+  generaCtes();
+  generaFuncionIf();
   
   return yyparse() ;
 }

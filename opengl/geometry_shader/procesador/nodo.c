@@ -6,6 +6,7 @@
 
 FILE * file;
 int nPlot=0;
+int totalParam=0;
 
 
 nodo* crearNodo(atributos e1){
@@ -38,6 +39,17 @@ nodo* crearNodoIndex(atributos e1, atributos ind) {
 	nodoActual->children[0] = e1.nodoPropio;
 	nodoActual->children[1] = ind.nodoPropio;
 	nodoActual->tipo = NODO_IND;
+	
+	return nodoActual;
+}
+
+nodo* crearNodoParen(atributos e1) {
+	nodo *nodoActual = malloc(sizeof(nodo));
+	
+	nodoActual->lex = strdup("()");
+	nodoActual->nChild = 1;
+	nodoActual->children[0] = e1.nodoPropio;
+	nodoActual->tipo = NODO_PAREN;
 	
 	return nodoActual;
 }
@@ -102,6 +114,80 @@ void generaFich(){
   	free(sent);	
 }
 
+// Añade las ctes predefinidas
+void generaCtes(){
+	char * sent;
+	
+  	sent = (char *) malloc(1000);
+  	sent[0]=0;
+  	
+    sprintf(sent,"\nfloat PI = 3.14159265;\n");
+    sprintf(sent,"%sfloat E = 2.71828182;\n\n", sent);
+    
+  	fputs(sent,file);
+  	free(sent);	
+}
+
+// Abre un fichero para crear el código intermedio
+void generaFuncionIf(){
+	char *sent, *cuerpo;
+	
+  	sent = (char *) malloc(1000);
+  	cuerpo = (char *) malloc(1000);
+
+  	sent[0]=0;
+  	cuerpo[0]=0;
+  	
+    sprintf(cuerpo,"{\n");
+    sprintf(cuerpo,"%s\tif (cond)\n", cuerpo);
+    sprintf(cuerpo,"%s\t\t return e1;\n", cuerpo);
+    sprintf(cuerpo,"%s\t else\n", cuerpo);
+    sprintf(cuerpo,"%s\t\t return e2;\n", cuerpo);
+    sprintf(cuerpo,"%s}\n", cuerpo);
+
+    sprintf(sent,"\nint funcionIf(bool cond, int e1, int e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	sent = (char *) malloc(1000);
+
+	sprintf(sent,"\nfloat funcionIf(bool cond, float e1, float e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	sent = (char *) malloc(1000);
+
+	sprintf(sent,"\nbool funcionIf(bool cond, bool e1, bool e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	sent = (char *) malloc(1000);
+
+	sprintf(sent,"\nvec2 funcionIf(bool cond, vec2 e1, vec2 e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	sent = (char *) malloc(1000);
+
+	sprintf(sent,"\nvec3 funcionIf(bool cond, vec3 e1, vec3 e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	sent = (char *) malloc(1000);
+
+	sprintf(sent,"\nmat2 funcionIf(bool cond, mat2 e1, mat2 e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	sent = (char *) malloc(1000);
+
+	sprintf(sent,"\nmat3 funcionIf(bool cond, mat3 e1, mat3 e2)\n");
+	fputs(sent,file);
+	fputs(cuerpo,file);
+	free(sent);
+	free(cuerpo);
+}
+
 // Cerrar fichero
 void closeInter(){
     fclose(file);
@@ -152,6 +238,10 @@ void escribeExpr(char *sent, nodo *nodoExpr){
 		sprintf(sent,"%s[", sent);
 		escribeExpr(sent, nodoExpr->children[nodoExpr->nChild-1]);
 		sprintf(sent,"%s]", sent);
+	} else if (nodoExpr->tipo == NODO_PAREN){
+		sprintf(sent,"%s(", sent);
+		escribeExpr(sent, nodoExpr->children[0]);
+		sprintf(sent,"%s)", sent);
 	}
 	
 	if (hayArg) {
@@ -245,6 +335,9 @@ void escribeIfPlot(char *sent, entradaTS fun){
     	sprintf(sent,"%s, param_t[%d]", sent, i-2);
     	i++;
     }
+
+	if (fun.nParam > totalParam)
+		totalParam = fun.nParam;
     
 	sprintf(sent,"%s);\n\t}", sent);
 	  	
@@ -296,16 +389,27 @@ void escribeContPlot(atributos fun){
 }
 
 void escribeFinPlot(){
-	char * sent;
+	char *sent, *sent_temp;
 	
   	sent = (char *) malloc(1000);
+  	sent_temp = (char *) malloc(1000);
+
   	sent[0]=0;
+  	sent_temp[0]=0;
+  	
+    FILE *temp_file = fopen("../temp","w");
   	
     sprintf(sent,"\n\n\tvertex.FragPos = vec3(model * vec4(aPosSurf, 1.0));\n\t");
     sprintf(sent,"%sgl_Position = projection * view * model * vec4(aPosSurf, 1.0);\n}", sent);
-    
+
   	fputs(sent,file);
   	free(sent);
-  	
+
+	sprintf(sent_temp,"%d\n", nPlot);
+	sprintf(sent_temp,"%s%d", sent_temp, totalParam-2);
+
+	fputs(sent_temp,temp_file);
+  	free(sent_temp);
+    fclose(temp_file);
 }
 

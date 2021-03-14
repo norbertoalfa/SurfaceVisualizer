@@ -7,11 +7,14 @@
 extern FILE * file;
 
 extern int nPlot;
+extern int totalParam;
 
 
 nodo* crearNodoIf(atributos comp, atributos e1, atributos e2);
 
 nodo* crearNodoIndex(atributos e1, atributos ind);
+
+nodo* crearNodoParen(atributos e1);
 
 nodo* crearNodoOpUn(atributos op, atributos e1);
 
@@ -25,6 +28,10 @@ void actualizaNodo(nodo *nodoFun, atributos e1);
 
 
 void generaFich();
+
+void generaCtes();
+
+void generaFuncionIf();
 
 void closeInter();
 

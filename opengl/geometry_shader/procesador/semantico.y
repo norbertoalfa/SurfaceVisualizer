@@ -68,7 +68,7 @@ sentencia_plot : sentencia_plot COMA IDENT	{ TS_InsertaPLOT($3); escribeContPlot
 			   | PLOT IDENT					{ setTipoDesc(); TS_InsertaFUN($1); TS_InsertaPLOT($2); escribeIniPlot($2); }
 ;
 
-expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; $$.nodoPropio=$2.nodoPropio; }
+expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; $$.nodoPropio=crearNodoParen($2); }
           | IF expresion THEN expresion ELSE expresion	{ comprobarIF($2, $4, $6, &$$); $$.nodoPropio=crearNodoIf($2,$4,$6); }
           | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); $$.nodoPropio=crearNodoIndex($1,$3); }
           | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; $$.nodoPropio=$1.nodoPropio; }
@@ -118,6 +118,8 @@ int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
   initializeTS();
   generaFich();
+  generaCtes();
+  generaFuncionIf();
   
   return yyparse() ;
 }

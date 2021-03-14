@@ -5,6 +5,7 @@ class ProgramStatus
 		unsigned int SCR_HEIGHT;
 
 		int totalFPlot;
+		int totalParam;
 
 		float lastMouseX;
 		float lastMouseY;
@@ -28,6 +29,7 @@ class ProgramStatus
 			SCR_HEIGHT = height;
 
 			totalFPlot = 1;
+			totalParam = 0;
 
 			lastMouseX = width / 2.0f;
 			lastMouseY = height / 2.0f;
@@ -67,6 +69,8 @@ class ProgramStatus
 		
 		void setTotalFPlot(int nplot) { totalFPlot = nplot; }
 
+		void setTotalParam(int nparam) { totalParam = nparam; }
+
 		void setLastMouseX(float lastX) { lastMouseX = lastX; }
 
 		void setLastMouseY(float lastY) { lastMouseY = lastY; }
@@ -104,6 +108,8 @@ class ProgramStatus
 		unsigned int getHeight() { return SCR_HEIGHT; }
 
 		int getTotalFPlot() { return totalFPlot; }
+
+		int getTotalParam() { return totalParam; }
 
 		float getLastMouseX() { return lastMouseX; }
 

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,6 +19,7 @@
 #include <light.h>
 #include <object.h>
 
+std::fstream temp_file;
 
 // Status
 ProgramStatus status;
@@ -329,6 +331,15 @@ void render()
 		system("cd procesador && make");
 		shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
 		status.setLoadShader(false);
+        
+        int n;
+
+        temp_file.open ("temp", std::fstream::in);
+        temp_file >> n;
+        status.setTotalFPlot(n);
+        temp_file >> n;
+        status.setTotalParam(n);
+        temp_file.close();
 	}
 	
 	// activate shader
@@ -361,6 +372,15 @@ int main()
     shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
 	shader -> use();
 	updateUniforms();
+    
+    int n;
+
+    temp_file.open ("temp", std::fstream::in);
+    temp_file >> n;
+    status.setTotalFPlot(n);
+    temp_file >> n;
+    status.setTotalParam(n);
+    temp_file.close();
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
