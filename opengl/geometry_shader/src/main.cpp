@@ -1,17 +1,12 @@
+#include "interface.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include <stdio.h>
+#include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
-#pragma comment(lib, "legacy_stdio_definitions")
-#endif
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,49 +14,26 @@
 
 #include <shader.h>
 #include <camera.h>
-#include <settings.h>
+#include <programStatus.h>
 #include <light.h>
 #include <object.h>
 
-#include <iostream>
 
-
-bool show_demo_window = true;
-bool show_another_window = false;
-ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-
-
-// Settings
-Settings settings;
-bool perDisplace = false;
-bool perRotate = false;
-bool loadShader = true;
-int totalFPlot = 1;
+// Status
+ProgramStatus status;
 
 // Camera
 Camera camera(glm::vec3(0.0f,0.0f,0.0f));
-float lastX = settings.getWidth() / 2.0f;
-float lastY = settings.getHeight() / 2.0f;
-bool firstMouse = true;
-bool firstTime_R = false;
-bool firstTime_P = false;
-
-// timing
-float deltaTime = 0.0f;	
-float lastFrame = 0.0f;
-
-// Light properties
 Light light;
-
-// Object properties
 Object object;
-
-// Shader
 Shader *shader;
 
+// timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
 // Uniforms to pass
-glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)settings.getWidth() / (float)settings.getHeight(), 0.1f, 100.0f);
+glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 GLfloat params[10];
@@ -94,81 +66,85 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
         
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     	camera.processKeyboard(FORWARD, deltaTime);
-    	settings.setSomeChange(true);
+    	status.setSomeChange(true);
 	}
 	
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
     	camera.processKeyboard(BACKWARD, deltaTime);
-    	settings.setSomeChange(true);
+    	status.setSomeChange(true);
 	}
 	
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
     	camera.processKeyboard(LEFT, deltaTime);
-    	settings.setSomeChange(true);
+    	status.setSomeChange(true);
     }
     
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
     	camera.processKeyboard(RIGHT, deltaTime);
-    	settings.setSomeChange(true);
+    	status.setSomeChange(true);
     }
     
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-    	firstTime_R = true;
-    	settings.setSomeChange(true);
+    	status.setFirstPressR(true);
+    	status.setSomeChange(true);
     }
     
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		firstTime_P = true;
-		settings.setSomeChange(true);
+		status.setFirstPressP(true);
+		status.setSomeChange(true);
     }
     
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE) {
-    	if (firstTime_R) {
-    		settings.switchAutoRot();
-    		firstTime_R = false;
+    	if (status.getFirstPressR()) {
+    		status.switchAutoRot();
+    		status.setFirstPressR(false);
     	}
     }
     
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE) {
-    	if (firstTime_P) {
-    		settings.switchPolMode();
-    		firstTime_P = false;
-    		settings.setSomeChange(true);
+    	if (status.getFirstPressP()) {
+    		status.switchPolMode();
+    		status.setFirstPressP(false);
+    		status.setSomeChange(true);
     	}
     }
     
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-    	loadShader = true;
-    	settings.setSomeChange(true);
+    	status.setLoadShader(true);
+    	status.setSomeChange(true);
     }
 }
 
 void processMouseKey(GLFWwindow* window, int button, int action, int mods)
 {
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-    	perDisplace = true;
-    	settings.setSomeChange(true);
+    if (!ImGui::IsAnyWindowHovered()) {
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+            status.setPerDisplace(true);
+            status.setSomeChange(true);
+        }
+        
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+            status.setPerRotate(true);
+            status.setSomeChange(true);
+        }
+        
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
+            camera.reset();
+            status.setSomeChange(true);
+        }
     }
-    
+
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
-    	perDisplace = false;
-    	firstMouse = true;
+        status.setPerDisplace(false);
+        status.setFirstMouse(true);
     }
-    
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-    	perRotate = true;
-    	settings.setSomeChange(true);
-    }
-    
+
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE){
-    	perRotate = false;
-    	firstMouse = true;
+        status.setPerRotate(false);
+        status.setFirstMouse(true);
     }
-    
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
-    	camera.reset();
-    	settings.setSomeChange(true);
-    }
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -176,46 +152,35 @@ void processMouseKey(GLFWwindow* window, int button, int action, int mods)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-    settings.setWidth(width);
-    settings.setHeight(height);
+    status.setWidth(width);
+    status.setHeight(height);
 }
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (perDisplace) {
-		if (firstMouse) {
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
+    float xoffset, yoffset;
+
+	if (status.getPerDisplace() or status.getPerRotate()) {
+		if (status.getFirstMouse()) {
+			status.setLastMouseX(xpos);
+			status.setLastMouseY(ypos);
+            status.setFirstMouse(false);
 		}
 
-		float xoffset = -xpos + lastX;
-		float yoffset = -lastY + ypos;
+		xoffset = -xpos + status.getLastMouseX();
+		yoffset = -status.getLastMouseY() + ypos;
 
-		lastX = xpos;
-		lastY = ypos;
-
-		camera.processMouseDisplace(xoffset, yoffset);
-		settings.setSomeChange(true);
-		
-    } else if (perRotate) {
-    
-    	if (firstMouse) {
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
-
-		float xoffset = -xpos + lastX;
-		float yoffset = -lastY + ypos;
-
-		lastX = xpos;
-		lastY = ypos;
-
+		status.setLastMouseX(xpos);
+		status.setLastMouseY(ypos);
+		status.setSomeChange(true);
+    }
+	
+    if (status.getPerDisplace()) {
+    	camera.processMouseDisplace(xoffset, yoffset);
+    } else if (status.getPerRotate()) {
 		camera.processMouseRotate(xoffset, yoffset);
-		settings.setSomeChange(true);
     }
 }
 
@@ -223,11 +188,23 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.processMouseScroll(yoffset);
-    settings.setSomeChange(true);
+    if (!ImGui::IsAnyWindowHovered()) {
+        camera.processMouseScroll(yoffset);
+        status.setSomeChange(true);
+    }
 }
 
-void updateUniforms(){
+void setCallbacks()
+{
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetKeyCallback(window, processKeyInput);
+	glfwSetMouseButtonCallback(window, processMouseKey);
+    glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+}
+
+void updateUniforms()
+{
     shader->setMat4("projection", projection);
     shader->setMat4("view", view);
     shader->setMat4("model", model);
@@ -241,22 +218,17 @@ void updateUniforms(){
 	shader->setArray("param_t", params, sizeof(params));
 }
 
-int openGLInit(){
+int initializeGLFW()
+{
 	// glfw: initialize and configure
-    const char* glsl_version = "#version 130";
-    
-    glfwSetErrorCallback(glfw_error_callback);
     glfwInit();
+    glfwSetErrorCallback(glfw_error_callback);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	#ifdef __APPLE__
-    	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	#endif
-
     // glfw window creation
-    window = glfwCreateWindow(settings.getWidth(), settings.getHeight(), "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(status.getWidth(), status.getHeight(), "LearnOpenGL", NULL, NULL);
     
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -266,12 +238,7 @@ int openGLInit(){
     }
     
     glfwMakeContextCurrent(window);
-    
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetKeyCallback(window, processKeyInput);
-	glfwSetMouseButtonCallback(window, processMouseKey);
-    glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+    setCallbacks();
     
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -284,21 +251,10 @@ int openGLInit(){
     
     // configure global opengl state
     glEnable(GL_DEPTH_TEST);
-    
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
-void plainDeclar(){
+void plainDeclar()
+{
     for(int i = 0; i < SIZE + 1; i++){
     	for(int j = 0; j < SIZE + 1; j++){
     		vertex[2 * ((SIZE + 1) * i + j)] = step * ((float) i);
@@ -310,15 +266,18 @@ void plainDeclar(){
     for(int i = 0; i < SIZE; i++){
     	for(int j = 0; j < SIZE; j++){
     		indices[6 * (SIZE * i + j)] = (SIZE + 1) * i + j;
-    		indices[6*(SIZE*i+j)+1] = (SIZE+1)*i+j+1;
-    		indices[6*(SIZE*i+j)+2] = (SIZE+1)*(i+1)+j;
+    		indices[6 * (SIZE * i + j) + 1] = (SIZE + 1) * i + j + 1;
+    		indices[6 * (SIZE * i + j) + 2] = (SIZE + 1) * (i + 1) + j;
     		
-    		indices[6*(SIZE*i+j)+3] = (SIZE+1)*(i+1)+j;
-    		indices[6*(SIZE*i+j)+4] = (SIZE+1)*i+j+1;
-    		indices[6*(SIZE*i+j)+5] = (SIZE+1)*(i+1)+j+1;
+    		indices[6 * (SIZE * i + j) + 3] = (SIZE + 1) * (i + 1) + j;
+    		indices[6 * (SIZE * i + j) + 4] = (SIZE + 1) * i + j + 1;
+    		indices[6 * (SIZE * i + j) + 5] = (SIZE + 1) * (i + 1) + j + 1;
     	}
     }
-    
+}
+
+void initializeBuffers()
+{    
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -342,102 +301,67 @@ void plainDeclar(){
     glBindVertexArray(0);
 }
 
-void render(){
+void render()
+{
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (settings.getActivePolMode()) {
+	if (status.getActivePolMode()) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	} else {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-
 	// camera/view transformation
-	if (settings.getAutoRotation()) {
+	if (status.getAutoRotation()) {
 		view = camera.getAutoRotViewMatrix();
 	} else {
 		view = camera.getViewMatrix();
 	}
 
-	projection = glm::perspective(glm::radians(45.0f), (float)settings.getWidth() / (float)settings.getHeight(), 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
 	
-	params[0] = sin(glfwGetTime()/2);
-	params[1] = cos(glfwGetTime()/2);
+	params[0] = sin(glfwGetTime() / 2);
+	params[1] = cos(glfwGetTime() / 2);
 	
-	if (loadShader) {
+	if (status.getLoadShader()) {
 		delete shader;
 		system("cd procesador && make");
 		shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
-		loadShader = false;
+		status.setLoadShader(false);
 	}
 	
 	// activate shader
-	shader->use();
+	shader -> use();
 	updateUniforms();
 	
 	// render boxes
 	glBindVertexArray(VAO);
 
-	for (int i=0; i<totalFPlot; i++) {
+	for (int i = 0; i < status.getTotalFPlot(); i++) {
 		shader->setInt("funPlot", i);
 		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 	}
-	
 }
 
-void visualizarInterfaz(){
-	ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    {
-        static float f = 0.0f;
-        static int counter = 0;
-
-        ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-        ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-        ImGui::Checkbox("Another Window", &show_another_window);
-
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            counter++;
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
-    }
-
-    // 3. Show another simple window.
-    if (show_another_window)
-    {
-        ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me"))
-            show_another_window = false;
-        ImGui::End();
-    }
-
-    // Rendering
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+void cleanBuffers()
+{
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
 
 int main()
 {
-	openGLInit();
+	initializeGLFW();
+    initImGUI(window);
     plainDeclar();
+    initializeBuffers();
+
     shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
-	shader->use();
-	
+	shader -> use();
 	updateUniforms();
-    
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
     	// per-frame time logic
@@ -449,33 +373,26 @@ int main()
         glfwPollEvents();
     	
         // render
-    	visualizarInterfaz();
+    	visualizeInterface();
     	render();
     	
-    	for (int i=0; i<2; i++) {
-			visualizarInterfaz();
-		}
+    	for (int i = 0; i < 2; i++)
+			visualizeInterface();
 		
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     	glfwSwapBuffers(window);
     	
-    	settings.setSomeChange(false);
-        settings.updateSomeChange();
+    	status.setSomeChange(false);
+        status.updateSomeChange();
         
-        if (!settings.getSomeChange())
+        if (!status.getSomeChange())
         	glfwWaitEvents();
     }
 	
 	// Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    
-    // optional: de-allocate all resources once they've outlived their purpose:
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-
+    cleanImGUI();
+    cleanBuffers();
     glfwTerminate();
+
     return 0;
 }
