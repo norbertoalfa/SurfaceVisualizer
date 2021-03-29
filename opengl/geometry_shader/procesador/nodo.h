@@ -41,6 +41,8 @@ void escribeExpr(char *sent, nodo *nodoExpr);
 
 void escribeFun(atributos fun, atributos e1);
 
+void escribeNorm(atributos fun, atributos e1);
+
 void escribeVal(atributos id, atributos e1);
 
 void escribeIfPlot(char *sent, entradaTS fun);

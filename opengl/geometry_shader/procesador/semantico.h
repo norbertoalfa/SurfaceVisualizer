@@ -221,9 +221,6 @@ void TS_FunCall(atributos id, atributos argFun, atributos* res);
 // Realiza la comprobación de cada parámetro de una función
 void TS_ComprobarPARAM(atributos funID,atributos param, int checkParam);
 
-
-void escribeFun(atributos fun, atributos e1);
-
 // Muestra una entrada de la tabla de símbolos
 void printEntrada(int row);
 

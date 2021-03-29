@@ -82,7 +82,7 @@ vec3 f(float u, float v) {
 }
 
 vec3 f2(float u, float v, float t0) {
-	return (t0 * t0) *  f(u, v) + (1 - t0 * t0) *  vec3( f(u, v)[0], 0.0,  f(u, v)[1]);
+	return  pow((t0 * t0), 2) *  f(u, v) + (1 - t0 * t0) *  vec3( f(u, v)[0], 0.0,  f(u, v)[1]);
 }
 
 void main() {

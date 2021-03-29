@@ -222,11 +222,17 @@ void escribeExpr(char *sent, nodo *nodoExpr){
 	if (nodoExpr->nChild==0){
 		sprintf(sent,"%s%s", sent, nodoExpr->lex);
 	} else if (nodoExpr->tipo == NODO_OP){
-		if (nodoExpr->nChild==2) {
-			escribeExpr(sent, nodoExpr->children[0]);
+		if (strcmp(nodoExpr->lex, "^") == 0) {
+			sprintf(sent,"%s pow(", sent);
+			hayArg = 1;
+		} else {
+			if (nodoExpr->nChild==2) {
+				escribeExpr(sent, nodoExpr->children[0]);
+			}
+			
+			sprintf(sent,"%s %s ", sent, nodoExpr->lex);
+			escribeExpr(sent, nodoExpr->children[nodoExpr->nChild-1]);
 		}
-		sprintf(sent,"%s %s ", sent, nodoExpr->lex);
-		escribeExpr(sent, nodoExpr->children[nodoExpr->nChild-1]);
 	} else if (nodoExpr->tipo == NODO_IF){
 		sprintf(sent,"%s funcionIf(", sent);
 		hayArg = 1;
@@ -296,6 +302,124 @@ void escribeFun(atributos fun, atributos e1){
     
   	fputs(sent,file);
   	free(sent);
+  	
+}
+
+nodo* partialF(nodo *nodoFun, char *nVar) {
+	nodo *nodoPar = malloc(sizeof(nodo));
+	int hayArg, i;
+	
+	hayArg = 0;
+	i = 0;
+	
+	if (nodoFun->nChild==0){
+		if (strcmp(nVar, nodoFun->lex) == 0){
+			nodoPar->lex = strdup("1");
+		} else {
+			nodoPar->lex = strdup("0");
+		}
+
+		nodoPar->nChild = 0;
+	} else if (nodoFun->tipo == NODO_OP){
+		if (nodoFun->nChild == 2) {
+			nodoPar->tipo = nodoFun->tipo;
+			nodoPar->nChild = nodoFun->nChild;
+
+			if (strcmp("+", nodoFun->lex) == 0 || strcmp("-", nodoFun->lex) == 0){
+				nodoPar->lex = nodoFun->lex;
+				nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
+				nodoPar->children[1] = partialF(nodoFun->children[1], nVar);
+			} else if (strcmp("*", nodoFun->lex) == 0){
+				nodo *nodoIzq = malloc(sizeof(nodo));
+				nodo *nodoDer = malloc(sizeof(nodo));
+
+				nodoIzq->tipo = nodoFun->tipo;
+				nodoIzq->nChild = nodoFun->nChild;
+				nodoIzq->lex = strdup("*");
+				nodoIzq->children[0] = partialF(nodoFun->children[0], nVar);
+				nodoIzq->children[1] = nodoFun->children[1];
+
+				nodoDer->tipo = nodoFun->tipo;
+				nodoDer->nChild = nodoFun->nChild;
+				nodoDer->lex = strdup("*");
+				nodoDer->children[0] = nodoFun->children[0];
+				nodoDer->children[1] = partialF(nodoFun->children[1], nVar);
+
+				nodoPar->lex = strdup("+");
+				nodoPar->children[0] = nodoIzq;
+				nodoPar->children[1] = nodoDer;
+			} else if (strcmp("/", nodoFun->lex) == 0){
+				nodo *nodoIzq = malloc(sizeof(nodo));
+				nodo *nodoDer = malloc(sizeof(nodo));
+				nodo *nodoNum = malloc(sizeof(nodo));
+				nodo *nodoDen = malloc(sizeof(nodo));
+
+				nodoIzq->tipo = nodoFun->tipo;
+				nodoIzq->nChild = nodoFun->nChild;
+				nodoIzq->lex = strdup("/");
+				nodoIzq->children[0] = partialF(nodoFun->children[0], nVar);
+				nodoIzq->children[1] = nodoFun->children[1];
+
+				nodoNum->tipo = nodoFun->tipo;
+				nodoNum->nChild = nodoFun->nChild;
+				nodoNum->lex = strdup("*");
+				nodoNum->children[0] = nodoFun->children[0];
+				nodoNum->children[1] = partialF(nodoFun->children[1], nVar);
+
+				nodoDen->tipo = nodoFun->tipo;
+				nodoDen->nChild = nodoFun->nChild;
+				nodoDen->lex = strdup("*");
+				nodoDen->children[0] = nodoFun->children[1];
+				nodoDen->children[1] = nodoFun->children[1];
+
+				nodoDer->tipo = nodoFun->tipo;
+				nodoDer->nChild = nodoFun->nChild;
+				nodoDer->lex = strdup("/");
+				nodoDer->children[0] = nodoNum;
+				nodoDer->children[1] = nodoDen;
+
+				nodoPar->lex = strdup("-");
+				nodoPar->children[0] = nodoIzq;
+				nodoPar->children[1] = nodoDer;
+			} else if (strcmp("^", nodoFun->lex) == 0){
+			}
+		}
+	} else if (nodoFun->tipo == NODO_IF){
+		nodoPar->tipo = nodoFun->tipo;
+		nodoPar->nChild = nodoFun->nChild;
+		nodoPar->lex = nodoFun->lex;
+		nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
+		nodoPar->children[1] = partialF(nodoFun->children[1], nVar);
+	} else if (nodoFun->tipo == NODO_FUN){
+	} else if (nodoFun->tipo == NODO_IND){
+		nodoPar->tipo = nodoFun->tipo;
+		nodoPar->nChild = nodoFun->nChild;
+		nodoPar->lex = nodoFun->lex;
+		nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
+		nodoPar->children[1] = nodoFun->children[1];
+	} else if (nodoFun->tipo == NODO_PAREN){
+		nodoPar->tipo = nodoFun->tipo;
+		nodoPar->nChild = nodoFun->nChild;
+		nodoPar->lex = nodoFun->lex;
+		nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
+	}
+}
+
+void escribeNorm(atributos fun, atributos e1){
+	int indexFun, i;
+	char * sent;
+	
+  	sent = (char *) malloc(1000);
+  	sent[0]=0;
+  	indexFun = TS_BuscarFUN(fun);
+  	
+  	if (indexFun == -1) {
+  		return;
+  	}
+  	
+  	i = 1;
+  	
+	
   	
 }
 
