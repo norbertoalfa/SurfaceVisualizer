@@ -1419,7 +1419,7 @@ yyreduce:
 
   case 12:
 #line 64 "semantico.y"
-                                                                                                                                                                                    {	comprobarTipoFun(yyvsp[-9], yyvsp[0]); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun(yyvsp[-9], yyvsp[0]);}
+                                                                                                                                                                                    {	comprobarTipoFun(yyvsp[-9], yyvsp[0]); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun(yyvsp[-9], yyvsp[0]); escribeNorm(yyvsp[-9], yyvsp[0]); }
 #line 1424 "y.tab.c"
     break;
 

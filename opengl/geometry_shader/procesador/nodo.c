@@ -305,12 +305,32 @@ void escribeFun(atributos fun, atributos e1){
   	
 }
 
+nodo* addParen(nodo *n) {
+	nodo *nodoParen = malloc(sizeof(nodo));
+
+	nodoParen->tipo = NODO_PAREN;
+	nodoParen->nChild = 1;
+	nodoParen->lex = strdup("()");
+	nodoParen->children[0] = n;
+
+	return nodoParen;
+}
+
 nodo* partialF(nodo *nodoFun, char *nVar) {
 	nodo *nodoPar = malloc(sizeof(nodo));
 	int hayArg, i;
 	
 	hayArg = 0;
 	i = 0;
+
+	nodoPar->tipo = nodoFun->tipo;
+	nodoPar->nChild = nodoFun->nChild;
+	nodoPar->lex = nodoFun->lex;
+
+	for (i = 0; i < nodoFun->nChild; i++) {
+		nodoPar->children[i] = nodoFun->children[i];
+	}
+	
 	
 	if (nodoFun->nChild==0){
 		if (strcmp(nVar, nodoFun->lex) == 0){
@@ -376,7 +396,7 @@ nodo* partialF(nodo *nodoFun, char *nVar) {
 				nodoDer->nChild = nodoFun->nChild;
 				nodoDer->lex = strdup("/");
 				nodoDer->children[0] = nodoNum;
-				nodoDer->children[1] = nodoDen;
+				nodoDer->children[1] = addParen(nodoDen);
 
 				nodoPar->lex = strdup("-");
 				nodoPar->children[0] = nodoIzq;
@@ -403,24 +423,30 @@ nodo* partialF(nodo *nodoFun, char *nVar) {
 		nodoPar->lex = nodoFun->lex;
 		nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
 	}
+
+	return nodoPar;
 }
 
 void escribeNorm(atributos fun, atributos e1){
 	int indexFun, i;
-	char * sent;
-	
-  	sent = (char *) malloc(1000);
-  	sent[0]=0;
+	char *sent, *nVar = "u";
+
   	indexFun = TS_BuscarFUN(fun);
   	
   	if (indexFun == -1) {
   		return;
   	}
   	
-  	i = 1;
-  	
+	// Escribe la expresión de forma recurrente
+  	sent = (char *) malloc(10000);
+  	sent[0]=0;
 	
-  	
+	sprintf(sent,"%s) {\n\treturn ", sent);
+    escribeExpr(sent, partialF(e1.nodoPropio, nVar));
+    sprintf(sent,"%s;\n}\n\n", sent);
+    
+  	fputs(sent,file);
+  	free(sent);
 }
 
 void escribeVal(atributos id, atributos e1){

@@ -69,28 +69,18 @@ mat3 funcionIf(bool cond, mat3 e1, mat3 e2)
 	 else
 		 return e2;
 }
-vec3 g(float u, float v) {
-	return 2 *  vec3( cos(v * PI) *  cos(u * 2 * PI),  cos(v * PI) *  sin(u * 2 * PI),  sin(v * PI));
-}
-
-vec3 h(float u, float v) {
-	return 2 *  vec3(u, v,  cos(10 * u) +  cos(10 * v));
-}
-
 vec3 f(float u, float v) {
-	return  g(u - 0.5, v - 0.5);
+	return  vec3(u - 0.5, v - 0.5, 0.1) * ((u * u) / u);
 }
 
-vec3 f2(float u, float v, float t0) {
-	return  pow((t0 * t0), 2) *  f(u, v) + (1 - t0 * t0) *  vec3( f(u, v)[0], 0.0,  f(u, v)[1]);
+) {
+	return  vec3(u - 0.5, v - 0.5, 0.1) * ((u * u) / u) +  vec3(u - 0.5, v - 0.5, 0.1) * ((1 * u + u * 1) / u - (u * u) * 1 / (u * u));
 }
 
 void main() {
 	vec3 aPosSurf;
 
 	if (funPlot==0) {
-		aPosSurf = f2(aPos.x, aPos.y, param_t[0]);
-	} else if (funPlot==1) {
 		aPosSurf = f(aPos.x, aPos.y);
 	}
 
