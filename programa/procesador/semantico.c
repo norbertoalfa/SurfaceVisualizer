@@ -906,9 +906,28 @@ void initializeTS() {
 	paramSin.lex = strdup("x");
 	paramSin.tipo = REAL;
 	paramSin.nParam = 0;
-	paramSin.dimension=0;
-	paramSin.tam=0;
+	paramSin.dimension = 0;
+	paramSin.tam = 0;
 	TS_InsertaEntrada(paramSin);
+	
+	// tg
+	entradaTS funTg;
+	funTg.entrada = FUNCION;
+	funTg.lex = strdup("tg");
+	funTg.tipo = REAL;
+	funTg.nParam = 1;
+	funTg.dimension = 0;
+	funTg.tam = 0;
+	TS_InsertaEntrada(funTg);
+	
+	entradaTS paramTg;
+	paramTg.entrada = PARA_FORM;
+	paramTg.lex = strdup("x");
+	paramTg.tipo = REAL;
+	paramTg.nParam = 0;
+	paramTg.dimension=0;
+	paramTg.tam=0;
+	TS_InsertaEntrada(paramTg);
 	
 	// log
 	entradaTS funLog;
