@@ -1,0 +1,5 @@
+//Ejemplo
+
+f(u,v :real) : vec3 = vec3(u-0.5, v-0.5, 0.1) * (u^2);
+
+plot f;

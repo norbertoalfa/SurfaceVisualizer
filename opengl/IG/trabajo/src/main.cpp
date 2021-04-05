@@ -201,9 +201,6 @@ void VisualizarEscena()
 		// visualizar la escena actual
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		escenas[ind_escena_act]->visualizarGL( cv );
-		//glfwSwapBuffers( ventana_glfw );
-		//glfwWindowHint(GLFW_CONTEXT_RELEASE_BEHAVIOR, GLFW_RELEASE_BEHAVIOR_NONE);
-		//glfwMakeContextCurrent( w2 );
 		CError();
 		  /////////////////////////////////////////////////////////////////
 		  	for (int k=0; k<3; k++)
@@ -213,9 +210,6 @@ void VisualizarEscena()
 
 		// visualizar en pantalla el buffer trasero (donde se han dibujado las primitivas)
 		glfwSwapBuffers( ventana_glfw );
-
-		//glfwWindowHint(GLFW_CONTEXT_RELEASE_BEHAVIOR, GLFW_RELEASE_BEHAVIOR_NONE);
-		//glfwMakeContextCurrent( ventana_glfw );
 
 		// si queremos imprimir los tiempos por cuadro, hacerlo.
 		if ( imprimir_tiempos )
