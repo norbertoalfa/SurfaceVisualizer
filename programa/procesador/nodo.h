@@ -9,28 +9,25 @@ extern FILE * file;
 extern int nPlot;
 extern int totalParam;
 
-nodo* crearNodoCte(atributos e1);
+nodo* crearNodoIf(nodo *comp, nodo *expr1, nodo *expr2);
 
-nodo* crearNodoVar(atributos e1);
+nodo* crearNodoIndex(nodo *expr, nodo *ind);
 
-nodo* crearNodoIf(atributos comp, atributos e1, atributos e2);
+nodo* crearNodoParentesis(nodo *expr);
 
-nodo* crearNodoIndex(atributos e1, atributos ind);
+nodo* crearNodoOpUn(char *op, nodo *expr);
 
-nodo* crearNodoParen(atributos e1);
+nodo* crearNodoOpBin(nodo *expr1, char *op, nodo *expr2);
 
-nodo* crearNodoOpUn(atributos op, atributos e1);
+nodo* crearNodo(char *nombre);
 
-nodo* crearNodoOpBin(atributos e1, atributos op, atributos e2);
+nodo* crearNodoTipo(char *nombre, tipoNodo tipo);
 
-nodo* crearNodo(atributos e1);
-
-nodo* crearNodoFun(atributos e1);
+nodo* crearNodoNormal(nodo *parU, nodo *parV);
 
 nodo* partialF(nodo *nodoFun, char *nVar);
 
-void actualizaNodo(nodo *nodoFun, atributos e1);
-
+void actualizaNodo(nodo *nodoFun, nodo *expr);
 
 void generaFich();
 
@@ -44,17 +41,17 @@ void escribeEntrada(char *sent, entradaTS e);
 
 void escribeExpr(char *sent, nodo *nodoExpr);
 
-void escribeFun(atributos fun, atributos e1);
+void escribeFun(char *fun, nodo *expr);
 
 void escribeNorm(atributos fun, atributos e1);
 
-void escribeVal(atributos id, atributos e1);
+void escribeVal(char *id, nodo *expr);
 
 void escribeIfPlot(char *sent, entradaTS fun);
 
-void escribeIniPlot(atributos fun);
+void escribeIniPlot(char *fun);
 
-void escribeContPlot(atributos fun);
+void escribeContPlot(char *fun);
 
 void escribeFinPlot();
 

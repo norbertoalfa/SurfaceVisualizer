@@ -26,8 +26,8 @@ int igualSize(atributos e1, atributos e2){
     return (e1.dimension == e2.dimension && e1.tam == e2.tam);
 }
 
-void comprobarSizeArray(atributos e, int s, int t){//=0) {
-	int j = TS_BuscarIDENT(e);
+void comprobarSizeArray(atributos e, int s, int t){
+	int j = TS_BuscarIDENT(e.lex);
 	int tam = TS[j].tam;
 	
 	if (j==-1) {
@@ -192,13 +192,13 @@ void TS_VaciarENTRADAS(){
 }
 
 // Busca una entrada según el id
-int TS_BuscarIDENT(atributos e){
+int TS_BuscarIDENT(char *nombre){
 
     int i = LIMIT - 1;
 	int found = 0;
 	
 	while (i >= 0 && !found) {
-		if (TS[i].entrada == VAR && strcmp(e.lex, TS[i].lex) == 0) {
+		if (TS[i].entrada == VAR && strcmp(nombre, TS[i].lex) == 0) {
 			found = 1;
 		} else{
 			i--;
@@ -206,7 +206,7 @@ int TS_BuscarIDENT(atributos e){
 	}
 
 	if(!found) {
-		printf("Error semántico(%d): Identificador no declarado: %s\n", linea, e.lex);
+		printf("Error semántico(%d): Identificador no declarado: %s\n", linea, nombre);
 		return -1;
 	} else {
 		return i;
@@ -215,21 +215,21 @@ int TS_BuscarIDENT(atributos e){
 }
 
 // Devuelve la entrada
-entradaTS getEntrada(atributos e) {
-	int j = TS_BuscarIDENT(e);
+entradaTS getEntrada(char *nombre) {
+	int j = TS_BuscarIDENT(nombre);
 	
 	return TS[j];
 }
 
 // Busca una entrada según el nombre
-int TS_BuscarFUN(atributos e){
+int TS_BuscarFUN(char *nombre){
 
     int i = LIMIT - 1;
 	int found = 0;
 
 
 	while (i > 0 && !found) {
-		if (TS[i].entrada == FUNCION && strcmp(e.lex, TS[i].lex) == 0) {
+		if (TS[i].entrada == FUNCION && strcmp(nombre, TS[i].lex) == 0) {
 			found = 1;
 		} else{
 			i--;
@@ -237,7 +237,7 @@ int TS_BuscarFUN(atributos e){
 	}
 
 	if(!found) {
-		printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, e.lex);
+		printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, nombre);
 		return -1;
 	} else {
 		return i;
@@ -246,7 +246,7 @@ int TS_BuscarFUN(atributos e){
 }
 
 // Añade un id
-void TS_InsertaIDENT(atributos e){
+void TS_InsertaIDENT(char *nombre){
 
     // Para añadir un id a la pila no se puede haber llegado al tope,
     // el id no puede existir y se deben estar declarando variables
@@ -257,14 +257,14 @@ void TS_InsertaIDENT(atributos e){
 		// Se obtiene la posición de la mark del bloque
 		while((j >= 0) && !found){
 
-			if(strcmp(TS[j].lex, e.lex) != 0){
+			if(strcmp(TS[j].lex, nombre) != 0){
 
 				j--;
 
 			} else{
 
 				found = 1;
-				printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, e.lex);
+				printf("(Error semántico, línea %d) El identificador ya existe: %s\n", linea, nombre);
 
 	 		}
 
@@ -275,7 +275,7 @@ void TS_InsertaIDENT(atributos e){
 		if(!found) {
 			entradaTS newIn;
 			newIn.entrada = VAR;
-			newIn.lex = e.lex;
+			newIn.lex = nombre;
 			newIn.tipo = globalType;
 			newIn.nParam = 0;
 			newIn.dimension=globalDim;
@@ -416,7 +416,7 @@ void TS_InsertaPARAMF(atributos e){
 }
 
 
-void TS_InsertaPLOT(atributos id){
+void TS_InsertaPLOT(char *id){
 
     int j = LIMIT - 1, found = 0;
     int index;
@@ -424,14 +424,14 @@ void TS_InsertaPLOT(atributos id){
 
 	while((j != currentFun)  && (!found) ){
 
-		if(strcmp(TS[j].lex, id.lex) != 0) {
+		if(strcmp(TS[j].lex, id) != 0) {
 
 			j--;
 
 		} else{
 
 			found = 1;
-			printf("Error semántico(%d): El parámetro ya existe: %s\n", linea, id.lex);
+			printf("Error semántico(%d): El parámetro ya existe: %s\n", linea, id);
 
         }
 
@@ -450,9 +450,9 @@ void TS_InsertaPLOT(atributos id){
 	
 	if(index!=-1) {
 		if (TS[index].nParam<2) {
-		    printf("\n(Error semántico, línea %d) El número de parámetros de la función a dibujar %s debe ser al menos 2.\n", linea, id.lex);
+		    printf("\n(Error semántico, línea %d) El número de parámetros de la función a dibujar %s debe ser al menos 2.\n", linea, id);
 		} else if (!validParam) {
-		    printf("\n(Error semántico, línea %d) Todos los parámetros de la función %s deben ser de tipo real.\n", linea, id.lex);
+		    printf("\n(Error semántico, línea %d) Todos los parámetros de la función %s deben ser de tipo real.\n", linea, id);
 		} else {
 
 			entradaTS newIn;
@@ -482,7 +482,7 @@ void TS_ActualizarFun(){
 // Devuelve el identificar
 void TS_getIDENT(atributos id, atributos* res){
 
-    int index = TS_BuscarIDENT(id);
+    int index = TS_BuscarIDENT(id.lex);
 	
 	if(index==-1) {
         if(TS[index].entrada != FUNCION)
@@ -510,7 +510,7 @@ void comprobarTipoCte(atributos idTipo){
 
 // Realiza la comprobación de la operación +, - y !
 void comprobarTipoFun(atributos idFun, atributos idTipo){
-	int index = TS_BuscarFUN(idFun);
+	int index = TS_BuscarFUN(idFun.lex);
 	
 	if(TS[index].tipo != idTipo.tipo) {
 		if (!(TS[index].tipo == REAL && idTipo.tipo == ENTERO)) {
@@ -795,7 +795,7 @@ void TS_FunCall(atributos id, atributos argFun, atributos* res){
 		res->dimension = 2;
 		res->tam = 3;
     } else {
-		index = TS_BuscarFUN(id);
+		index = TS_BuscarFUN(id.lex);
 
 		if(index==-1) {
 
@@ -831,7 +831,7 @@ void TS_ComprobarPARAM(atributos funID ,atributos param, int checkParam){
     	return;
     }
 	
-	f = TS_BuscarFUN(funID);
+	f = TS_BuscarFUN(funID.lex);
 	posParam = (f ) + (checkParam);
 	error = checkParam;
 	

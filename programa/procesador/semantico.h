@@ -146,7 +146,7 @@ int setTipoDesc();
 void actualizaTipoDesc(atributos tipo);
 
 // Devuelve la entrada de la tabla de símbolos cuyo identificador coincide con el de e. 
-entradaTS getEntrada(atributos e);
+entradaTS getEntrada(char *nombre);
 
 // Inserta una entrada en la tabla
 int TS_InsertaEntrada(entradaTS entrada);
@@ -159,13 +159,13 @@ int TS_BorrarENTRADA();
 void TS_VaciarENTRADAS();
 
 // Busca una entrada según el identificador
-int TS_BuscarIDENT(atributos e);
+int TS_BuscarIDENT(char *nombre);
 
 // Busca una entrada de una función
-int TS_BuscarFUN(atributos e);
+int TS_BuscarFUN(char *nombre);
 
 // Añade un identificador
-void TS_InsertaIDENT(atributos e);
+void TS_InsertaIDENT(char *nombre);
 
 // Añade una marca de tope
 void TS_InsertaMARCA();
@@ -177,7 +177,7 @@ void TS_InsertaFUN(atributos e);
 void TS_InsertaPARAMF(atributos e);
 
 
-void TS_InsertaPLOT(atributos id);
+void TS_InsertaPLOT(char *id);
 
 // Actualiza el número de parámetros de la función y el tipo
 void TS_ActualizarFun();

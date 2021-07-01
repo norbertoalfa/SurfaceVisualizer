@@ -69,36 +69,24 @@ mat3 funcionIf(bool cond, mat3 e1, mat3 e2)
 	 else
 		 return e2;
 }
-vec3 g(float x) {
-	return  vec3(x - 0.5, x - 0.5, 0.1);
-}
-
-vec3 gPu(float x) {
-	return  vec3((0 - 0), (0 - 0), (0));
-}
-
-vec3 gPv(float x) {
-	return  vec3((0 - 0), (0 - 0), (0));
-}
-
-vec3 gNormal(float x) {
-	return  normalize( cross( gPu(x),  gPv(x)));
+float g(float x) {
+	return x;
 }
 
 vec3 f(float u, float v) {
-	return 2 *  g( pow(u, 2) + v);
+	return  vec3(u - 0.5, v - 0.5, 0.1) *  g( pow(u, 2));
 }
 
-vec3 gPx(float x) {
-	return  vec3((1 - 0), (1 - 0), (0));
+float gPx(float x) {
+	return 1;
 }
 
 vec3 fPu(float u, float v) {
-	return 0 *  g( pow(u, 2) + v) + 2 *  gPx( pow(u, 2) + v) * ( pow(u, 2) * (0 *  log(u) + 2 * 1 / u * (1)) + 0);
+	return  vec3((1 - 0), (0 - 0), (0)) *  g( pow(u, 2)) +  vec3(u - 0.5, v - 0.5, 0.1) *  gPx( pow(u, 2)) * ( pow(u, 2) * (0 *  log(u) + 2 * 1 / u * (1)));
 }
 
 vec3 fPv(float u, float v) {
-	return 0 *  g( pow(u, 2) + v) + 2 *  gPx( pow(u, 2) + v) * ( pow(u, 2) * (0 *  log(u) + 2 * 1 / u * (0)) + 1);
+	return  vec3((0 - 0), (1 - 0), (0)) *  g( pow(u, 2)) +  vec3(u - 0.5, v - 0.5, 0.1) *  gPx( pow(u, 2)) * ( pow(u, 2) * (0 *  log(u) + 2 * 1 / u * (0)));
 }
 
 vec3 fNormal(float u, float v) {
