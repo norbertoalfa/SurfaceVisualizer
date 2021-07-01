@@ -105,6 +105,26 @@ nodo* crearNodoFun(atributos e1) {
 	return nodoActual;
 }
 
+nodo* crearNodoNormal(atributos parU, atributos parV) {
+	atributos attNormalize, attCross;
+	nodo *nodoActual, *nodoCross;
+	
+	attCross.lex = strdup("cross");
+	nodoCross = crearNodoFun(attCross);
+	nodoCross->nChild = 2;
+	nodoCross->children[0] = parU.nodoPropio;
+	nodoCross->children[1] = parV.nodoPropio;
+	nodoCross->tipo = NODO_FUN;
+
+	attNormalize.lex = strdup("normalize");
+	nodoActual = crearNodoFun(attNormalize);
+	nodoActual->nChild = 1;
+	nodoActual->children[0] = nodoCross;
+	nodoActual->tipo = NODO_FUN;
+	
+	return nodoActual;
+}
+
 void actualizaNodo(nodo *nodoFun, atributos e1) {
 	nodo *nodoActual = malloc(sizeof(nodo));
 	
@@ -294,6 +314,8 @@ void escribeFun(atributos fun, atributos e1){
   	if (indexFun == -1) {
   		return;
   	}
+	
+	printf("AQUIIIII: %d\n", TS[indexFun].tipo);
   	
   	i = 1;
   	
@@ -429,7 +451,7 @@ void partialNodoExp(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	}
 
 	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
+	nodoPar->nChild = 2;
 	nodoPar->lex = strdup("*");
 	nodoPar->children[0] = nodoFun;
 	nodoPar->children[1] = addParen(partialF(nodoExp, nVar));
@@ -452,8 +474,8 @@ void derivLog(nodo *nodoFun, nodo *nodoPar)
 	nodoNum->nChild = 0;
 	nodoNum->lex = strdup("1");
 
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
+	nodoPar->tipo = NODO_OP;
+	nodoPar->nChild = 2;
 	nodoPar->lex = strdup("/");
 	nodoPar->children[0] = nodoNum;
 	nodoPar->children[1] = nodoFun->children[0];
@@ -514,103 +536,123 @@ void derivTg(nodo *nodoFun, nodo *nodoPar)
 void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	int i, iParFun;
+	int esArray = strcmp(nodoFun->lex, "vec2") == 0 ||
+					strcmp(nodoFun->lex, "vec3") == 0 ||
+					strcmp(nodoFun->lex, "mat2") == 0 ||
+					strcmp(nodoFun->lex, "mat3") == 0;
+
+	int esPredef = strcmp(nodoFun->lex, "log") == 0 ||
+					strcmp(nodoFun->lex, "sin") == 0 ||
+					strcmp(nodoFun->lex, "cos") == 0 ||
+					strcmp(nodoFun->lex, "tg") == 0;
+
 	atributos attParFun;
-
-	attParFun.lex = strdup(nodoFun->lex);
-	strcpy(attParFun.lex, "P");
-	strcat(attParFun.lex, nVar);
-	iParFun = TS_BuscarFUN(attParFun);
-
-	if (iParFun == -1) {
-		if (nodoFun->nChild == 1) {
-			nodo *nodoIzq = malloc(sizeof(nodo));
-
-			if (strcmp(nodoFun->lex, "log") == 0) {
-				derivLog(nodoFun, nodoIzq);
-			} else if (strcmp(nodoFun->lex, "sin") == 0) {
-				derivSin(nodoFun, nodoIzq);
-			} else if (strcmp(nodoFun->lex, "cos") == 0) {
-				derivCos(nodoFun, nodoIzq);
-			} else if (strcmp(nodoFun->lex, "tg") == 0) {
-				derivTg(nodoFun, nodoIzq);
-			}
-
-			nodoPar->tipo = NODO_OP;
-			nodoPar->nChild = 2;
-			nodoPar->lex = strdup("*");
-			nodoPar->children[0] = nodoIzq;
-			nodoPar->children[1] = addParen(partialF(nodoFun->children[0], nVar));
-		} else {
-			int iFun;
-			atributos attFun;
-
-			attFun.lex = strdup(nodoFun->lex);
-			iFun = TS_BuscarFUN(attFun);
-
-			if (iFun == -1) {
-				printf("No existe la función: %s", attFun.lex);
-
-				return;
-			}
-
-			nodo *nodoMul0 = malloc(sizeof(nodo));
-			nodoMul0->tipo = NODO_OP;
-			nodoMul0->nChild = 2;
-			nodoMul0->lex = strdup("*");
-			nodoMul0->children[0] = partialF(nodoFun, TS[iFun + 1].lex);
-			nodoMul0->children[1] = addParen(partialF(nodoFun->children[0], nVar));
-
-			nodo *nodoMul1 = malloc(sizeof(nodo));
-			nodoMul1->tipo = NODO_OP;
-			nodoMul1->nChild = 2;
-			nodoMul1->lex = strdup("*");
-			nodoMul1->children[0] = partialF(nodoFun, TS[iFun + 2].lex);
-			nodoMul1->children[1] = addParen(partialF(nodoFun->children[1], nVar));
-
-			nodo *nodoSum = malloc(sizeof(nodo));
-			nodoSum->tipo = NODO_OP;
-			nodoSum->nChild = 2;
-			nodoSum->lex = strdup("+");
-			nodoSum->children[0] = nodoMul0;
-			nodoSum->children[1] = nodoMul1;
-
-			for (i = 2; i < nodoFun->nChild; i++) {
-				nodo *nodoMul = malloc(sizeof(nodo));
-				nodoMul->tipo = NODO_OP;
-				nodoMul->nChild = 2;
-				nodoMul->lex = strdup("*");
-				nodoMul->children[0] = partialF(nodoFun, TS[iFun + i + 1].lex);
-				nodoMul->children[1] = addParen(partialF(nodoFun->children[i], nVar));
-
-				nodo *nodoNewSum = malloc(sizeof(nodo));
-				nodoNewSum->tipo = NODO_OP;
-				nodoNewSum->nChild = 2;
-				nodoNewSum->lex = strdup("+");
-				nodoNewSum->children[0] = nodoSum;
-				nodoNewSum->children[1] = nodoMul;
-				nodoSum = nodoNewSum;
-			}
-			atributos attExpr;
-
-			attExpr.nodoPropio = nodoPar;
-			attExpr.tipo = TS[iFun].tipo;
-			attParFun.tipo = TS[iFun].tipo;
-			TS_InsertaFUN(attParFun);
-
-			for (i = 0; i < nodoFun->nChild; i++) {
-				TS_InsertaEntrada(TS[iFun + i + 1]);
-			}
-			
-			escribeFun(attParFun, attExpr);
-
-		}
-	} else {
+	
+	if (esArray) {
 		nodoPar->tipo = nodoFun->tipo;
 		nodoPar->nChild = nodoFun->nChild;
-		nodoPar->lex = strdup(attParFun.lex);
+		nodoPar->lex = nodoFun->lex;
 
 		for (i = 0; i < nodoFun->nChild; i++) {
-			nodoPar->children[i] = nodoFun->children[i];
+			nodoPar->children[i] = addParen(partialF(nodoFun->children[i], nVar));
+		}
+	} else {
+		attParFun.lex = strdup(nodoFun->lex);
+		strcat(attParFun.lex, "P");
+		strcat(attParFun.lex, nVar);
+		iParFun = TS_BuscarFUN(attParFun);
+
+		if (iParFun == -1) {
+			if (esPredef) {
+				nodo *nodoIzq = malloc(sizeof(nodo));
+
+				if (strcmp(nodoFun->lex, "log") == 0) {
+					derivLog(nodoFun, nodoIzq);
+				} else if (strcmp(nodoFun->lex, "sin") == 0) {
+					derivSin(nodoFun, nodoIzq);
+				} else if (strcmp(nodoFun->lex, "cos") == 0) {
+					derivCos(nodoFun, nodoIzq);
+				} else if (strcmp(nodoFun->lex, "tg") == 0) {
+					derivTg(nodoFun, nodoIzq);
+				}
+
+				nodoPar->tipo = NODO_OP;
+				nodoPar->nChild = 2;
+				nodoPar->lex = strdup("*");
+				nodoPar->children[0] = nodoIzq;
+				nodoPar->children[1] = addParen(partialF(nodoFun->children[0], nVar));
+			} else {
+				int iFun;
+				atributos attFun;
+
+				attFun.lex = strdup(nodoFun->lex);
+				iFun = TS_BuscarFUN(attFun);
+
+				if (iFun == -1) {
+					printf("No existe la función: %s", attFun.lex);
+
+					return;
+				}
+
+				nodo *nodoMul0 = malloc(sizeof(nodo));
+				nodoMul0->tipo = NODO_OP;
+				nodoMul0->nChild = 2;
+				nodoMul0->lex = strdup("*");
+				nodoMul0->children[0] = partialF(nodoFun, TS[iFun + 1].lex);
+				nodoMul0->children[1] = addParen(partialF(nodoFun->children[0], nVar));
+
+				nodo *nodoMul1 = malloc(sizeof(nodo));
+				nodoMul1->tipo = NODO_OP;
+				nodoMul1->nChild = 2;
+				nodoMul1->lex = strdup("*");
+				nodoMul1->children[0] = partialF(nodoFun, TS[iFun + 2].lex);
+				nodoMul1->children[1] = addParen(partialF(nodoFun->children[1], nVar));
+
+				nodo *nodoSum = malloc(sizeof(nodo));
+				nodoSum->tipo = NODO_OP;
+				nodoSum->nChild = 2;
+				nodoSum->lex = strdup("+");
+				nodoSum->children[0] = nodoMul0;
+				nodoSum->children[1] = nodoMul1;
+
+				for (i = 2; i < nodoFun->nChild; i++) {
+					nodo *nodoMul = malloc(sizeof(nodo));
+					nodoMul->tipo = NODO_OP;
+					nodoMul->nChild = 2;
+					nodoMul->lex = strdup("*");
+					nodoMul->children[0] = partialF(nodoFun, TS[iFun + i + 1].lex);
+					nodoMul->children[1] = addParen(partialF(nodoFun->children[i], nVar));
+
+					nodo *nodoNewSum = malloc(sizeof(nodo));
+					nodoNewSum->tipo = NODO_OP;
+					nodoNewSum->nChild = 2;
+					nodoNewSum->lex = strdup("+");
+					nodoNewSum->children[0] = nodoSum;
+					nodoNewSum->children[1] = nodoMul;
+					nodoSum = nodoNewSum;
+				}
+				atributos attExpr;
+
+				attExpr.nodoPropio = nodoPar;
+				attExpr.tipo = TS[iFun].tipo;
+				attParFun.tipo = TS[iFun].tipo;
+				TS_InsertaFUN(attParFun);
+
+				for (i = 0; i < nodoFun->nChild; i++) {
+					TS_InsertaEntrada(TS[iFun + i + 1]);
+				}
+				
+				escribeFun(attParFun, attExpr);
+
+			}
+		} else {
+			nodoPar->tipo = nodoFun->tipo;
+			nodoPar->nChild = nodoFun->nChild;
+			nodoPar->lex = strdup(attParFun.lex);
+
+			for (i = 0; i < nodoFun->nChild; i++) {
+				nodoPar->children[i] = nodoFun->children[i];
+			}
 		}
 	}
 }
@@ -681,25 +723,54 @@ nodo* partialF(nodo *nodoFun, char *nVar)
 }
 
 void escribeNorm(atributos fun, atributos e1){
-	int indexFun, i;
-	char *sent, *nVar = "u";
+	if (e1.dimension == 1 && e1.tam == 3) {
+		int indexFun, indexNorm, i;
+		char *nVarU = "u";
+		char *nVarV = "v";
 
-  	indexFun = TS_BuscarFUN(fun);
-  	
-  	if (indexFun == -1) {
-  		return;
-  	}
-  	
-	// Escribe la expresión de forma recurrente
-  	sent = (char *) malloc(10000);
-  	sent[0]=0;
-	
-	sprintf(sent,"%s) {\n\treturn ", sent);
-    escribeExpr(sent, partialF(e1.nodoPropio, nVar));
-    sprintf(sent,"%s;\n}\n\n", sent);
-    
-  	fputs(sent,file);
-  	free(sent);
+		indexFun = TS_BuscarFUN(fun);
+
+		if (indexFun == -1) {
+			return;
+		}
+
+		atributos attCross, attParU, attParV;
+
+		attCross.lex = strdup("**");
+
+		nodo *nodoParU = partialF(e1.nodoPropio, nVarU);
+		nodo *nodoParV = partialF(e1.nodoPropio, nVarV);
+		nodo *nodoFun;
+		
+		attParU.nodoPropio = nodoParU;
+		attParV.nodoPropio = nodoParV;
+
+		nodoFun = crearNodoNormal(attParU, attParV);
+
+		atributos attExpr, attNorm;
+
+		attNorm.lex = strdup(fun.lex);
+		strcat(attNorm.lex, "Normal");
+		attNorm.tipo = fun.tipo;
+
+		TS_InsertaFUN(attNorm);
+		indexNorm = TS_BuscarFUN(attNorm);
+
+		attExpr.nodoPropio = nodoFun;
+		attExpr.tipo = fun.tipo;
+		attExpr.dimension = fun.dimension;
+		attExpr.tam = fun.tam;
+
+		TS[indexNorm].dimension = TS[indexFun].dimension;
+		TS[indexNorm].tam = TS[indexFun].tam;
+		TS[indexNorm].nParam = TS[indexFun].nParam;
+		TS[indexNorm].tipo = TS[indexFun].tipo;
+
+		for (i = 0; i <  TS[indexFun].nParam; i++) {
+			TS_InsertaEntrada(TS[indexFun + i + 1]);
+		}
+		escribeFun(attNorm, attExpr);
+	}
 }
 
 void escribeVal(atributos id, atributos e1){
@@ -815,4 +886,3 @@ void escribeFinPlot(){
   	free(sent_temp);
     fclose(temp_file);
 }
-

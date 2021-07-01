@@ -149,9 +149,10 @@ void actualizaTipoDesc(atributos tipo);
 entradaTS getEntrada(atributos e);
 
 // Inserta una entrada en la tabla
-int TS_InsertaENTRADA(entradaTS entrada);
+int TS_InsertaEntrada(entradaTS entrada);
 
 // Elimina una entrada de la tabla
+
 int TS_BorrarENTRADA();
 
 // Elimina las entradas de la tabla de símbolos hasta la marca de tope
