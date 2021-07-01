@@ -569,11 +569,6 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		TS_InsertaFUN(attParFun);
 		iParFun = TS_BuscarFUN(attParFun);
 
-		attExpr.nodoPropio = partialF(nodoFun, nVar);
-		attExpr.tipo = TS[iFun].tipo;
-		attExpr.dimension = TS[iFun].dimension;
-		attExpr.tam = TS[iFun].tam;
-
 		TS[iParFun].dimension = TS[iFun].dimension;
 		TS[iParFun].tam = TS[iFun].tam;
 		TS[iParFun].nParam = TS[iFun].nParam;
@@ -582,6 +577,11 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		for (i = 0; i <  TS[iFun].nParam; i++) {
 			TS_InsertaEntrada(TS[iFun + i + 1]);
 		}
+
+		attExpr.nodoPropio = partialF(nodoFun, nVar);
+		attExpr.tipo = TS[iFun].tipo;
+		attExpr.dimension = TS[iFun].dimension;
+		attExpr.tam = TS[iFun].tam;
 
 		escribeFun(attParFun, attExpr);
 	}
@@ -825,6 +825,8 @@ void escribeNorm(atributos fun, atributos e1){
 		}
 
 		escribeFun(attNorm, attExpr);
+
+		printTS();
 	}
 }
 

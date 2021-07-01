@@ -81,7 +81,7 @@ float gPx(float x) {
 	return 1;
 }
 
-vec3 fPu(float gPx, float x) {
+vec3 fPu(float u, float v) {
 	return  vec3((1 - 0), (0 - 0), (0)) *  g( pow(u, 2) + u) +  vec3(u - 0.5, v - 0.5, 0.1) *  g( pow(u, 2) + u);
 }
 
