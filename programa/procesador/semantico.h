@@ -31,17 +31,6 @@ typedef enum {
 
 } dtipo;
 
-typedef struct {
-
-	tipoEntrada entrada;
-	char *lex;
-	dtipo tipo;
-	unsigned int nParam;
-	unsigned int dimension;
-	int tam;
-
-} entradaTS;
-
 // tipos de datos
 typedef enum {
 
@@ -66,6 +55,17 @@ struct nodo{
 
 typedef struct nodo nodo;
 
+typedef struct {
+
+	tipoEntrada entrada;
+	char *lex;
+	dtipo tipo;
+	unsigned int nParam;
+	unsigned int dimension;
+	int tam;
+	nodo *nodoExpr;
+
+} entradaTS;
 
 typedef struct {
 
