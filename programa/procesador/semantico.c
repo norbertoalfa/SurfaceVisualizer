@@ -947,6 +947,72 @@ void initializeTS() {
 	paramLog.dimension=0;
 	paramLog.tam=0;
 	TS_InsertaEntrada(paramLog);
+	
+	// norm (vec2)
+	entradaTS funNormVec2;
+	funNormVec2.entrada = FUNCION;
+	funNormVec2.lex = strdup("normalizeVec2");
+	funNormVec2.tipo = ARRAY;
+	funNormVec2.nParam = 1;
+	funNormVec2.dimension=1;
+	funNormVec2.tam=2;
+	TS_InsertaEntrada(funNormVec2);
+	
+	entradaTS paramVec2;
+	paramVec2.entrada = PARA_FORM;
+	paramVec2.lex = strdup("x");
+	paramVec2.tipo = ARRAY;
+	paramVec2.nParam = 0;
+	paramVec2.dimension=1;
+	paramVec2.tam=2;
+	TS_InsertaEntrada(paramVec2);
+	
+	// norm (vec3)
+	entradaTS funNormVec3;
+	funNormVec3.entrada = FUNCION;
+	funNormVec3.lex = strdup("normalizeVec3");
+	funNormVec3.tipo = ARRAY;
+	funNormVec3.nParam = 1;
+	funNormVec3.dimension=1;
+	funNormVec3.tam=3;
+	TS_InsertaEntrada(funNormVec3);
+	
+	entradaTS paramVec3;
+	paramVec3.entrada = PARA_FORM;
+	paramVec3.lex = strdup("x");
+	paramVec3.tipo = ARRAY;
+	paramVec3.nParam = 0;
+	paramVec3.dimension=1;
+	paramVec3.tam=2;
+	TS_InsertaEntrada(paramVec3);
+	
+	// cross
+	entradaTS funCross;
+	funCross.entrada = FUNCION;
+	funCross.lex = strdup("cross");
+	funCross.tipo = ARRAY;
+	funCross.nParam = 2;
+	funCross.dimension=1;
+	funCross.tam=3;
+	TS_InsertaEntrada(funCross);
+	
+	entradaTS paramCross1;
+	paramCross1.entrada = PARA_FORM;
+	paramCross1.lex = strdup("x");
+	paramCross1.tipo = ARRAY;
+	paramCross1.nParam = 0;
+	paramCross1.dimension = 1;
+	paramCross1.tam = 3;
+	TS_InsertaEntrada(paramCross1);
+	
+	entradaTS paramCross2;
+	paramCross2.entrada = PARA_FORM;
+	paramCross2.lex = strdup("y");
+	paramCross2.tipo = ARRAY;
+	paramCross2.nParam = 0;
+	paramCross2.dimension = 1;
+	paramCross2.tam = 3;
+	TS_InsertaEntrada(paramCross2);
 }
 
 

@@ -69,12 +69,28 @@ mat3 funcionIf(bool cond, mat3 e1, mat3 e2)
 	 else
 		 return e2;
 }
-vec3 f(float u, float v) {
-	return  vec3(u - 0.5, v - 0.5, 0.1) * ( pow(u, 2));
+float g(float x) {
+	return x;
 }
 
-) {
-	return  vec3(u - 0.5, v - 0.5, 0.1) * ( pow(u, 2)) +  vec3(u - 0.5, v - 0.5, 0.1) * ( pow(u, 2) * (0 *  log(u) + 2 *  log(u)));
+vec3 f(float u, float v) {
+	return  vec3(u - 0.5, v - 0.5, 0.1) *  g( pow(u, 2) + u);
+}
+
+float gPx(float x) {
+	return 1;
+}
+
+vec3 fPu(float gPx, float x) {
+	return  vec3((1 - 0), (0 - 0), (0)) *  g( pow(u, 2) + u) +  vec3(u - 0.5, v - 0.5, 0.1) *  g( pow(u, 2) + u);
+}
+
+vec3 fPv(float u, float v) {
+	return  vec3((0 - 0), (1 - 0), (0)) *  g( pow(u, 2) + u) +  vec3(u - 0.5, v - 0.5, 0.1) *  g( pow(u, 2) + u);
+}
+
+vec3 fNormal(float u, float v) {
+	return  normalize( cross( fPu(u, v),  fPv(u, v)));
 }
 
 void main() {

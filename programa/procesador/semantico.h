@@ -31,17 +31,6 @@ typedef enum {
 
 } dtipo;
 
-typedef struct {
-
-	tipoEntrada entrada;
-	char *lex;
-	dtipo tipo;
-	unsigned int nParam;
-	unsigned int dimension;
-	int tam;
-
-} entradaTS;
-
 // tipos de datos
 typedef enum {
 
@@ -66,6 +55,17 @@ struct nodo{
 
 typedef struct nodo nodo;
 
+typedef struct {
+
+	tipoEntrada entrada;
+	char *lex;
+	dtipo tipo;
+	unsigned int nParam;
+	unsigned int dimension;
+	int tam;
+	nodo *nodoExpr;
+
+} entradaTS;
 
 typedef struct {
 
@@ -149,9 +149,10 @@ void actualizaTipoDesc(atributos tipo);
 entradaTS getEntrada(atributos e);
 
 // Inserta una entrada en la tabla
-int TS_InsertaENTRADA(entradaTS entrada);
+int TS_InsertaEntrada(entradaTS entrada);
 
 // Elimina una entrada de la tabla
+
 int TS_BorrarENTRADA();
 
 // Elimina las entradas de la tabla de símbolos hasta la marca de tope
