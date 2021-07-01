@@ -362,7 +362,7 @@ void partialNodoSum(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = nodoFun->lex;
+	nodoPar->lex = strdup(nodoFun->lex);
 	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
 	nodoPar->children[1] = partialF(nodoFun->children[1], nVar);
 }
@@ -461,7 +461,7 @@ void partialNodoIf(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = nodoFun->lex;
+	nodoPar->lex = strdup(nodoFun->lex);
 	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
 	nodoPar->children[1] = partialF(nodoFun->children[1], nVar);
 }
@@ -549,7 +549,6 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 	if (iParFun == -1) {
 		int iFun;
 		atributos attFun;
-		nodo *nodoExprFun;
 
 		attFun.lex = strdup(nodoFun->lex);
 		iFun = TS_BuscarFUN(attFun);
@@ -561,7 +560,7 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		}
 
 
-		nodo *nodoFun = TS[iFun].nodoExpr;
+		nodo *nodoFunExpr = TS[iFun].nodoExpr;
 		atributos attExpr;
 
 		attParFun.tipo = TS[iFun].tipo;
@@ -578,7 +577,7 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 			TS_InsertaEntrada(TS[iFun + i + 1]);
 		}
 
-		attExpr.nodoPropio = partialF(nodoFun, nVar);
+		attExpr.nodoPropio = partialF(nodoFunExpr, nVar);
 		attExpr.tipo = TS[iFun].tipo;
 		attExpr.dimension = TS[iFun].dimension;
 		attExpr.tam = TS[iFun].tam;
@@ -601,12 +600,12 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	int i, iParFun;
-	int esArray = strcmp(nodoFun->lex, "vec2") == 0 ||
+	int esArray = 	strcmp(nodoFun->lex, "vec2") == 0 ||
 					strcmp(nodoFun->lex, "vec3") == 0 ||
 					strcmp(nodoFun->lex, "mat2") == 0 ||
 					strcmp(nodoFun->lex, "mat3") == 0;
 
-	int esPredef = strcmp(nodoFun->lex, "log") == 0 ||
+	int esPredef = 	strcmp(nodoFun->lex, "log") == 0 ||
 					strcmp(nodoFun->lex, "sin") == 0 ||
 					strcmp(nodoFun->lex, "cos") == 0 ||
 					strcmp(nodoFun->lex, "tg") == 0;
@@ -614,7 +613,7 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	if (esArray) {
 		nodoPar->tipo = nodoFun->tipo;
 		nodoPar->nChild = nodoFun->nChild;
-		nodoPar->lex = nodoFun->lex;
+		nodoPar->lex = strdup(nodoFun->lex);
 
 		for (i = 0; i < nodoFun->nChild; i++) {
 			nodoPar->children[i] = addParen(partialF(nodoFun->children[i], nVar));
@@ -696,7 +695,13 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 				nodoSum = nodoNewSum;
 			}
 
-			nodoPar = nodoSum;
+			nodoPar->tipo = nodoSum->tipo;
+			nodoPar->nChild = nodoSum->nChild;
+			nodoPar->lex = nodoSum->lex;
+
+			for (i = 0; i < nodoSum->nChild; i++) {
+				nodoPar->children[i] = nodoSum->children[i];
+			}
 		}
 	}
 }
@@ -706,7 +711,7 @@ void partialNodoInd(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = nodoFun->lex;
+	nodoPar->lex = strdup(nodoFun->lex);
 	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
 	nodoPar->children[1] = nodoFun->children[1];
 }
@@ -715,7 +720,7 @@ void partialNodoParen(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = nodoFun->lex;
+	nodoPar->lex = strdup(nodoFun->lex);
 	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
 }
 
@@ -726,7 +731,7 @@ nodo* partialF(nodo *nodoFun, char *nVar)
 
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = nodoFun->lex;
+	nodoPar->lex = strdup(nodoFun->lex);
 
 	for (i = 0; i < nodoFun->nChild; i++) {
 		nodoPar->children[i] = nodoFun->children[i];
@@ -788,7 +793,7 @@ void escribeNorm(atributos fun, atributos e1){
 
 		for (i = 0; i < TS[indexFun].nParam; i++){
 			atributos var;
-			var.lex = TS[indexFun + i + 1].lex;
+			var.lex = strdup(TS[indexFun + i + 1].lex);
 			nodoFun->children[i] = crearNodoVar(var);
 		}
 
@@ -825,8 +830,6 @@ void escribeNorm(atributos fun, atributos e1){
 		}
 
 		escribeFun(attNorm, attExpr);
-
-		printTS();
 	}
 }
 

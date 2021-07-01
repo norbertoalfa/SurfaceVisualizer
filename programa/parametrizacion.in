@@ -1,7 +1,7 @@
 //Ejemplo
 
-g(x:real) : real = x;
+g(x:real) : vec3 = vec3(x-0.5, x-0.5, 0.1);
 
-f(u,v :real) : vec3 = vec3(u-0.5, v-0.5, 0.1) * g(u^2 + u);
+f(u,v :real) : vec3 =  2*g(u^2 + v);
 
 plot f;
