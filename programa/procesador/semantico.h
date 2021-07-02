@@ -44,12 +44,24 @@ typedef enum {
 
 } tipoNodo;
 
+// tipos de datos para un acceso por índice
+typedef enum {
+
+	NODO_IND_VEC2 = 0,
+	NODO_IND_VEC3,
+	NODO_IND_MAT2,
+	NODO_IND_MAT3
+
+} tipoNodoInd;
+
+
 struct nodo{
 
 	char *lex;
 	struct nodo *children[10];
 	int nChild;
 	tipoNodo tipo;
+	tipoNodoInd subTipo;
 
 };
 
@@ -163,6 +175,9 @@ int TS_BuscarIDENT(char *nombre);
 
 // Busca una entrada de una función
 int TS_BuscarFUN(char *nombre);
+
+// Busca una entrada de una función
+int TS_BuscarFUNModo(char *nombre, int modoAnalisis);
 
 // Añade un identificador
 void TS_InsertaIDENT(char *nombre);

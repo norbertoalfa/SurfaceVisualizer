@@ -8,7 +8,7 @@ FILE * file;
 int nPlot=0;
 int totalParam=0;
 
-// Crea un nodo con el mismo lexico que el indicado
+
 nodo* crearNodo(char *nombre){
 	nodo *nodoActual = malloc(sizeof(nodo));
 	
@@ -41,15 +41,28 @@ nodo* crearNodoIf(nodo *comp, nodo *e1, nodo *e2) {
 	return nodoActual;
 }
 
-nodo* crearNodoIndex(nodo *array, nodo *ind) {
+nodo* crearNodoIndex(atributos array, nodo *ind) {
 	nodo *nodoActual = malloc(sizeof(nodo));
 	
 	nodoActual->lex = strdup("[]");
 	nodoActual->nChild = 2;
-	nodoActual->children[0] = array;
+	nodoActual->children[0] = array.nodoPropio;
 	nodoActual->children[1] = ind;
 	nodoActual->tipo = NODO_IND;
-	
+
+	if (array.dimension == 1){
+		if (array.tam == 2) {
+			nodoActual->subTipo = NODO_IND_VEC2;
+		} else {
+			nodoActual->subTipo = NODO_IND_VEC3;
+		}
+	} else {
+		if (array.tam == 2) {
+			nodoActual->subTipo = NODO_IND_MAT2;
+		} else {
+			nodoActual->subTipo = NODO_IND_MAT3;
+		}
+	}
 	return nodoActual;
 }
 
@@ -111,7 +124,6 @@ void actualizaNodo(nodo *nodoFun, nodo *expr) {
 	}
 }
 
-// Abre un fichero para crear el código intermedio
 void generaFich(){
 	char * sent;
 	
@@ -122,7 +134,7 @@ void generaFich(){
   	
     sprintf(sent,"#version 440 core\n");
     sprintf(sent,"%slayout (location = 0) in vec2 aPos;\n\n", sent);
-    sprintf(sent,"%sout vData {vec3 FragPos;} vertex;\n\n", sent);
+    sprintf(sent,"%sout vData {vec3 FragPos; vec3 Normal;} vertex;\n\n", sent);
     sprintf(sent,"%suniform mat4 model;\n", sent);
     sprintf(sent,"%suniform mat4 view;\n", sent);
     sprintf(sent,"%suniform mat4 projection;\n", sent);
@@ -147,7 +159,6 @@ void generaCtes(){
   	free(sent);	
 }
 
-// Abre un fichero para crear el código intermedio
 void generaFuncionIf(){
 	char *sent, *cuerpo;
 	
@@ -334,13 +345,38 @@ nodo* addParen(nodo *n) {
 	return nodoParen;
 }
 
+nodo* addNodoArray(nodo *n, tipoNodoInd subTipo) {
+	nodo *nodoArray = malloc(sizeof(nodo));
+
+	nodoArray->tipo = NODO_FUN;
+	nodoArray->nChild = 1;
+
+	if (subTipo == NODO_IND_VEC2){
+		nodoArray->lex = strdup("vec2");
+	} else if (subTipo == NODO_IND_VEC3){
+		nodoArray->lex = strdup("vec3");
+	} else if (subTipo == NODO_IND_MAT2){
+		nodoArray->lex = strdup("mat2");
+	} else if (subTipo == NODO_IND_MAT2){
+		nodoArray->lex = strdup("mat3");
+	} else {
+		printf("Error, el nodo de índice para array no tiene subtipo.\n");
+		
+		return NULL;
+	}
+
+	nodoArray->children[0] = n;
+
+	return nodoArray;
+}
+
 void partialNodoSum(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
-	nodoPar->children[1] = partialF(nodoFun->children[1], nVar);
+	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+	nodoPar->children[1] = partialExpr(nodoFun->children[1], nVar);
 }
 
 void partialNodoMul(nodo *nodoFun, nodo *nodoPar, char *nVar)
@@ -351,14 +387,14 @@ void partialNodoMul(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoIzq->tipo = nodoFun->tipo;
 	nodoIzq->nChild = nodoFun->nChild;
 	nodoIzq->lex = strdup("*");
-	nodoIzq->children[0] = partialF(nodoFun->children[0], nVar);
+	nodoIzq->children[0] = partialExpr(nodoFun->children[0], nVar);
 	nodoIzq->children[1] = nodoFun->children[1];
 
 	nodoDer->tipo = nodoFun->tipo;
 	nodoDer->nChild = nodoFun->nChild;
 	nodoDer->lex = strdup("*");
 	nodoDer->children[0] = nodoFun->children[0];
-	nodoDer->children[1] = partialF(nodoFun->children[1], nVar);
+	nodoDer->children[1] = partialExpr(nodoFun->children[1], nVar);
 
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
@@ -377,14 +413,14 @@ void partialNodoDiv(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoIzq->tipo = nodoFun->tipo;
 	nodoIzq->nChild = nodoFun->nChild;
 	nodoIzq->lex = strdup("/");
-	nodoIzq->children[0] = partialF(nodoFun->children[0], nVar);
+	nodoIzq->children[0] = partialExpr(nodoFun->children[0], nVar);
 	nodoIzq->children[1] = nodoFun->children[1];
 
 	nodoNum->tipo = nodoFun->tipo;
 	nodoNum->nChild = nodoFun->nChild;
 	nodoNum->lex = strdup("*");
 	nodoNum->children[0] = nodoFun->children[0];
-	nodoNum->children[1] = partialF(nodoFun->children[1], nVar);
+	nodoNum->children[1] = partialExpr(nodoFun->children[1], nVar);
 
 	nodoDen->tipo = nodoFun->tipo;
 	nodoDen->nChild = nodoFun->nChild;
@@ -430,7 +466,7 @@ void partialNodoExp(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->nChild = 2;
 	nodoPar->lex = strdup("*");
 	nodoPar->children[0] = nodoFun;
-	nodoPar->children[1] = addParen(partialF(nodoExp, nVar));
+	nodoPar->children[1] = addParen(partialExpr(nodoExp, nVar));
 }
 
 void partialNodoIf(nodo *nodoFun, nodo *nodoPar, char *nVar)
@@ -438,8 +474,8 @@ void partialNodoIf(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
-	nodoPar->children[1] = partialF(nodoFun->children[1], nVar);
+	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+	nodoPar->children[1] = partialExpr(nodoFun->children[1], nVar);
 }
 
 void derivLog(nodo *nodoFun, nodo *nodoPar)
@@ -519,7 +555,7 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 	strcat(nombreParFun, "P");
 	strcat(nombreParFun, nVar);
 
-	iParFun = TS_BuscarFUN(nombreParFun);
+	iParFun = TS_BuscarFUNModo(nombreParFun, 0);
 
 	if (iParFun == -1) {
 		atributos attParFun;
@@ -534,7 +570,6 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		}
 
 		nodo *nodoFunExpr = TS[iFun].nodoExpr;
-		atributos attExpr;
 
 		attParFun.lex = nombreParFun;
 		attParFun.tipo = TS[iFun].tipo;
@@ -551,12 +586,7 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 			TS_InsertaEntrada(TS[iFun + i + 1]);
 		}
 
-		/*attExpr.nodoPropio = partialF(nodoFunExpr, nVar);
-		attExpr.tipo = TS[iFun].tipo;
-		attExpr.dimension = TS[iFun].dimension;
-		attExpr.tam = TS[iFun].tam;*/
-
-		escribeFun(nombreParFun, partialF(nodoFunExpr, nVar));
+		escribeFun(nombreParFun, partialExpr(nodoFunExpr, nVar));
 	}
 
 	nodoPar = malloc(sizeof(nodo));
@@ -590,7 +620,7 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 		nodoPar->lex = strdup(nodoFun->lex);
 
 		for (i = 0; i < nodoFun->nChild; i++) {
-			nodoPar->children[i] = addParen(partialF(nodoFun->children[i], nVar));
+			nodoPar->children[i] = addParen(partialExpr(nodoFun->children[i], nVar));
 		}
 	} else {
 		if (esPredef) {
@@ -610,7 +640,7 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 			nodoPar->nChild = 2;
 			nodoPar->lex = strdup("*");
 			nodoPar->children[0] = nodoIzq;
-			nodoPar->children[1] = addParen(partialF(nodoFun->children[0], nVar));
+			nodoPar->children[1] = addParen(partialExpr(nodoFun->children[0], nVar));
 		} else {
 			int iFun;
 			nodo *nodoExprFun;
@@ -630,7 +660,7 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 			nodoMul0->nChild = 2;
 			nodoMul0->lex = strdup("*");
 			nodoMul0->children[0] = checkPartialF(nodoFun, TS[iFun + 1].lex);
-			nodoMul0->children[1] = addParen(partialF(nodoFun->children[0], nVar));
+			nodoMul0->children[1] = addParen(partialExpr(nodoFun->children[0], nVar));
 
 			if (nodoFun->nChild > 1) {
 				nodo *nodoMul1 = malloc(sizeof(nodo));
@@ -638,7 +668,7 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 				nodoMul1->nChild = 2;
 				nodoMul1->lex = strdup("*");
 				nodoMul1->children[0] = checkPartialF(nodoFun, TS[iFun + 2].lex);
-				nodoMul1->children[1] = addParen(partialF(nodoFun->children[1], nVar));
+				nodoMul1->children[1] = addParen(partialExpr(nodoFun->children[1], nVar));
 
 				nodoSum = malloc(sizeof(nodo));
 				nodoSum->tipo = NODO_OP;
@@ -656,7 +686,7 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 				nodoMul->nChild = 2;
 				nodoMul->lex = strdup("*");
 				nodoMul->children[0] = checkPartialF(nodoFun, TS[iFun + i + 1].lex);
-				nodoMul->children[1] = addParen(partialF(nodoFun->children[i], nVar));
+				nodoMul->children[1] = addParen(partialExpr(nodoFun->children[i], nVar));
 
 				nodo *nodoNewSum = malloc(sizeof(nodo));
 				nodoNewSum->tipo = NODO_OP;
@@ -684,8 +714,9 @@ void partialNodoInd(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
+	nodoPar->children[0] = addNodoArray(partialExpr(nodoFun->children[0], nVar), nodoFun->subTipo);
 	nodoPar->children[1] = nodoFun->children[1];
+	nodoPar->subTipo = nodoFun->subTipo;
 }
 
 void partialNodoParen(nodo *nodoFun, nodo *nodoPar, char *nVar)
@@ -693,10 +724,10 @@ void partialNodoParen(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialF(nodoFun->children[0], nVar);
+	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
 }
 
-nodo* partialF(nodo *nodoFun, char *nVar)
+nodo* partialExpr(nodo *nodoFun, char *nVar)
 {
 	nodo *nodoPar = malloc(sizeof(nodo));
 	int i = 0;
@@ -775,11 +806,6 @@ void escribeNorm(atributos fun, atributos e1){
 		TS_InsertaFUN(attNorm);
 		indexNorm = TS_BuscarFUN(attNorm.lex);
 
-		/*attExpr.nodoPropio = nodoExpr;
-		attExpr.tipo = fun.tipo;
-		attExpr.dimension = fun.dimension;
-		attExpr.tam = fun.tam;*/
-
 		TS[indexNorm].dimension = TS[indexFun].dimension;
 		TS[indexNorm].tam = TS[indexFun].tam;
 		TS[indexNorm].nParam = TS[indexFun].nParam;
@@ -821,6 +847,7 @@ void escribeVal(char *id, nodo *expr){
 void escribeIfPlot(char *sent, entradaTS fun){
 	int i = 2;
 
+	// Para el vértice
     sprintf(sent,"%sif (funPlot==%d) {\n\t\t", sent, nPlot);
     sprintf(sent,"%saPosSurf = %s(aPos.x, aPos.y", sent, fun.lex);
     nPlot++;
@@ -833,6 +860,20 @@ void escribeIfPlot(char *sent, entradaTS fun){
 	if (fun.nParam > totalParam)
 		totalParam = fun.nParam;
     
+	sprintf(sent,"%s);\n\t\t", sent);
+
+	// Para la normal
+	i = 2;
+    sprintf(sent,"%saNormSurf = %sNormal(aPos.x, aPos.y", sent, fun.lex);
+
+	while(i<fun.nParam){
+    	sprintf(sent,"%s, param_t[%d]", sent, i-2);
+    	i++;
+    }
+
+	if (fun.nParam > totalParam)
+		totalParam = fun.nParam;
+	
 	sprintf(sent,"%s);\n\t}", sent);
 	  	
 }
@@ -852,7 +893,7 @@ void escribeIniPlot(char *fun){
   		return;
   	}
   	
-    sprintf(sent,"void main() {\n\tvec3 aPosSurf;\n\n\t");
+    sprintf(sent,"void main() {\n\tvec3 aPosSurf, aNormSurf;\n\n\t");
     escribeIfPlot(sent, TS[indexFun]);
     
   	fputs(sent,file);
@@ -893,8 +934,9 @@ void escribeFinPlot(){
   	
     FILE *temp_file = fopen("../temp","w");
   	
-    sprintf(sent,"\n\n\tvertex.FragPos = vec3(model * vec4(aPosSurf, 1.0));\n\t");
-    sprintf(sent,"%sgl_Position = projection * view * model * vec4(aPosSurf, 1.0);\n}", sent);
+    sprintf(sent,"\n\n\tvertex.FragPos = vec3(model * vec4(aPosSurf, 1.0));");
+    sprintf(sent,"%s\n\tvertex.Normal = -aNormSurf;", sent);
+    sprintf(sent,"%s\n\tgl_Position = projection * view * model * vec4(aPosSurf, 1.0);\n}", sent);
 
   	fputs(sent,file);
   	free(sent);

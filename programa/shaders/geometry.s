@@ -2,9 +2,11 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-in vData {vec3 FragPos;} vertices[];
+in vData {vec3 FragPos; vec3 Normal;} vertices[];
 
 out fData {vec3 FragPos; vec3 Normal;} frag;
+
+vec3 fNormal(float u, float v);
 
 uniform mat4 model;
 
@@ -17,7 +19,9 @@ void main() {
     {
         gl_Position = gl_in[i].gl_Position;
         frag.FragPos = vertices[i].FragPos;
-        frag.Normal = mat3(transpose(inverse(model))) * norm; //vec3(gl_Position[0], gl_Position[1], gl_Position[2]);
+        //frag.Normal = mat3(transpose(inverse(model))) * norm;
+        frag.Normal = mat3(transpose(inverse(model))) * vertices[i].Normal;
+        //frag.Normal = mat3(transpose(inverse(model))) * vec3(gl_Position[0], gl_Position[1], gl_Position[2]);
         EmitVertex( );
     }
 

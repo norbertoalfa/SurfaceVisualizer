@@ -85,22 +85,6 @@ vec3 gNormal(float u, float v) {
 	return  normalize( cross( gPu(u, v),  gPv(u, v)));
 }
 
-vec3 h(float u, float v) {
-	return 2 *  vec3(u, v,  cos(10 * u) +  cos(10 * v));
-}
-
-vec3 hPu(float u, float v) {
-	return 0 *  vec3(u, v,  cos(10 * u) +  cos(10 * v)) + 2 *  vec3((1), (0), ( -  sin(10 * u) * (0 * u + 10 * 1) +  -  sin(10 * v) * (0 * v + 10 * 0)));
-}
-
-vec3 hPv(float u, float v) {
-	return 0 *  vec3(u, v,  cos(10 * u) +  cos(10 * v)) + 2 *  vec3((0), (1), ( -  sin(10 * u) * (0 * u + 10 * 0) +  -  sin(10 * v) * (0 * v + 10 * 1)));
-}
-
-vec3 hNormal(float u, float v) {
-	return  normalize( cross( hPu(u, v),  hPv(u, v)));
-}
-
 vec3 f(float u, float v) {
 	return  g(u - 0.5, v - 0.5);
 }
@@ -117,31 +101,14 @@ vec3 fNormal(float u, float v) {
 	return  normalize( cross( fPu(u, v),  fPv(u, v)));
 }
 
-vec3 f2(float u, float v, float t0) {
-	return  pow((t0 * t0), 2) *  f(u, v) + (1 - t0 * t0) *  vec3( f(u, v)[0], 0.0,  f(u, v)[1]);
-}
-
-vec3 f2Pu(float u, float v, float t0) {
-	return  pow((t0 * t0), 2) * (0 *  log((t0 * t0)) + 2 * 1 / (t0 * t0) * ((0 * t0 + t0 * 0))) *  f(u, v) +  pow((t0 * t0), 2) *  fPu(u, v) * (1) +  fPv(u, v) * (0) + (0 - 0 * t0 + t0 * 0) *  vec3( f(u, v)[0], 0.0,  f(u, v)[1]) + (1 - t0 * t0) *  vec3(( vec3( fPu(u, v) * (1) +  fPv(u, v) * (0))[0]), (0), ( vec3( fPu(u, v) * (1) +  fPv(u, v) * (0))[1]));
-}
-
-vec3 f2Pv(float u, float v, float t0) {
-	return  pow((t0 * t0), 2) * (0 *  log((t0 * t0)) + 2 * 1 / (t0 * t0) * ((0 * t0 + t0 * 0))) *  f(u, v) +  pow((t0 * t0), 2) *  fPu(u, v) * (0) +  fPv(u, v) * (1) + (0 - 0 * t0 + t0 * 0) *  vec3( f(u, v)[0], 0.0,  f(u, v)[1]) + (1 - t0 * t0) *  vec3(( vec3( fPu(u, v) * (0) +  fPv(u, v) * (1))[0]), (0), ( vec3( fPu(u, v) * (0) +  fPv(u, v) * (1))[1]));
-}
-
-vec3 f2Normal(float u, float v, float t0) {
-	return  normalize( cross( f2Pu(u, v, t0),  f2Pv(u, v, t0)));
-}
-
 void main() {
-	vec3 aPosSurf, aNormSurf;
+	vec3 aPosSurf;
 
 	if (funPlot==0) {
-		aPosSurf = f2(aPos.x, aPos.y, param_t[0]);
-		aNormSurf = f2Normal(aPos.x, aPos.y, param_t[0]);
+		aPosSurf = f(aPos.x, aPos.y);
 	}
 
 	vertex.FragPos = vec3(model * vec4(aPosSurf, 1.0));
-	vertex.Normal = -aNormSurf;
+	vertex.Normal = fNormal(aPos.x, aPos.y);
 	gl_Position = projection * view * model * vec4(aPosSurf, 1.0);
 }

@@ -223,6 +223,11 @@ entradaTS getEntrada(char *nombre) {
 
 // Busca una entrada según el nombre
 int TS_BuscarFUN(char *nombre){
+	return TS_BuscarFUNModo(nombre, 1);
+}
+
+// Busca una entrada según el nombre
+int TS_BuscarFUNModo(char *nombre, int modoAnalisis){
 
     int i = LIMIT - 1;
 	int found = 0;
@@ -237,7 +242,9 @@ int TS_BuscarFUN(char *nombre){
 	}
 
 	if(!found) {
-		printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, nombre);
+		if (modoAnalisis) {
+			printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, nombre);
+		}
 		return -1;
 	} else {
 		return i;

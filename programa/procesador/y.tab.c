@@ -1449,7 +1449,7 @@ yyreduce:
 
   case 17:
 #line 73 "semantico.y"
-                                                                { comprobarIND(yyvsp[-3], yyvsp[-1], &yyval); yyval.nodoPropio=crearNodoIndex(yyvsp[-3].nodoPropio,yyvsp[-1].nodoPropio); }
+                                                                { comprobarIND(yyvsp[-3], yyvsp[-1], &yyval); yyval.nodoPropio=crearNodoIndex(yyvsp[-3],yyvsp[-1].nodoPropio); }
 #line 1454 "y.tab.c"
     break;
 

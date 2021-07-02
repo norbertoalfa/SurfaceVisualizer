@@ -70,7 +70,7 @@ sentencia_plot : sentencia_plot COMA IDENT	{ TS_InsertaPLOT($3.lex); escribeCont
 
 expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dimension; $$.tam=$2.tam; $$.nodoPropio=crearNodoParentesis($2.nodoPropio); }
           | IF expresion THEN expresion ELSE expresion	{ comprobarIF($2, $4, $6, &$$); $$.nodoPropio=crearNodoIf($2.nodoPropio,$4.nodoPropio,$6.nodoPropio); }
-          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); $$.nodoPropio=crearNodoIndex($1.nodoPropio,$3.nodoPropio); }
+          | expresion COR_IZQ expresion COR_DER			{ comprobarIND($1, $3, &$$); $$.nodoPropio=crearNodoIndex($1,$3.nodoPropio); }
           | llamada_funcion								{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; $$.nodoPropio=$1.nodoPropio; }
           | OP_MENOS expresion							{ TS_OpUNARIA($1, $2, &$$); $$.nodoPropio=crearNodoOpUn($1.lex,$2.nodoPropio); }
           | OP_NEG expresion							{ TS_OpUNARIA($1, $2, &$$); $$.nodoPropio=crearNodoOpUn($1.lex,$2.nodoPropio); }

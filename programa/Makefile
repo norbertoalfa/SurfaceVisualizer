@@ -25,7 +25,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS := $(INC_FLAGS) -g
 
 
-all: shader $(TARGET_EXEC)
+all: $(TARGET_EXEC) shader
 	
 $(TARGET_EXEC): bin/$(TARGET_EXEC)
 	./bin/$(TARGET_EXEC)
