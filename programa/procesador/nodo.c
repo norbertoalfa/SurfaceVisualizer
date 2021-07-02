@@ -443,30 +443,67 @@ void partialNodoDiv(nodo *nodoFun, nodo *nodoPar, char *nVar)
 
 void partialNodoExp(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
-	nodo *nodoExp, *nodoLn;
+	nodo *nodoExp, *nodoLn, *nodoPotencia, *nodoPotenciaDer;
 
-	if (strcmp(nodoFun->children[0]->lex, "E") == 0) {
-		nodoExp = nodoFun->children[1];
-	} else {		
-		nodoLn = malloc(sizeof(nodo));
-		nodoLn->tipo = NODO_FUN;
-		nodoLn->nChild = 1;
-		nodoLn->lex = strdup("log");
-		nodoLn->children[0] = nodoFun->children[0];
 
-		nodoExp = malloc(sizeof(nodo));
-		nodoExp->tipo = nodoFun->tipo;
-		nodoExp->nChild = nodoFun->nChild;
-		nodoExp->lex = strdup("*");
-		nodoExp->children[0] = nodoFun->children[1];
-		nodoExp->children[1] = nodoLn;
+	if (nodoFun->children[1]->tipo != NODO_CTE){	
+		if (strcmp(nodoFun->children[0]->lex, "E") == 0) {
+			nodoExp = nodoFun->children[1];
+		} else {
+			nodoLn = malloc(sizeof(nodo));
+			nodoLn->tipo = NODO_FUN;
+			nodoLn->nChild = 1;
+			nodoLn->lex = strdup("log");
+			nodoLn->children[0] = nodoFun->children[0];
+
+			nodoExp = malloc(sizeof(nodo));
+			nodoExp->tipo = nodoFun->tipo;
+			nodoExp->nChild = nodoFun->nChild;
+			nodoExp->lex = strdup("*");
+			nodoExp->children[0] = nodoFun->children[1];
+			nodoExp->children[1] = nodoLn;
+		}
+
+		nodoPar->tipo = nodoFun->tipo;
+		nodoPar->nChild = 2;
+		nodoPar->lex = strdup("*");
+		nodoPar->children[0] = nodoFun;
+		nodoPar->children[1] = addParen(partialExpr(nodoExp, nVar));
+	} else {
+		if (strcmp(nodoFun->children[1]->lex, "0") == 0){
+			nodoPar->tipo = NODO_CTE;
+			nodoPar->nChild = 0;
+			nodoPar->lex = strdup("0");
+		} else {
+			char *nExp;
+			nExp = (char *) malloc(100);
+			nExp[0]=0;
+
+			nodoPotencia = malloc(sizeof(nodo));
+			nodoPotencia->tipo = NODO_OP;
+			nodoPotencia->nChild = 2;
+			nodoPotencia->lex = strdup("^");
+			nodoPotencia->children[0] = nodoFun->children[0];
+
+			sprintf(nExp, "%f", atof(nodoFun->children[1]->lex)-1);
+			nodoPotencia->children[1] = crearNodoTipo(nExp, NODO_CTE);
+
+			nodoPotenciaDer = malloc(sizeof(nodo));
+			nodoPotenciaDer->tipo = NODO_OP;
+			nodoPotenciaDer->nChild = 2;
+			nodoPotenciaDer->lex = strdup("*");
+			nodoPotenciaDer->children[0] = crearNodoTipo(nodoFun->children[1]->lex, NODO_CTE);
+			nodoPotenciaDer->children[1] = nodoPotencia;
+
+			nodoPar->tipo = NODO_OP;
+			nodoPar->nChild = 2;
+			nodoPar->lex = strdup("*");
+			nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+			nodoPar->children[1] = nodoPotenciaDer;
+		}
 	}
 
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = 2;
-	nodoPar->lex = strdup("*");
-	nodoPar->children[0] = nodoFun;
-	nodoPar->children[1] = addParen(partialExpr(nodoExp, nVar));
+	
 }
 
 void partialNodoIf(nodo *nodoFun, nodo *nodoPar, char *nVar)
