@@ -6,8 +6,6 @@ in vData {vec3 FragPos; vec3 Normal;} vertices[];
 
 out fData {vec3 FragPos; vec3 Normal;} frag;
 
-vec3 fNormal(float u, float v);
-
 uniform mat4 model;
 
 void main() {

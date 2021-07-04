@@ -152,7 +152,7 @@ void generaCtes(){
   	sent = (char *) malloc(1000);
   	sent[0]=0;
   	
-    sprintf(sent,"\nfloat PI = 3.14159265;\n");
+    sprintf(sent,"\nfloat PI = 3.1415926;\n");
     sprintf(sent,"%sfloat E = 2.71828182;\n\n", sent);
     
   	fputs(sent,file);

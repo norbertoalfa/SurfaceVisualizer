@@ -10,7 +10,7 @@ uniform float param_t[10];
 uniform int funPlot;
 
 
-float PI = 3.14159265;
+float PI = 3.1415926;
 float E = 2.71828182;
 
 
@@ -69,20 +69,68 @@ mat3 funcionIf(bool cond, mat3 e1, mat3 e2)
 	 else
 		 return e2;
 }
-float g(float x) {
-	return x;
+float compx(float u, float v) {
+	return (2 + 0.5 *  cos(v * 2 * PI)) *  cos(u * 2 * PI);
+}
+
+float compy(float u, float v) {
+	return (2 + 0.5 *  cos(v * 2 * PI)) *  sin(u * 2 * PI);
+}
+
+float compz(float u, float v) {
+	return 0.5 *  sin(v * 2 * PI);
+}
+
+vec3 g(float u, float v) {
+	return  vec3( compx(u, v),  compy(u, v),  compz(u, v));
+}
+
+float compxPu(float u, float v) {
+	return (0 + 0 *  cos(v * 2 * PI) + 0.5 *  -  sin(v * 2 * PI) * (0 * 2 + v * 0 * PI + v * 2 * 0)) *  cos(u * 2 * PI) + (2 + 0.5 *  cos(v * 2 * PI)) *  -  sin(u * 2 * PI) * (1 * 2 + u * 0 * PI + u * 2 * 0);
+}
+
+float compxPv(float u, float v) {
+	return (0 + 0 *  cos(v * 2 * PI) + 0.5 *  -  sin(v * 2 * PI) * (1 * 2 + v * 0 * PI + v * 2 * 0)) *  cos(u * 2 * PI) + (2 + 0.5 *  cos(v * 2 * PI)) *  -  sin(u * 2 * PI) * (0 * 2 + u * 0 * PI + u * 2 * 0);
+}
+
+float compyPu(float u, float v) {
+	return (0 + 0 *  cos(v * 2 * PI) + 0.5 *  -  sin(v * 2 * PI) * (0 * 2 + v * 0 * PI + v * 2 * 0)) *  sin(u * 2 * PI) + (2 + 0.5 *  cos(v * 2 * PI)) *  cos(u * 2 * PI) * (1 * 2 + u * 0 * PI + u * 2 * 0);
+}
+
+float compyPv(float u, float v) {
+	return (0 + 0 *  cos(v * 2 * PI) + 0.5 *  -  sin(v * 2 * PI) * (1 * 2 + v * 0 * PI + v * 2 * 0)) *  sin(u * 2 * PI) + (2 + 0.5 *  cos(v * 2 * PI)) *  cos(u * 2 * PI) * (0 * 2 + u * 0 * PI + u * 2 * 0);
+}
+
+float compzPu(float u, float v) {
+	return 0 *  sin(v * 2 * PI) + 0.5 *  cos(v * 2 * PI) * (0 * 2 + v * 0 * PI + v * 2 * 0);
+}
+
+float compzPv(float u, float v) {
+	return 0 *  sin(v * 2 * PI) + 0.5 *  cos(v * 2 * PI) * (1 * 2 + v * 0 * PI + v * 2 * 0);
+}
+
+vec3 gPu(float u, float v) {
+	return  vec3(( compxPu(u, v) * (1) +  compxPv(u, v) * (0)), ( compyPu(u, v) * (1) +  compyPv(u, v) * (0)), ( compzPu(u, v) * (1) +  compzPv(u, v) * (0)));
+}
+
+vec3 gPv(float u, float v) {
+	return  vec3(( compxPu(u, v) * (0) +  compxPv(u, v) * (1)), ( compyPu(u, v) * (0) +  compyPv(u, v) * (1)), ( compzPu(u, v) * (0) +  compzPv(u, v) * (1)));
+}
+
+vec3 gNormal(float u, float v) {
+	return  normalize( cross( gPu(u, v),  gPv(u, v)));
 }
 
 vec3 f(float u, float v) {
-	return  vec3(u - 0.5, v - 0.5, 0.1) * ( pow(u, 2));
+	return  g(u - 0.5, v - 0.5);
 }
 
 vec3 fPu(float u, float v) {
-	return  vec3((1 - 0), (0 - 0), (0)) * ( pow(u, 2)) +  vec3(u - 0.5, v - 0.5, 0.1) * (1 * 2 *  pow(u, 1.000000));
+	return  gPu(u - 0.5, v - 0.5) * (1 - 0) +  gPv(u - 0.5, v - 0.5) * (0 - 0);
 }
 
 vec3 fPv(float u, float v) {
-	return  vec3((0 - 0), (1 - 0), (0)) * ( pow(u, 2)) +  vec3(u - 0.5, v - 0.5, 0.1) * (0 * 2 *  pow(u, 1.000000));
+	return  gPu(u - 0.5, v - 0.5) * (0 - 0) +  gPv(u - 0.5, v - 0.5) * (1 - 0);
 }
 
 vec3 fNormal(float u, float v) {
