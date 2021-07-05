@@ -511,8 +511,9 @@ void partialNodoIf(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+	nodoPar->children[0] = nodoFun->children[0];
 	nodoPar->children[1] = partialExpr(nodoFun->children[1], nVar);
+	nodoPar->children[2] = partialExpr(nodoFun->children[2], nVar);
 }
 
 void derivLog(nodo *nodoFun, nodo *nodoPar)
@@ -971,9 +972,9 @@ void escribeFinPlot(){
   	
     FILE *temp_file = fopen("../temp","w");
   	
-    sprintf(sent,"\n\n\tvertex.FragPos = vec3(model * vec4(aPosSurf, 1.0));");
-    sprintf(sent,"%s\n\tvertex.Normal = -aNormSurf;", sent);
-    sprintf(sent,"%s\n\tgl_Position = projection * view * model * vec4(aPosSurf, 1.0);\n}", sent);
+    sprintf(sent,"\n\n\tvertex.FragPos = vec3(vec4(aPosSurf, 1.0));"); // model *
+    sprintf(sent,"%s\n\tvertex.Normal = aNormSurf;", sent);
+    sprintf(sent,"%s\n\tgl_Position = vec4(aPosSurf, 1.0);\n}", sent); // projection * view * model *
 
   	fputs(sent,file);
   	free(sent);

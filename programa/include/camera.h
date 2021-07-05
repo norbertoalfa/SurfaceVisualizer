@@ -31,6 +31,7 @@ class Camera
 public:
     // camera Attributes
     glm::vec3 Position;
+    glm::vec3 cameraLocation;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
@@ -53,6 +54,7 @@ public:
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
+        cameraLocation = Position + Zoom*Front;
         posChange = false;
     }
     // constructor with scalar values
@@ -63,6 +65,7 @@ public:
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
+        cameraLocation = Position + Zoom*Front;
         posChange = false;
     }
     
@@ -112,6 +115,8 @@ public:
 
         // update Front, Right and Up Vectors using the updated Euler angles
         updateCameraVectors();
+
+        cameraLocation = Position + Zoom*Front;
     }
     
     
@@ -135,6 +140,8 @@ public:
 
         // update Front, Right and Up Vectors using the updated Euler angles
         updateCameraVectors();
+
+        cameraLocation = Position + Zoom*Front;
     }
 
     // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
@@ -145,6 +152,8 @@ public:
             Zoom = 5.0f;
         if (Zoom > 50.0f)
             Zoom = 50.0f;
+        
+        cameraLocation = Position + Zoom*Front;
     }
     
     void reset()

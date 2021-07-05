@@ -11,14 +11,14 @@ class ProgramStatus
 		float lastMouseY;
 		
 		bool activePolMode;
+		bool showNormals;
 		bool autoRotation;
 		bool perDisplace;
 		bool perRotate;
 		bool loadShader;
 
 		bool firstMouseDetected;
-		bool firstTimePressR;
-		bool firstTimePressP;
+		bool firstTimePress[91];
 
 		bool someChange;
 		
@@ -35,14 +35,17 @@ class ProgramStatus
 			lastMouseY = height / 2.0f;
 
 			activePolMode = false;
+			showNormals = false;
 			autoRotation = false;
 			perDisplace = false;
 			perRotate = false;
 			loadShader = true;
 
 			firstMouseDetected = true;
-			firstTimePressR = false;
-			firstTimePressP = false;
+			
+			for (int i = 0; i < 91; i++) {
+				firstTimePress[i] = false;
+			}
 			
 			someChange = true;
 		}
@@ -57,9 +60,7 @@ class ProgramStatus
 
 		void setFirstMouse(bool value){ firstMouseDetected = value; }
 
-		void setFirstPressR(bool value){ firstTimePressR = value; }
-
-		void setFirstPressP(bool value){ firstTimePressP = value; }
+		void setFirstPress(char c, bool value){ firstTimePress[c] = value; }
 
 		void setSomeChange(bool change){ someChange = change; }
 		
@@ -79,6 +80,8 @@ class ProgramStatus
 		// Switch
 
 		void switchPolMode() { activePolMode = !activePolMode; }
+
+		void switchShowNormals() { showNormals = !showNormals; }
 		
 		void switchAutoRot() { autoRotation = !autoRotation; }
 		
@@ -86,6 +89,8 @@ class ProgramStatus
 		// Getters
 
 		bool getActivePolMode() { return activePolMode; }
+
+		bool getShowNormals() { return showNormals; }
 		
 		bool getAutoRotation() { return autoRotation; }
 
@@ -97,9 +102,7 @@ class ProgramStatus
 
 		bool getFirstMouse(){ return firstMouseDetected; }
 
-		bool getFirstPressR(){ return firstTimePressR; }
-
-		bool getFirstPressP(){ return firstTimePressP; }
+		bool getFirstPress(char c){ return firstTimePress[c]; }
 		
 		bool getSomeChange() { return someChange; }
 		

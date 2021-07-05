@@ -5,7 +5,7 @@ class Object {
 		bool colorChange;
 		
 	public:
-		Object(glm::vec3 objColor=glm::vec3(0.1f, 0.75f, 0.1f)) {
+		Object(glm::vec3 objColor=glm::vec3(0.5f, 0.5f, 0.5f)) {
 			color = objColor;
 			colorChange = false;
 		}

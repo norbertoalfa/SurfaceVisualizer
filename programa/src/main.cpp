@@ -28,7 +28,7 @@ ProgramStatus status;
 Camera camera(glm::vec3(0.0f,0.0f,0.0f));
 Light light;
 Object object;
-Shader *shader;
+Shader *shader, *shaderNormals;
 
 // timing
 float deltaTime = 0.0f;
@@ -43,6 +43,8 @@ GLfloat params[10];
 const int SIZE = 40;
 const int SIZE_POINT = 2;
 float step = 1.0/((float) SIZE);
+
+const int N_SAMPLES = 4; // Nº de muestras para el multi-sampling
 
 // Variables
 GLFWwindow* window;
@@ -87,26 +89,39 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
     }
     
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-    	status.setFirstPressR(true);
+    	status.setFirstPress('R', true);
     	status.setSomeChange(true);
     }
     
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		status.setFirstPressP(true);
+		status.setFirstPress('P', true);
+		status.setSomeChange(true);
+    }
+    
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+		status.setFirstPress('N', true);
 		status.setSomeChange(true);
     }
     
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE) {
-    	if (status.getFirstPressR()) {
+    	if (status.getFirstPress('R')) {
     		status.switchAutoRot();
-    		status.setFirstPressR(false);
+    		status.setFirstPress('R', false);
     	}
     }
     
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE) {
-    	if (status.getFirstPressP()) {
+    	if (status.getFirstPress('P')) {
     		status.switchPolMode();
-    		status.setFirstPressP(false);
+    		status.setFirstPress('P', false);
+    		status.setSomeChange(true);
+    	}
+    }
+    
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_RELEASE) {
+    	if (status.getFirstPress('N')) {
+    		status.switchShowNormals();
+    		status.setFirstPress('N', false);
     		status.setSomeChange(true);
     	}
     }
@@ -205,19 +220,24 @@ void setCallbacks()
 	glfwSetScrollCallback(window, scroll_callback);
 }
 
-void updateUniforms()
+void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
 {
-    shader->setMat4("projection", projection);
-    shader->setMat4("view", view);
-    shader->setMat4("model", model);
+    sh->setMat4("projection", projection);
+    sh->setMat4("view", view);
+    sh->setMat4("model", model);
     
-    shader->setVec3("objectColor", object.getColor());
-    shader->setVec3("lightColor", light.getColor());
-    shader->setVec3("lightPos", light.getPos());
-    shader->setVec3("viewPos", camera.Position);
+    sh->setBool("showPol", showPol);
+    sh->setBool("showNormals", showNormals);
+    sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
+    sh->setVec3("colorNormals", glm::vec3(1.0f, 0.3f, 0.3f));
+
+    sh->setVec3("objectColor", object.getColor());
+    sh->setVec3("lightColor", light.getColor());
+    sh->setVec3("lightPos", light.getPos());
+    sh->setVec3("viewPos", camera.cameraLocation);
     
-    shader->setFloat("STEP", step);
-	shader->setArray("param_t", params, sizeof(params));
+    sh->setFloat("STEP", step);
+	sh->setArray("param_t", params, sizeof(params));
 }
 
 int initializeGLFW()
@@ -228,6 +248,7 @@ int initializeGLFW()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, N_SAMPLES);
 
     // glfw window creation
     window = glfwCreateWindow(status.getWidth(), status.getHeight(), "LearnOpenGL", NULL, NULL);
@@ -305,8 +326,9 @@ void initializeBuffers()
 
 void render()
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.9f, 0.9f, 0.9f, 0.7f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLineWidth(1.2);
 
 	if (status.getActivePolMode()) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -342,9 +364,23 @@ void render()
         temp_file.close();
 	}
 	
-	// activate shader
+    if (status.getShowNormals()) {
+        // activate shader
+        shaderNormals -> use();
+        updateUniforms(shaderNormals, false, true);
+        
+        // render boxes
+        glBindVertexArray(VAO);
+
+        for (int i = 0; i < status.getTotalFPlot(); i++) {
+            shader->setInt("funPlot", i);
+            glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+        }
+    }
+
+    // activate shader
 	shader -> use();
-	updateUniforms();
+	updateUniforms(shader, status.getActivePolMode());
 	
 	// render boxes
 	glBindVertexArray(VAO);
@@ -365,13 +401,18 @@ void cleanBuffers()
 int main()
 {
 	initializeGLFW();
+    
     initImGUI(window);
     plainDeclar();
     initializeBuffers();
 
+    shaderNormals = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometryNormals.s");
+	shaderNormals -> use();
+	updateUniforms(shaderNormals);
+
     shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
-	shader -> use();
-	updateUniforms();
+    shader -> use();
+	updateUniforms(shader);
     
     int n;
 

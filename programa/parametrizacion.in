@@ -6,8 +6,8 @@ compy(u, v : real) : real = (2 + 0.5*cos(v*2*PI))*sin(u*2*PI);
 
 compz(u, v : real) : real = 0.5*sin(v*2*PI);
 
-g(u, v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v));
+g(u, v, t0 : real) : vec3 = vec3(compx(u*cos(t0),v), compy(u,v), compz(u,v));
 
-f(u, v : real) : vec3 = g(u-0.5, v-0.5);
+f(u, v, t0 : real) : vec3 = 2*g(u-0.5, v-0.5, t0);
 
 plot f;
