@@ -583,6 +583,105 @@ void derivTg(nodo *nodoFun, nodo *nodoPar)
 	nodoPar->children[1] = nodoDen;
 }
 
+void replace(nodo *baseNode, nodo *nNew) {
+	int ch = 0;
+
+	baseNode->lex = nNew->lex;
+	baseNode->nChild = nNew->nChild;
+	baseNode->tipo = nNew->tipo;
+	baseNode->subTipo = nNew->subTipo;
+
+	for (ch = 0; ch < baseNode->nChild; ch++) {
+		baseNode->children[ch] = nNew->children[ch];
+	}
+}
+
+void simplifyPartial(nodo *nodoPar){
+	int i = 0;
+	int simplificable = 0;
+
+	if (nodoPar->nChild > 0) {
+		for (i = 0; i < nodoPar->nChild; i++) {
+			simplifyPartial(nodoPar->children[i]);
+
+			if (nodoPar->tipo == NODO_PAREN) {
+				if (nodoPar->children[0]->tipo != NODO_OP) {
+					replace(nodoPar, nodoPar->children[0]);
+				}
+			}
+			
+			if (nodoPar->tipo == NODO_OP) {
+				int isZero = 0;
+
+				simplificable = strcmp(nodoPar->children[i]->lex, "0") == 0 ||
+								strcmp(nodoPar->children[i]->lex, "1") == 0;
+				simplificable = simplificable && nodoPar->children[i]->tipo == NODO_CTE;
+				
+				if (simplificable) {
+					// Es un operador unario
+					if (nodoPar->nChild == 1){
+						if (strcmp(nodoPar->lex, "-") == 0 && strcmp(nodoPar->children[i]->lex, "0") == 0) {
+							isZero = 1;
+						}
+
+						if (strcmp(nodoPar->lex, "!") == 0) {
+							if (strcmp(nodoPar->children[i]->lex, "0") == 0) {
+								nodoPar->lex = strdup("1");
+							} else {
+								nodoPar->lex = strdup("0");
+							}
+
+							nodoPar->nChild = 0;
+							nodoPar->tipo = NODO_CTE;
+						}
+
+						free(nodoPar->children[0]);
+
+					// Es un operador binario
+					} else {
+						int j = !i;
+
+						if (strcmp(nodoPar->lex, "+") == 0 && strcmp(nodoPar->children[i]->lex, "0") == 0) {
+							replace(nodoPar, nodoPar->children[j]);
+						}
+
+						if (strcmp(nodoPar->lex, "-") == 0 && strcmp(nodoPar->children[1]->lex, "0") == 0) {
+							replace(nodoPar, nodoPar->children[0]);
+						}
+
+						if (strcmp(nodoPar->lex, "-") == 0 && strcmp(nodoPar->children[0]->lex, "0") == 0) {
+							nodoPar->children[0] = nodoPar->children[1];
+							nodoPar->nChild = 1;
+						}
+
+						if (strcmp(nodoPar->lex, "*") == 0 && strcmp(nodoPar->children[i]->lex, "0") == 0) {
+							isZero = 1;
+						}
+
+						if (strcmp(nodoPar->lex, "*") == 0 && strcmp(nodoPar->children[i]->lex, "1") == 0) {
+							replace(nodoPar, nodoPar->children[j]);
+						}
+
+						if (strcmp(nodoPar->lex, "/") == 0 && strcmp(nodoPar->children[0]->lex, "0") == 0) {
+							isZero = 1;
+						}
+
+						if (strcmp(nodoPar->lex, "/") == 0 && strcmp(nodoPar->children[1]->lex, "1") == 0) {
+							replace(nodoPar, nodoPar->children[0]);
+						}
+					}
+
+					if (isZero) {
+						nodoPar->lex = strdup("0");
+						nodoPar->nChild = 0;
+						nodoPar->tipo = NODO_CTE;
+					}
+				} 
+			}
+		}
+	}
+}
+
 nodo* checkPartialF(nodo *nodoFun, char *nVar)
 {
 	char *nombreParFun;
@@ -624,7 +723,10 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 			TS_InsertaEntrada(TS[iFun + i + 1]);
 		}
 
-		escribeFun(nombreParFun, partialExpr(nodoFunExpr, nVar));
+		nodo *nodoParExpr = partialExpr(nodoFunExpr, nVar);
+		simplifyPartial(nodoParExpr);
+
+		escribeFun(nombreParFun, nodoParExpr);
 	}
 
 	nodoPar = malloc(sizeof(nodo));
