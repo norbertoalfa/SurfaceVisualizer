@@ -1,7 +1,9 @@
 .SUFFIXES:
 
+FILE?=../parametrizacion.in
+
 all: analizador
-	./analizador < ../parametrizacion.in
+	./analizador < '$(FILE)'
 
 analizador: y.tab.o semantico.o nodo.o
 	gcc -o analizador -lfl y.tab.o semantico.o nodo.o

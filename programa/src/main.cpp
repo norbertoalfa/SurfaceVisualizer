@@ -38,7 +38,6 @@ float lastFrame = 0.0f;
 glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
-GLfloat params[10];
 
 const int SIZE = 40;
 const int SIZE_POINT = 2;
@@ -237,7 +236,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setVec3("viewPos", camera.cameraLocation);
     
     sh->setFloat("STEP", step);
-	sh->setArray("param_t", params, sizeof(params));
+	sh->setArray("param_t", status.params, sizeof(status.params));
 }
 
 int initializeGLFW()
@@ -325,7 +324,7 @@ void initializeBuffers()
 }
 
 void render()
-{
+{ 
 	glClearColor(0.9f, 0.9f, 0.9f, 0.7f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLineWidth(1.2);
@@ -336,7 +335,7 @@ void render()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	// camera/view transformation
+	// camera/view transformation 
 	if (status.getAutoRotation()) {
 		view = camera.getAutoRotViewMatrix();
 	} else {
@@ -345,14 +344,23 @@ void render()
 
 	projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
 	
-	params[0] = sin(glfwGetTime() / 2);
-	params[1] = cos(glfwGetTime() / 2);
+    for (int i = 0; i < 10; i++) {
+        float newParam = (1.0 + sin(glfwGetTime() / 2.0))/2.0;
+
+        if (status.autoParams[i]) {
+            status.params[i] = newParam;
+        }
+    }
 	
 	if (status.getLoadShader()) {
-		delete shader;
-		system("cd procesador && make");
+        std::string cmd = "cd procesador && make FILE=../'" + status.getParamFile() + "'";
+
+		delete shaderNormals;
+        delete shader;
+
+		system(cmd.c_str());
 		shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
-		status.setLoadShader(false);
+		shaderNormals = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometryNormals.s");
         
         int n;
 
@@ -362,6 +370,8 @@ void render()
         temp_file >> n;
         status.setTotalParam(n);
         temp_file.close();
+
+		status.setLoadShader(false);
 	}
 	
     if (status.getShowNormals()) {
@@ -423,7 +433,7 @@ int main()
     status.setTotalParam(n);
     temp_file.close();
 
-    // render loop
+    // render loop A
     while (!glfwWindowShouldClose(window)) {
     	// per-frame time logic
     	float currentFrame = glfwGetTime();
@@ -434,13 +444,13 @@ int main()
         glfwPollEvents();
     	
         // render
-    	visualizeInterface();
+    	visualizeInterface(status);
     	render();
     	
     	for (int i = 0; i < 2; i++)
-			visualizeInterface();
+			visualizeInterface(status);
 		
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.) 
     	glfwSwapBuffers(window);
     	
     	status.setSomeChange(false);

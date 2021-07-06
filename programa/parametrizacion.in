@@ -1,13 +1,16 @@
 //Ejemplo
 
-compx(u, v : real) : real = (2 + 0.5*cos(v*2*PI))*cos(u*2*PI);
+r : real = 0.5;
+R : real = 2.0; 
 
-compy(u, v : real) : real = (2 + 0.5*cos(v*2*PI))*sin(u*2*PI);
+compx(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*cos(u*2*PI);
 
-compz(u, v : real) : real = 0.5*sin(v*2*PI);
+compy(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*sin(u*2*PI);
 
-g(u, v, t0 : real) : vec3 = vec3(compx(u*cos(t0),v), compy(u,v), compz(u,v));
+compz(u, v : real, t1, t2 : real) : real = t2*sin(v*2*PI);
 
-f(u, v, t0 : real) : vec3 = 2*g(u-0.5, v-0.5, t0);
+g(u, v, t0 : real, t1, t2 : real) : vec3 = vec3(compx(u*cos(t0),v, t1, t2), compy(u,v, t1, t2), compz(u,v, t1, t2));
+
+f(u, v, t0 : real, t1, t2 : real) : vec3 = 2*g(u-0.5, v-0.5, t0, t1 + R, t2 + r);
 
 plot f;
