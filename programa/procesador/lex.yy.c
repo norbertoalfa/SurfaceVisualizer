@@ -870,7 +870,7 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 #line 33 "especificacion.lex"
-{yylval.lex=strdup(yytext); yylval.atrib=2; return OP_MULTIP;}
+{yylval.lex=strdup(yytext); yylval.atrib=2; return OP_EXP;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP

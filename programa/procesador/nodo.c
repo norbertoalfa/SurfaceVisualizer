@@ -379,10 +379,19 @@ void partialNodoSum(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->children[1] = partialExpr(nodoFun->children[1], nVar);
 }
 
+void partialNodoMenos(nodo *nodoFun, nodo *nodoPar, char *nVar)
+{
+	nodoPar->tipo = nodoFun->tipo;
+	nodoPar->nChild = nodoFun->nChild;
+	nodoPar->lex = strdup(nodoFun->lex);
+	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+}
+
 void partialNodoMul(nodo *nodoFun, nodo *nodoPar, char *nVar)
 {
 	nodo *nodoIzq = malloc(sizeof(nodo));
 	nodo *nodoDer = malloc(sizeof(nodo));
+	nodo *nodoSum = malloc(sizeof(nodo));
 
 	nodoIzq->tipo = nodoFun->tipo;
 	nodoIzq->nChild = nodoFun->nChild;
@@ -396,11 +405,17 @@ void partialNodoMul(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoDer->children[0] = nodoFun->children[0];
 	nodoDer->children[1] = partialExpr(nodoFun->children[1], nVar);
 
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup("+");
-	nodoPar->children[0] = nodoIzq;
-	nodoPar->children[1] = nodoDer;
+	nodoSum->tipo = nodoFun->tipo;
+	nodoSum->nChild = nodoFun->nChild;
+	nodoSum->lex = strdup("+");
+	nodoSum->children[0] = nodoIzq;
+	nodoSum->children[1] = nodoDer;
+
+	nodoPar->tipo = NODO_PAREN;
+	nodoPar->nChild = 1;
+	nodoPar->lex = strdup("()");
+	nodoPar->children[0] = nodoSum;
+
 }
 
 void partialNodoDiv(nodo *nodoFun, nodo *nodoPar, char *nVar)
@@ -542,16 +557,22 @@ void derivSin(nodo *nodoFun, nodo *nodoPar)
 void derivCos(nodo *nodoFun, nodo *nodoPar)
 {
 	nodo *nodoSin = malloc(sizeof(nodo));
+	nodo *nodoSum = malloc(sizeof(nodo));
 
 	nodoSin->tipo = nodoFun->tipo;
 	nodoSin->nChild = nodoFun->nChild;
 	nodoSin->lex = strdup("sin");
 	nodoSin->children[0] = nodoFun->children[0];
 
-	nodoPar->tipo = NODO_OP;
+	nodoSum->tipo = NODO_OP;
+	nodoSum->nChild = 1;
+	nodoSum->lex = strdup("-");
+	nodoSum->children[0] = nodoSin;
+
+	nodoPar->tipo = NODO_PAREN;
 	nodoPar->nChild = 1;
-	nodoPar->lex = strdup("-");
-	nodoPar->children[0] = nodoSin;
+	nodoPar->lex = strdup("()");
+	nodoPar->children[0] = nodoSum;
 }
 
 void derivTg(nodo *nodoFun, nodo *nodoPar)
@@ -586,7 +607,7 @@ void derivTg(nodo *nodoFun, nodo *nodoPar)
 void replace(nodo *baseNode, nodo *nNew) {
 	int ch = 0;
 
-	baseNode->lex = nNew->lex;
+	baseNode->lex = strdup(nNew->lex);
 	baseNode->nChild = nNew->nChild;
 	baseNode->tipo = nNew->tipo;
 	baseNode->subTipo = nNew->subTipo;
@@ -603,6 +624,9 @@ void simplifyPartial(nodo *nodoPar){
 	if (nodoPar->nChild > 0) {
 		for (i = 0; i < nodoPar->nChild; i++) {
 			simplifyPartial(nodoPar->children[i]);
+		}
+
+		for (i = 0; i < nodoPar->nChild; i++) {
 
 			if (nodoPar->tipo == NODO_PAREN) {
 				if (nodoPar->children[0]->tipo != NODO_OP) {
@@ -635,8 +659,6 @@ void simplifyPartial(nodo *nodoPar){
 							nodoPar->tipo = NODO_CTE;
 						}
 
-						free(nodoPar->children[0]);
-
 					// Es un operador binario
 					} else {
 						int j = !i;
@@ -645,13 +667,15 @@ void simplifyPartial(nodo *nodoPar){
 							replace(nodoPar, nodoPar->children[j]);
 						}
 
-						if (strcmp(nodoPar->lex, "-") == 0 && strcmp(nodoPar->children[1]->lex, "0") == 0) {
-							replace(nodoPar, nodoPar->children[0]);
-						}
-
-						if (strcmp(nodoPar->lex, "-") == 0 && strcmp(nodoPar->children[0]->lex, "0") == 0) {
-							nodoPar->children[0] = nodoPar->children[1];
-							nodoPar->nChild = 1;
+						if (strcmp(nodoPar->lex, "-") == 0) {
+							if (strcmp(nodoPar->children[0]->lex, "0") == 0 && strcmp(nodoPar->children[1]->lex, "0") == 0) {
+								isZero = 1;
+							} else if (strcmp(nodoPar->children[1]->lex, "0") == 0) {
+								replace(nodoPar, nodoPar->children[0]);
+							} else if (strcmp(nodoPar->children[0]->lex, "0") == 0) {
+								nodoPar->children[0] = nodoPar->children[1];
+								nodoPar->nChild = 1;
+							}
 						}
 
 						if (strcmp(nodoPar->lex, "*") == 0 && strcmp(nodoPar->children[i]->lex, "0") == 0) {
@@ -890,6 +914,11 @@ nodo* partialExpr(nodo *nodoFun, char *nVar)
 		nodoPar->tipo = NODO_CTE;
 		nodoPar->nChild = 0;
 	} else if (nodoFun->tipo == NODO_OP){
+		if (nodoFun->nChild == 1) {
+			if (strcmp("-", nodoFun->lex) == 0){
+				partialNodoMenos(nodoFun, nodoPar, nVar);
+			}
+		}
 		if (nodoFun->nChild == 2) {
 			if (strcmp("+", nodoFun->lex) == 0 || strcmp("-", nodoFun->lex) == 0){
 				partialNodoSum(nodoFun, nodoPar, nVar);
@@ -911,7 +940,7 @@ nodo* partialExpr(nodo *nodoFun, char *nVar)
 		partialNodoParen(nodoFun, nodoPar, nVar);
 	}
 
-	return nodoPar;
+	return addParen(nodoPar);
 }
 
 void escribeNorm(atributos fun, atributos e1){

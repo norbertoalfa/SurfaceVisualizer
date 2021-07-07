@@ -38,6 +38,7 @@
 %left OP_COMP
 %left OP_SUMA OP_MENOS
 %left OP_MULTIP
+%left OP_EXP
 %right OP_NEG
 %right COR_IZQ COR_DER
 
@@ -77,6 +78,7 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
           | expresion OP_SUMA expresion					{ TS_OpSUMARESTA($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_MENOS expresion				{ TS_OpSUMARESTA($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_MULTIP expresion				{ TS_OpMULTIP($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
+          | expresion OP_EXP expresion				{ TS_OpMULTIP($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_IGUAL expresion				{ TS_OpIGUAL($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_COMP expresion					{ TS_OpCOMP($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_OR expresion					{ TS_OpOR($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }

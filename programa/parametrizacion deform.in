@@ -14,4 +14,4 @@ f(u,v :real) : vec3 = g(u-0.5, v-0.5);
 
 f2(u,v : real) : vec3 = if u<0.51 then f(2*u,v) else h(2*u,v);
 
-plot f;//f2;
+plot f2;//f2;

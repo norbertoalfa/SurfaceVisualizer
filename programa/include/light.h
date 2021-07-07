@@ -6,7 +6,7 @@ class Light {
 		bool posChange, colorChange;
 		
 	public:
-		Light(glm::vec3 pos=glm::vec3(10.0f, 10.0f, 20.0f), glm::vec3 color=glm::vec3(0.75f, 0.75f, 0.75f)){
+		Light(glm::vec3 pos=glm::vec3(1000.0f, 1000.0f, 2000.0f), glm::vec3 color=glm::vec3(0.75f, 0.75f, 0.75f)){
 			lightPos = pos;
 			lightColor = color;
 			posChange = false;

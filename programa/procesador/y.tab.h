@@ -70,9 +70,10 @@ extern int yydebug;
     OP_SUMA = 276,
     OP_MENOS = 277,
     OP_MULTIP = 278,
-    OP_NEG = 279,
-    COR_IZQ = 280,
-    COR_DER = 281
+    OP_EXP = 279,
+    OP_NEG = 280,
+    COR_IZQ = 281,
+    COR_DER = 282
   };
 #endif
 

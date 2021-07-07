@@ -148,9 +148,10 @@ extern int yydebug;
     OP_SUMA = 276,
     OP_MENOS = 277,
     OP_MULTIP = 278,
-    OP_NEG = 279,
-    COR_IZQ = 280,
-    COR_DER = 281
+    OP_EXP = 279,
+    OP_NEG = 280,
+    COR_IZQ = 281,
+    COR_DER = 282
   };
 #endif
 
@@ -472,19 +473,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  13
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   130
+#define YYLAST   142
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  27
+#define YYNTOKENS  28
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  15
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  40
+#define YYNRULES  41
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  83
+#define YYNSTATES  85
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   281
+#define YYMAXUTOK   282
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -524,18 +525,18 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26
+      25,    26,    27
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    48,    48,    51,    52,    55,    56,    57,    58,    61,
-      64,    64,    64,    67,    68,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    89,    92,    93,    96,    97,   100,   101,   104,   105,
-     106
+       0,    49,    49,    52,    53,    56,    57,    58,    59,    62,
+      65,    65,    65,    68,    69,    72,    73,    74,    75,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    91,    94,    95,    98,    99,   102,   103,   106,
+     107,   108
 };
 #endif
 
@@ -547,11 +548,12 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "PAR_IZQ", "PAR_DER", "ASIGN", "COMA",
   "PTOCOMA", "DOSPTOS", "IF", "THEN", "ELSE", "PLOT", "IDENT",
   "CONST_ENTERO", "CONST_BOOL", "CONST_REAL", "OP_OR", "OP_AND",
-  "OP_IGUAL", "OP_COMP", "OP_SUMA", "OP_MENOS", "OP_MULTIP", "OP_NEG",
-  "COR_IZQ", "COR_DER", "$accept", "programa", "lista_sentencias",
-  "sentencia", "sentencia_declar_valor", "sentencia_declar_fun", "$@1",
-  "$@2", "sentencia_plot", "expresion", "llamada_funcion",
-  "lista_expresiones", "lista_param", "lista_ident", "constante", YY_NULLPTR
+  "OP_IGUAL", "OP_COMP", "OP_SUMA", "OP_MENOS", "OP_MULTIP", "OP_EXP",
+  "OP_NEG", "COR_IZQ", "COR_DER", "$accept", "programa",
+  "lista_sentencias", "sentencia", "sentencia_declar_valor",
+  "sentencia_declar_fun", "$@1", "$@2", "sentencia_plot", "expresion",
+  "llamada_funcion", "lista_expresiones", "lista_param", "lista_ident",
+  "constante", YY_NULLPTR
 };
 #endif
 
@@ -562,7 +564,7 @@ static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281
+     275,   276,   277,   278,   279,   280,   281,   282
 };
 # endif
 
@@ -578,17 +580,17 @@ static const yytype_int16 yytoknum[] =
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-static const yytype_int8 yypact[] =
+static const yytype_int16 yypact[] =
 {
-      54,   -27,    -8,     0,     9,    34,    12,   -27,   -27,    26,
-     -27,    25,    42,   -27,    43,   -27,    55,    48,    56,   -27,
-     -27,    27,   -27,    -2,    23,   -27,    27,    27,    74,   -27,
-     -27,   -27,    27,    27,    72,   -27,   -27,    78,    56,    83,
-      91,    40,    -7,    27,    14,    31,    27,    27,    27,    27,
-      27,    27,    27,    27,   104,   116,   -27,   -27,   -27,    27,
-      72,   121,    80,    87,    93,    98,    14,    14,    31,    62,
-     -27,   113,    53,   -27,    27,   -27,   106,   -27,    27,    72,
-      27,    72,    72
+      36,   -27,    -9,     0,    19,    29,    25,   -27,   -27,    34,
+     -27,    69,    55,   -27,    85,   -27,    90,   107,   114,   -27,
+     -27,    30,   -27,    -1,    45,   -27,    30,    30,   117,   -27,
+     -27,   -27,    30,    30,    78,   -27,   -27,   125,   114,   122,
+     123,    43,    -8,    30,    12,   111,    30,    30,    30,    30,
+      30,    30,    30,    30,    30,   126,    51,   -27,   -27,   -27,
+      30,    78,    66,    87,    95,   102,   108,    12,    12,    47,
+     111,    67,   -27,   127,    57,   -27,    30,   -27,   133,   -27,
+      30,    78,    30,    78,    78
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -598,27 +600,27 @@ static const yytype_int8 yydefact[] =
 {
        0,     8,     0,    10,     0,     0,     0,     5,     6,     7,
       14,     0,     0,     1,     0,     4,     0,     0,     0,     3,
-      13,     0,    37,     0,     0,    30,     0,     0,    28,    39,
-      38,    40,     0,     0,     9,    18,    29,     0,     0,     0,
+      13,     0,    38,     0,     0,    31,     0,     0,    29,    40,
+      39,    41,     0,     0,     9,    18,    30,     0,     0,     0,
        0,     0,     0,     0,    19,    20,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    36,    35,    15,     0,
-      33,     0,    26,    27,    24,    25,    21,    22,    23,     0,
-      11,     0,     0,    31,     0,    17,     0,    34,     0,    32,
-       0,    16,    12
+       0,     0,     0,     0,     0,     0,     0,    37,    36,    15,
+       0,    34,     0,    27,    28,    25,    26,    21,    22,    23,
+      24,     0,    11,     0,     0,    32,     0,    17,     0,    35,
+       0,    33,     0,    16,    12
 };
 
   /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -27,   -27,   -27,   123,   -27,   -27,   -27,   -27,   -27,   -26,
-     -27,   -27,   -27,    92,   -27
+     -27,   -27,   -27,   136,   -27,   -27,   -27,   -27,   -27,   -26,
+     -27,   -27,   -27,   104,   -27
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     4,     5,     6,     7,     8,    12,    76,     9,    34,
-      35,    61,    23,    24,    36
+      -1,     4,     5,     6,     7,     8,    12,    78,     9,    34,
+      35,    62,    23,    24,    36
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -626,63 +628,65 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      41,    42,    37,    59,    38,    10,    44,    45,    11,    13,
-      46,    47,    48,    49,    50,    51,    52,    60,    53,    15,
-      62,    63,    64,    65,    66,    67,    68,    69,    25,    39,
-      26,    40,    16,    72,    -2,     1,    27,    52,    17,    53,
-      28,    29,    30,    31,    58,    18,     2,     3,    79,    32,
-      19,    33,    81,    21,    82,     1,    53,    46,    47,    48,
-      49,    50,    51,    52,    78,    53,     2,     3,    20,    22,
-      46,    47,    48,    49,    50,    51,    52,    43,    53,    46,
-      47,    48,    49,    50,    51,    52,    54,    53,    75,    46,
-      47,    48,    49,    50,    51,    52,    56,    53,    47,    48,
-      49,    50,    51,    52,    57,    53,    48,    49,    50,    51,
-      52,    80,    53,    49,    50,    51,    52,    70,    53,    50,
-      51,    52,    39,    53,    71,    73,    77,    74,    14,     0,
-      55
+      41,    42,    60,    37,    10,    38,    44,    45,    11,    46,
+      47,    48,    49,    50,    51,    52,    53,    61,    54,    13,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    -2,
+       1,    25,    15,    26,    74,    52,    53,     1,    54,    27,
+      16,     2,     3,    28,    29,    30,    31,    59,     2,     3,
+      81,    39,    32,    40,    83,    33,    84,    39,    18,    73,
+      46,    47,    48,    49,    50,    51,    52,    53,    80,    54,
+      75,    53,    76,    54,    46,    47,    48,    49,    50,    51,
+      52,    53,    17,    54,    46,    47,    48,    49,    50,    51,
+      52,    53,    19,    54,    77,    46,    47,    48,    49,    50,
+      51,    52,    53,    20,    54,    47,    48,    49,    50,    51,
+      52,    53,    21,    54,    48,    49,    50,    51,    52,    53,
+      43,    54,    49,    50,    51,    52,    53,    22,    54,    50,
+      51,    52,    53,    55,    54,    57,    58,    54,    82,    72,
+      79,    14,    56
 };
 
 static const yytype_int8 yycheck[] =
 {
-      26,    27,     4,    10,     6,    13,    32,    33,     8,     0,
-      17,    18,    19,    20,    21,    22,    23,    43,    25,     7,
-      46,    47,    48,    49,    50,    51,    52,    53,     1,     6,
-       3,     8,     6,    59,     0,     1,     9,    23,    13,    25,
-      13,    14,    15,    16,     4,     3,    12,    13,    74,    22,
-       7,    24,    78,     5,    80,     1,    25,    17,    18,    19,
-      20,    21,    22,    23,    11,    25,    12,    13,    13,    13,
-      17,    18,    19,    20,    21,    22,    23,     3,    25,    17,
-      18,    19,    20,    21,    22,    23,     8,    25,    26,    17,
-      18,    19,    20,    21,    22,    23,    13,    25,    18,    19,
-      20,    21,    22,    23,    13,    25,    19,    20,    21,    22,
-      23,     5,    25,    20,    21,    22,    23,    13,    25,    21,
-      22,    23,     6,    25,     8,     4,    13,     6,     5,    -1,
-      38
+      26,    27,    10,     4,    13,     6,    32,    33,     8,    17,
+      18,    19,    20,    21,    22,    23,    24,    43,    26,     0,
+      46,    47,    48,    49,    50,    51,    52,    53,    54,     0,
+       1,     1,     7,     3,    60,    23,    24,     1,    26,     9,
+       6,    12,    13,    13,    14,    15,    16,     4,    12,    13,
+      76,     6,    22,     8,    80,    25,    82,     6,     3,     8,
+      17,    18,    19,    20,    21,    22,    23,    24,    11,    26,
+       4,    24,     6,    26,    17,    18,    19,    20,    21,    22,
+      23,    24,    13,    26,    17,    18,    19,    20,    21,    22,
+      23,    24,     7,    26,    27,    17,    18,    19,    20,    21,
+      22,    23,    24,    13,    26,    18,    19,    20,    21,    22,
+      23,    24,     5,    26,    19,    20,    21,    22,    23,    24,
+       3,    26,    20,    21,    22,    23,    24,    13,    26,    21,
+      22,    23,    24,     8,    26,    13,    13,    26,     5,    13,
+      13,     5,    38
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     1,    12,    13,    28,    29,    30,    31,    32,    35,
-      13,     8,    33,     0,    30,     7,     6,    13,     3,     7,
-      13,     5,    13,    39,    40,     1,     3,     9,    13,    14,
-      15,    16,    22,    24,    36,    37,    41,     4,     6,     6,
-       8,    36,    36,     3,    36,    36,    17,    18,    19,    20,
-      21,    22,    23,    25,     8,    40,    13,    13,     4,    10,
-      36,    38,    36,    36,    36,    36,    36,    36,    36,    36,
-      13,     8,    36,     4,     6,    26,    34,    13,    11,    36,
-       5,    36,    36
+       0,     1,    12,    13,    29,    30,    31,    32,    33,    36,
+      13,     8,    34,     0,    31,     7,     6,    13,     3,     7,
+      13,     5,    13,    40,    41,     1,     3,     9,    13,    14,
+      15,    16,    22,    25,    37,    38,    42,     4,     6,     6,
+       8,    37,    37,     3,    37,    37,    17,    18,    19,    20,
+      21,    22,    23,    24,    26,     8,    41,    13,    13,     4,
+      10,    37,    39,    37,    37,    37,    37,    37,    37,    37,
+      37,    37,    13,     8,    37,     4,     6,    27,    35,    13,
+      11,    37,     5,    37,    37
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    27,    28,    29,    29,    30,    30,    30,    30,    31,
-      33,    34,    32,    35,    35,    36,    36,    36,    36,    36,
-      36,    36,    36,    36,    36,    36,    36,    36,    36,    36,
-      36,    37,    38,    38,    39,    39,    40,    40,    41,    41,
-      41
+       0,    28,    29,    30,    30,    31,    31,    31,    31,    32,
+      34,    35,    33,    36,    36,    37,    37,    37,    37,    37,
+      37,    37,    37,    37,    37,    37,    37,    37,    37,    37,
+      37,    37,    38,    39,    39,    40,    40,    41,    41,    42,
+      42,    42
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -690,9 +694,9 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     3,     2,     1,     1,     1,     1,     5,
        0,     0,    10,     3,     2,     3,     6,     4,     1,     2,
-       2,     3,     3,     3,     3,     3,     3,     3,     1,     1,
-       1,     4,     3,     1,     5,     3,     3,     1,     1,     1,
-       1
+       2,     3,     3,     3,     3,     3,     3,     3,     3,     1,
+       1,     1,     4,     3,     1,     5,     3,     3,     1,     1,
+       1,     1
 };
 
 
@@ -1388,205 +1392,211 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 48 "semantico.y"
+#line 49 "semantico.y"
                             { closeInter(); }
-#line 1394 "y.tab.c"
+#line 1398 "y.tab.c"
     break;
 
   case 7:
-#line 57 "semantico.y"
+#line 58 "semantico.y"
                            { escribeFinPlot(); }
-#line 1400 "y.tab.c"
+#line 1404 "y.tab.c"
     break;
 
   case 9:
-#line 61 "semantico.y"
+#line 62 "semantico.y"
                                                              { setTipo(yyvsp[-2]); TS_InsertaIDENT(yyvsp[-4].lex); comprobarTipoCte(yyvsp[0]); escribeVal(yyvsp[-4].lex, yyvsp[0].nodoPropio); }
-#line 1406 "y.tab.c"
+#line 1410 "y.tab.c"
     break;
 
   case 10:
-#line 64 "semantico.y"
+#line 65 "semantico.y"
                              {setTipoDesc(); TS_InsertaFUN(yyvsp[0]); }
-#line 1412 "y.tab.c"
+#line 1416 "y.tab.c"
     break;
 
   case 11:
-#line 64 "semantico.y"
+#line 65 "semantico.y"
                                                                                                             { setTipo(yyvsp[0]); TS_ActualizarFun(); TS_InsertaMARCA(); }
-#line 1418 "y.tab.c"
+#line 1422 "y.tab.c"
     break;
 
   case 12:
-#line 64 "semantico.y"
+#line 65 "semantico.y"
                                                                                                                                                                                     {	comprobarTipoFun(yyvsp[-9], yyvsp[0]); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun(yyvsp[-9].lex, yyvsp[0].nodoPropio); escribeNorm(yyvsp[-9], yyvsp[0]); }
-#line 1424 "y.tab.c"
+#line 1428 "y.tab.c"
     break;
 
   case 13:
-#line 67 "semantico.y"
+#line 68 "semantico.y"
                                                 { TS_InsertaPLOT(yyvsp[0].lex); escribeContPlot(yyvsp[0].lex); }
-#line 1430 "y.tab.c"
+#line 1434 "y.tab.c"
     break;
 
   case 14:
-#line 68 "semantico.y"
+#line 69 "semantico.y"
                                                                         { setTipoDesc(); TS_InsertaFUN(yyvsp[-1]); TS_InsertaPLOT(yyvsp[0].lex); escribeIniPlot(yyvsp[0].lex); }
-#line 1436 "y.tab.c"
+#line 1440 "y.tab.c"
     break;
 
   case 15:
-#line 71 "semantico.y"
+#line 72 "semantico.y"
                                                                         { yyval.tipo=yyvsp[-1].tipo; yyval.dimension=yyvsp[-1].dimension; yyval.tam=yyvsp[-1].tam; yyval.nodoPropio=crearNodoParentesis(yyvsp[-1].nodoPropio); }
-#line 1442 "y.tab.c"
+#line 1446 "y.tab.c"
     break;
 
   case 16:
-#line 72 "semantico.y"
+#line 73 "semantico.y"
                                                         { comprobarIF(yyvsp[-4], yyvsp[-2], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoIf(yyvsp[-4].nodoPropio,yyvsp[-2].nodoPropio,yyvsp[0].nodoPropio); }
-#line 1448 "y.tab.c"
+#line 1452 "y.tab.c"
     break;
 
   case 17:
-#line 73 "semantico.y"
+#line 74 "semantico.y"
                                                                 { comprobarIND(yyvsp[-3], yyvsp[-1], &yyval); yyval.nodoPropio=crearNodoIndex(yyvsp[-3],yyvsp[-1].nodoPropio); }
-#line 1454 "y.tab.c"
+#line 1458 "y.tab.c"
     break;
 
   case 18:
-#line 74 "semantico.y"
+#line 75 "semantico.y"
                                                                                         { yyval.tipo=yyvsp[0].tipo; yyval.dimension=yyvsp[0].dimension; yyval.tam=yyvsp[0].tam; yyval.nodoPropio=yyvsp[0].nodoPropio; }
-#line 1460 "y.tab.c"
+#line 1464 "y.tab.c"
     break;
 
   case 19:
-#line 75 "semantico.y"
+#line 76 "semantico.y"
                                                                                 { TS_OpUNARIA(yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpUn(yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1466 "y.tab.c"
+#line 1470 "y.tab.c"
     break;
 
   case 20:
-#line 76 "semantico.y"
+#line 77 "semantico.y"
                                                                                 { TS_OpUNARIA(yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpUn(yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1472 "y.tab.c"
+#line 1476 "y.tab.c"
     break;
 
   case 21:
-#line 77 "semantico.y"
+#line 78 "semantico.y"
                                                                         { TS_OpSUMARESTA(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1478 "y.tab.c"
+#line 1482 "y.tab.c"
     break;
 
   case 22:
-#line 78 "semantico.y"
+#line 79 "semantico.y"
                                                                         { TS_OpSUMARESTA(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1484 "y.tab.c"
+#line 1488 "y.tab.c"
     break;
 
   case 23:
-#line 79 "semantico.y"
+#line 80 "semantico.y"
                                                                         { TS_OpMULTIP(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1490 "y.tab.c"
+#line 1494 "y.tab.c"
     break;
 
   case 24:
-#line 80 "semantico.y"
-                                                                        { TS_OpIGUAL(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1496 "y.tab.c"
+#line 81 "semantico.y"
+                                                                { TS_OpMULTIP(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
+#line 1500 "y.tab.c"
     break;
 
   case 25:
-#line 81 "semantico.y"
-                                                                        { TS_OpCOMP(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1502 "y.tab.c"
+#line 82 "semantico.y"
+                                                                        { TS_OpIGUAL(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
+#line 1506 "y.tab.c"
     break;
 
   case 26:
-#line 82 "semantico.y"
-                                                                        { TS_OpOR(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1508 "y.tab.c"
+#line 83 "semantico.y"
+                                                                        { TS_OpCOMP(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
+#line 1512 "y.tab.c"
     break;
 
   case 27:
-#line 83 "semantico.y"
-                                                                        { TS_OpAND(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
-#line 1514 "y.tab.c"
+#line 84 "semantico.y"
+                                                                        { TS_OpOR(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
+#line 1518 "y.tab.c"
     break;
 
   case 28:
-#line 84 "semantico.y"
-                                                                                                { declaracion=0; TS_getIDENT(yyvsp[0], &yyval); yyval.nodoPropio=crearNodoTipo(yyvsp[0].lex, NODO_VAR); }
-#line 1520 "y.tab.c"
+#line 85 "semantico.y"
+                                                                        { TS_OpAND(yyvsp[-2], yyvsp[-1], yyvsp[0], &yyval); yyval.nodoPropio=crearNodoOpBin(yyvsp[-2].nodoPropio,yyvsp[-1].lex,yyvsp[0].nodoPropio); }
+#line 1524 "y.tab.c"
     break;
 
   case 29:
-#line 85 "semantico.y"
-                                                                                        { yyval.tipo=yyvsp[0].tipo; yyval.dimension=yyvsp[0].dimension; yyval.tam=yyvsp[0].tam; yyval.nodoPropio=crearNodoTipo(yyvsp[0].lex, NODO_CTE); }
-#line 1526 "y.tab.c"
+#line 86 "semantico.y"
+                                                                                                { declaracion=0; TS_getIDENT(yyvsp[0], &yyval); yyval.nodoPropio=crearNodoTipo(yyvsp[0].lex, NODO_VAR); }
+#line 1530 "y.tab.c"
     break;
 
-  case 31:
-#line 89 "semantico.y"
-                                                                { TS_FunCall(yyvsp[-3], yyvsp[-1], &yyval); }
-#line 1532 "y.tab.c"
+  case 30:
+#line 87 "semantico.y"
+                                                                                        { yyval.tipo=yyvsp[0].tipo; yyval.dimension=yyvsp[0].dimension; yyval.tam=yyvsp[0].tam; yyval.nodoPropio=crearNodoTipo(yyvsp[0].lex, NODO_CTE); }
+#line 1536 "y.tab.c"
     break;
 
   case 32:
-#line 92 "semantico.y"
-                                                        { yyval.nArg=yyvsp[-2].nArg + 1; TS_ComprobarPARAM(yyvsp[(-1) - (3)],yyvsp[0], yyval.nArg); actualizaNodo(yyvsp[(-1) - (3)].nodoPropio, yyvsp[0].nodoPropio); }
-#line 1538 "y.tab.c"
+#line 91 "semantico.y"
+                                                                { TS_FunCall(yyvsp[-3], yyvsp[-1], &yyval); }
+#line 1542 "y.tab.c"
     break;
 
   case 33:
-#line 93 "semantico.y"
-                                                                                        { yyval.nArg=1; TS_ComprobarPARAM(yyvsp[(-1) - (1)],yyvsp[0], yyval.nArg); yyvsp[(-1) - (1)].nodoPropio=crearNodoTipo(yyvsp[(-1) - (1)].lex, NODO_FUN); actualizaNodo(yyvsp[(-1) - (1)].nodoPropio, yyvsp[0].nodoPropio); }
-#line 1544 "y.tab.c"
+#line 94 "semantico.y"
+                                                        { yyval.nArg=yyvsp[-2].nArg + 1; TS_ComprobarPARAM(yyvsp[(-1) - (3)],yyvsp[0], yyval.nArg); actualizaNodo(yyvsp[(-1) - (3)].nodoPropio, yyvsp[0].nodoPropio); }
+#line 1548 "y.tab.c"
     break;
 
   case 34:
-#line 96 "semantico.y"
-                                                                { actualizaTipoDesc(yyvsp[0]); }
-#line 1550 "y.tab.c"
+#line 95 "semantico.y"
+                                                                                        { yyval.nArg=1; TS_ComprobarPARAM(yyvsp[(-1) - (1)],yyvsp[0], yyval.nArg); yyvsp[(-1) - (1)].nodoPropio=crearNodoTipo(yyvsp[(-1) - (1)].lex, NODO_FUN); actualizaNodo(yyvsp[(-1) - (1)].nodoPropio, yyvsp[0].nodoPropio); }
+#line 1554 "y.tab.c"
     break;
 
   case 35:
-#line 97 "semantico.y"
-                                                                                { actualizaTipoDesc(yyvsp[0]); }
-#line 1556 "y.tab.c"
+#line 98 "semantico.y"
+                                                                { actualizaTipoDesc(yyvsp[0]); }
+#line 1560 "y.tab.c"
     break;
 
   case 36:
-#line 100 "semantico.y"
-                                        { nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF(yyvsp[0]); }
-#line 1562 "y.tab.c"
+#line 99 "semantico.y"
+                                                                                { actualizaTipoDesc(yyvsp[0]); }
+#line 1566 "y.tab.c"
     break;
 
   case 37:
-#line 101 "semantico.y"
-                                                                { decParam=1; nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF(yyvsp[0]); }
-#line 1568 "y.tab.c"
+#line 102 "semantico.y"
+                                        { nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF(yyvsp[0]); }
+#line 1572 "y.tab.c"
     break;
 
   case 38:
-#line 104 "semantico.y"
-                                { yyval.tipo = BOOLEANO; yyval.dimension = 0; yyval.tam = 0; }
-#line 1574 "y.tab.c"
+#line 103 "semantico.y"
+                                                                { decParam=1; nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF(yyvsp[0]); }
+#line 1578 "y.tab.c"
     break;
 
   case 39:
-#line 105 "semantico.y"
-                                { yyval.tipo = ENTERO; yyval.dimension = 0; yyval.tam = 0; }
-#line 1580 "y.tab.c"
+#line 106 "semantico.y"
+                                { yyval.tipo = BOOLEANO; yyval.dimension = 0; yyval.tam = 0; }
+#line 1584 "y.tab.c"
     break;
 
   case 40:
-#line 106 "semantico.y"
+#line 107 "semantico.y"
+                                { yyval.tipo = ENTERO; yyval.dimension = 0; yyval.tam = 0; }
+#line 1590 "y.tab.c"
+    break;
+
+  case 41:
+#line 108 "semantico.y"
                                 { yyval.tipo = REAL; yyval.dimension = 0; yyval.tam = 0; }
-#line 1586 "y.tab.c"
+#line 1596 "y.tab.c"
     break;
 
 
-#line 1590 "y.tab.c"
+#line 1600 "y.tab.c"
 
       default: break;
     }
@@ -1818,7 +1828,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 108 "semantico.y"
+#line 110 "semantico.y"
 
 
 #include "lex.yy.c"
