@@ -1,0 +1,13 @@
+compx(u,v :real) : real = u * ((1 - u^2/3 + v^2) / 3);
+
+compy(u,v :real) : real = (u^2 - v^2) / 3;
+
+compz(u,v :real) : real = (-v) * ((1 - v^2/3 + u^2) / 3);
+
+f(u,v :real) : vec3 = vec3( compx(u * cos(v), u * sin(v)), 
+                            compy(u * cos(v), u * sin(v)), 
+                            compz(u * cos(v), u * sin(v)));
+
+g(u,v :real, t0,t1 : real) : vec3 = (2*t1 + 1)*f((u*2*t0), (v - 0.5)*2*PI);
+
+plot g;

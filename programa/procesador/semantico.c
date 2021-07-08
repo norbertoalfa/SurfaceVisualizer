@@ -1020,6 +1020,25 @@ void initializeTS() {
 	paramCross2.dimension = 1;
 	paramCross2.tam = 3;
 	TS_InsertaEntrada(paramCross2);
+	
+	// cross
+	entradaTS funAtan;
+	funAtan.entrada = FUNCION;
+	funAtan.lex = strdup("atan");
+	funAtan.tipo = REAL;
+	funAtan.nParam = 1;
+	funAtan.dimension=0;
+	funAtan.tam=0;
+	TS_InsertaEntrada(funAtan);
+	
+	entradaTS paramAtan;
+	paramAtan.entrada = PARA_FORM;
+	paramAtan.lex = strdup("x");
+	paramAtan.tipo = REAL;
+	paramAtan.nParam = 0;
+	paramAtan.dimension = 0;
+	paramAtan.tam = 0;
+	TS_InsertaEntrada(paramAtan);
 }
 
 

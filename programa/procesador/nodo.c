@@ -543,7 +543,7 @@ void derivLog(nodo *nodoFun, nodo *nodoPar)
 	nodoPar->nChild = 2;
 	nodoPar->lex = strdup("/");
 	nodoPar->children[0] = nodoNum;
-	nodoPar->children[1] = nodoFun->children[0];
+	nodoPar->children[1] = addParen(nodoFun->children[0]);
 }
 
 void derivSin(nodo *nodoFun, nodo *nodoPar)
@@ -587,8 +587,8 @@ void derivTg(nodo *nodoFun, nodo *nodoPar)
 
 	nodoNum = malloc(sizeof(nodo));
 	nodoNum->tipo = NODO_CTE;
-	nodoDen->nChild = 0;
-	nodoDen->lex = strdup("1");
+	nodoNum->nChild = 0;
+	nodoNum->lex = strdup("1");
 
 	nodoDen = malloc(sizeof(nodo));
 	nodoDen->tipo = NODO_OP;
@@ -602,6 +602,31 @@ void derivTg(nodo *nodoFun, nodo *nodoPar)
 	nodoPar->lex = strdup("/");
 	nodoPar->children[0] = nodoNum;
 	nodoPar->children[1] = nodoDen;
+}
+
+void derivAtan(nodo *nodoFun, nodo *nodoPar)
+{
+	nodo *nodoExp, *nodoDen;
+
+	nodoExp = malloc(sizeof(nodo));
+	nodoExp->tipo = NODO_OP;
+	nodoExp->nChild = 2;
+	nodoExp->lex = strdup("^");
+	nodoExp->children[0] = nodoFun->children[0];
+	nodoExp->children[1] = crearNodoTipo("2", NODO_CTE);
+
+	nodoDen = malloc(sizeof(nodo));
+	nodoDen->tipo = NODO_OP;
+	nodoDen->nChild = 2;
+	nodoDen->lex = strdup("+");
+	nodoDen->children[0] = crearNodoTipo("1", NODO_CTE);
+	nodoDen->children[1] = nodoExp;
+
+	nodoPar->tipo = NODO_OP;
+	nodoPar->nChild = 2;
+	nodoPar->lex = strdup("/");
+	nodoPar->children[0] = crearNodoTipo("1", NODO_CTE);
+	nodoPar->children[1] = addParen(nodoDen);
 }
 
 void replace(nodo *baseNode, nodo *nNew) {
@@ -748,7 +773,7 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		}
 
 		nodo *nodoParExpr = partialExpr(nodoFunExpr, nVar);
-		simplifyPartial(nodoParExpr);
+		//simplifyPartial(nodoParExpr);
 
 		escribeFun(nombreParFun, nodoParExpr);
 	}
@@ -776,7 +801,8 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	int esPredef = 	strcmp(nodoFun->lex, "log") == 0 ||
 					strcmp(nodoFun->lex, "sin") == 0 ||
 					strcmp(nodoFun->lex, "cos") == 0 ||
-					strcmp(nodoFun->lex, "tg") == 0;
+					strcmp(nodoFun->lex, "tg") == 0 ||
+					strcmp(nodoFun->lex, "atan") == 0;
 	
 	if (esArray) {
 		nodoPar->tipo = nodoFun->tipo;
@@ -798,6 +824,8 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 				derivCos(nodoFun, nodoIzq);
 			} else if (strcmp(nodoFun->lex, "tg") == 0) {
 				derivTg(nodoFun, nodoIzq);
+			} else if (strcmp(nodoFun->lex, "atan") == 0) {
+				derivAtan(nodoFun, nodoIzq);
 			}
 
 			nodoPar->tipo = NODO_OP;
