@@ -9,6 +9,10 @@ extern FILE * file;
 extern int nPlot;
 extern int totalParam;
 
+tipoNodoArray calculaSubTipo(atributos att);
+
+tipoNodoArray calculaSubTipoLex(char *name);
+
 // Crea el nodo correspondiente a la sentencia "if"
 nodo* crearNodoIf(nodo *comp, nodo *expr1, nodo *expr2);
 
@@ -28,7 +32,7 @@ nodo* crearNodoOpBin(nodo *expr1, char *op, nodo *expr2);
 nodo* crearNodo(char *nombre);
 
 // Crea un nodo indicando el tipo (si es cte, variable, función, etc)
-nodo* crearNodoTipo(char *nombre, tipoNodo tipo);
+nodo* crearNodoTipo(char *nombre, tipoNodo tipo, tipoNodoArray subTipo);
 
 //  Crea el nodo correspondiente a la normal de la superficie para una 
 // parametrización dada
@@ -40,7 +44,7 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar);
 
 // Calcula la parcial de un nodo de tipo FUNCION, teniendo en cuenta las expresiones
 // pasadas como parámetros a dicha función (hace la regla de la cadena).
-void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar);
+nodo* partialNodoFun(nodo *nodoFun, char *nVar);
 
 // Calcula la parcial de un nodo en general, llamando a la función correspondiente
 // según el tipo de nodo que sea
@@ -50,7 +54,7 @@ nodo* partialExpr(nodo *nodoFun, char *nVar);
 nodo* addParen(nodo *n);
 
 // Añade un nodo de llamada a conversión a array, para los accesos a arrays.
-nodo* addNodoArray(nodo *n, tipoNodoInd subTipo);
+nodo* addNodoArray(nodo *n, tipoNodoArray subTipo);
 
 // Añade un hijo al nodo función, correspondiente al nuevo parámetro detectado
 // (en el análisis semántico)

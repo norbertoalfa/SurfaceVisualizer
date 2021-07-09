@@ -6,6 +6,7 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "semantico.h"
+	#include "elementos_predef.h"
 	#include "nodo.h"
 	#define YYDEBUG 0
 
@@ -83,8 +84,8 @@ expresion : PAR_IZQ expresion PAR_DER					{ $$.tipo=$2.tipo; $$.dimension=$2.dim
           | expresion OP_COMP expresion					{ TS_OpCOMP($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_OR expresion					{ TS_OpOR($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
           | expresion OP_AND expresion					{ TS_OpAND($1, $2, $3, &$$); $$.nodoPropio=crearNodoOpBin($1.nodoPropio,$2.lex,$3.nodoPropio); }
-          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); $$.nodoPropio=crearNodoTipo($1.lex, NODO_VAR); }
-          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; $$.nodoPropio=crearNodoTipo($1.lex, NODO_CTE); }
+          | IDENT										{ declaracion=0; TS_getIDENT($1, &$$); $$.nodoPropio=crearNodoTipo($1.lex, NODO_VAR, calculaSubTipo($1)); }
+          | constante									{ $$.tipo=$1.tipo; $$.dimension=$1.dimension; $$.tam=$1.tam; $$.nodoPropio=crearNodoTipo($1.lex, NODO_CTE, NODO_NA); }
           | error
 ;
 
@@ -92,7 +93,7 @@ llamada_funcion : IDENT PAR_IZQ lista_expresiones PAR_DER	{ TS_FunCall($1, $3, &
 ;
 
 lista_expresiones : lista_expresiones COMA expresion	{ $$.nArg=$1.nArg + 1; TS_ComprobarPARAM($-1,$3, $$.nArg); actualizaNodo($-1.nodoPropio, $3.nodoPropio); }
-           		  | expresion							{ $$.nArg=1; TS_ComprobarPARAM($-1,$1, $$.nArg); $-1.nodoPropio=crearNodoTipo($-1.lex, NODO_FUN); actualizaNodo($-1.nodoPropio, $1.nodoPropio); }
+           		  | expresion							{ $$.nArg=1; TS_ComprobarPARAM($-1,$1, $$.nArg); $-1.nodoPropio=crearNodoTipo($-1.lex, NODO_FUN, calculaSubTipoLex($-1.lex)); actualizaNodo($-1.nodoPropio, $1.nodoPropio); }
 ;
 
 lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{ actualizaTipoDesc($5); }	// Asignar el tipo a las ultimas entradas.
@@ -118,7 +119,8 @@ void yyerror(const char* s) {
 
 int main( int argc, char *argv[] ) {
   //yyin = abrir_entrada(argc,argv) ;
-  initializeTS();
+  addPredefCts();
+  addPredefFunc();
   generaFich();
   generaCtes();
   generaFuncionIf();

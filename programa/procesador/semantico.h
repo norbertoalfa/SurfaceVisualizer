@@ -47,12 +47,13 @@ typedef enum {
 // tipos de datos para un acceso por índice
 typedef enum {
 
-	NODO_IND_VEC2 = 0,
-	NODO_IND_VEC3,
-	NODO_IND_MAT2,
-	NODO_IND_MAT3
+	NODO_NA = 0,
+	NODO_VEC2,
+	NODO_VEC3,
+	NODO_MAT2,
+	NODO_MAT3
 
-} tipoNodoInd;
+} tipoNodoArray;
 
 
 struct nodo{
@@ -61,7 +62,7 @@ struct nodo{
 	struct nodo *children[10];
 	int nChild;
 	tipoNodo tipo;
-	tipoNodoInd subTipo;
+	tipoNodoArray subTipo;
 
 };
 
@@ -135,9 +136,6 @@ extern int parDesc;
 
 // Índice de la tabla de símbolos de la función que se está utilizando
 extern int currentFun;
-
-
-void initializeTS();
 
 // Comprueba que el entero s no esté fuera del rango permitido para el array e
 void comprobarSizeArray(atributos e, int s, int t);

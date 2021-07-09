@@ -8,22 +8,76 @@ FILE * file;
 int nPlot=0;
 int totalParam=0;
 
+tipoNodoArray calculaSubTipo(atributos att)
+{
+	tipoNodoArray subTipo = NODO_NA;
+
+	if (att.dimension == 1){
+		if (att.tam == 2) {
+			subTipo = NODO_VEC2;
+		} else if (att.tam == 3){
+			subTipo = NODO_VEC3;
+		}
+	} else {
+		if (att.tam == 2) {
+			subTipo = NODO_MAT2;
+		} else if (att.tam == 3){
+			subTipo = NODO_MAT3;
+		}
+	}
+
+	return subTipo;
+}
+
+tipoNodoArray calculaSubTipoLex(char *name)
+{
+	tipoNodoArray subTipo = NODO_NA;
+
+	if (strcmp(name, "vec2") == 0){
+		subTipo = NODO_VEC2;
+	}
+	if (strcmp(name, "vec3") == 0){
+		subTipo = NODO_VEC3;
+	}
+	if (strcmp(name, "mat2") == 0){
+		subTipo = NODO_MAT2;
+	}
+	if (strcmp(name, "mat3") == 0){
+		subTipo = NODO_MAT3;
+	}
+
+	return subTipo;
+}
 
 nodo* crearNodo(char *nombre){
 	nodo *nodoActual = malloc(sizeof(nodo));
 	
 	nodoActual->lex = strdup(nombre);
 	nodoActual->nChild = 0;
+	nodoActual->subTipo = NODO_NA;
 	
 	return nodoActual;
 }
 
-nodo* crearNodoTipo(char *nombre, tipoNodo tipo) {
+nodo* crearNodoTipo(char *nombre, tipoNodo tipo, tipoNodoArray subTipo) {
 	nodo *nodoActual = malloc(sizeof(nodo));
 	
 	nodoActual->lex = strdup(nombre);
 	nodoActual->nChild = 0;
 	nodoActual->tipo = tipo;
+	nodoActual->subTipo = subTipo;
+	
+	return nodoActual;
+}
+
+nodo* crearNodoFun1par(char *nombre, nodo *expr) {
+	nodo *nodoActual = malloc(sizeof(nodo));
+	
+	nodoActual->lex = strdup(nombre);
+	nodoActual->nChild = 1;
+	nodoActual->tipo = NODO_FUN;
+	nodoActual->subTipo = NODO_NA;
+	nodoActual->children[0] = expr;
 	
 	return nodoActual;
 }
@@ -37,6 +91,7 @@ nodo* crearNodoIf(nodo *comp, nodo *e1, nodo *e2) {
 	nodoActual->children[1] = e1;
 	nodoActual->children[2] = e2;
 	nodoActual->tipo = NODO_IF;
+	nodoActual->subTipo = e1->subTipo;
 	
 	return nodoActual;
 }
@@ -49,20 +104,8 @@ nodo* crearNodoIndex(atributos array, nodo *ind) {
 	nodoActual->children[0] = array.nodoPropio;
 	nodoActual->children[1] = ind;
 	nodoActual->tipo = NODO_IND;
+	nodoActual->subTipo = calculaSubTipo(array);
 
-	if (array.dimension == 1){
-		if (array.tam == 2) {
-			nodoActual->subTipo = NODO_IND_VEC2;
-		} else {
-			nodoActual->subTipo = NODO_IND_VEC3;
-		}
-	} else {
-		if (array.tam == 2) {
-			nodoActual->subTipo = NODO_IND_MAT2;
-		} else {
-			nodoActual->subTipo = NODO_IND_MAT3;
-		}
-	}
 	return nodoActual;
 }
 
@@ -73,6 +116,7 @@ nodo* crearNodoParentesis(nodo *expr) {
 	nodoActual->nChild = 1;
 	nodoActual->children[0] = expr;
 	nodoActual->tipo = NODO_PAREN;
+	nodoActual->subTipo = expr->subTipo;
 	
 	return nodoActual;
 }
@@ -83,6 +127,7 @@ nodo* crearNodoOpUn(char *op, nodo *expr) {
 	nodoActual->nChild = 1;
 	nodoActual->children[0] = expr;
 	nodoActual->tipo = NODO_OP;
+	nodoActual->subTipo = expr->subTipo;
 	
 	return nodoActual;
 }
@@ -94,19 +139,21 @@ nodo* crearNodoOpBin(nodo *expr1, char *op, nodo *expr2) {
 	nodoActual->children[0] = expr1;
 	nodoActual->children[1] = expr2;
 	nodoActual->tipo = NODO_OP;
+	nodoActual->subTipo = expr1->subTipo;
 	
 	return nodoActual;
 }
 
-nodo* crearNodoNormal(nodo *parU, nodo *parV) {
+nodo* crearNodoNormal(nodo *parU, nodo *parV)
+{
 	nodo *nodoActual, *nodoCross;
 	
-	nodoCross = crearNodoTipo(strdup("cross"), NODO_FUN);
+	nodoCross = crearNodoTipo(strdup("cross"), NODO_FUN, 0);
 	nodoCross->nChild = 2;
 	nodoCross->children[0] = parU;
 	nodoCross->children[1] = parV;
 
-	nodoActual = crearNodoTipo(strdup("normalize"), NODO_FUN);
+	nodoActual = crearNodoTipo(strdup("normalize"), NODO_FUN, 0);
 	nodoActual->nChild = 1;
 	nodoActual->children[0] = nodoCross;
 	
@@ -246,6 +293,7 @@ void escribeExpr(char *sent, nodo *nodoExpr){
 	hayArg = 0;
 	i = 0;
 	
+
 	if (nodoExpr->nChild==0){
 		sprintf(sent,"%s%s", sent, nodoExpr->lex);
 	} else if (nodoExpr->tipo == NODO_OP){
@@ -287,6 +335,7 @@ void escribeExpr(char *sent, nodo *nodoExpr){
 		escribeExpr(sent, nodoExpr->children[nodoExpr->nChild-1]);
 		sprintf(sent,"%s)", sent);
 	}
+
 	
 }
 
@@ -310,7 +359,7 @@ void escribeFun(char *fun, nodo *expr){
   	escribeEntrada(sent, TS[indexFun]);
   	
     sprintf(sent,"%s(", sent);
-    
+
     while(i<TS[indexFun].nParam){
     	escribeEntrada(sent, TS[indexFun+i]);
     	sprintf(sent,"%s, ", sent);
@@ -334,30 +383,19 @@ void escribeFun(char *fun, nodo *expr){
   	
 }
 
-nodo* addParen(nodo *n) {
-	nodo *nodoParen = malloc(sizeof(nodo));
-
-	nodoParen->tipo = NODO_PAREN;
-	nodoParen->nChild = 1;
-	nodoParen->lex = strdup("()");
-	nodoParen->children[0] = n;
-
-	return nodoParen;
-}
-
-nodo* addNodoArray(nodo *n, tipoNodoInd subTipo) {
+nodo* addNodoArray(nodo *n, tipoNodoArray subTipo) {
 	nodo *nodoArray = malloc(sizeof(nodo));
 
 	nodoArray->tipo = NODO_FUN;
 	nodoArray->nChild = 1;
 
-	if (subTipo == NODO_IND_VEC2){
+	if (subTipo == NODO_VEC2){
 		nodoArray->lex = strdup("vec2");
-	} else if (subTipo == NODO_IND_VEC3){
+	} else if (subTipo == NODO_VEC3){
 		nodoArray->lex = strdup("vec3");
-	} else if (subTipo == NODO_IND_MAT2){
+	} else if (subTipo == NODO_MAT2){
 		nodoArray->lex = strdup("mat2");
-	} else if (subTipo == NODO_IND_MAT2){
+	} else if (subTipo == NODO_MAT3){
 		nodoArray->lex = strdup("mat3");
 	} else {
 		printf("Error, el nodo de índice para array no tiene subtipo.\n");
@@ -366,267 +404,114 @@ nodo* addNodoArray(nodo *n, tipoNodoInd subTipo) {
 	}
 
 	nodoArray->children[0] = n;
+	nodoArray->subTipo = subTipo;
 
 	return nodoArray;
 }
 
-void partialNodoSum(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoSum(nodo *nodoFun, char *nVar)
 {
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
-	nodoPar->children[1] = partialExpr(nodoFun->children[1], nVar);
+	return crearNodoOpBin(partialExpr(nodoFun->children[0], nVar), nodoFun->lex, partialExpr(nodoFun->children[1], nVar));
 }
 
-void partialNodoMenos(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoMenos(nodo *nodoFun, char *nVar)
 {
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+	return crearNodoOpUn("-", partialExpr(nodoFun->children[0], nVar));
 }
 
-void partialNodoMul(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoMul(nodo *nodoFun, char *nVar)
 {
-	nodo *nodoIzq = malloc(sizeof(nodo));
-	nodo *nodoDer = malloc(sizeof(nodo));
-	nodo *nodoSum = malloc(sizeof(nodo));
+	nodo *nodoIzq, *nodoDer;
 
-	nodoIzq->tipo = nodoFun->tipo;
-	nodoIzq->nChild = nodoFun->nChild;
-	nodoIzq->lex = strdup("*");
-	nodoIzq->children[0] = partialExpr(nodoFun->children[0], nVar);
-	nodoIzq->children[1] = nodoFun->children[1];
-
-	nodoDer->tipo = nodoFun->tipo;
-	nodoDer->nChild = nodoFun->nChild;
-	nodoDer->lex = strdup("*");
-	nodoDer->children[0] = nodoFun->children[0];
-	nodoDer->children[1] = partialExpr(nodoFun->children[1], nVar);
-
-	nodoSum->tipo = nodoFun->tipo;
-	nodoSum->nChild = nodoFun->nChild;
-	nodoSum->lex = strdup("+");
-	nodoSum->children[0] = nodoIzq;
-	nodoSum->children[1] = nodoDer;
-
-	nodoPar->tipo = NODO_PAREN;
-	nodoPar->nChild = 1;
-	nodoPar->lex = strdup("()");
-	nodoPar->children[0] = nodoSum;
-
+	nodoIzq = crearNodoOpBin(partialExpr(nodoFun->children[0], nVar), "*", nodoFun->children[1]);
+	nodoDer = crearNodoOpBin(nodoFun->children[0], "*", partialExpr(nodoFun->children[1], nVar));
+	
+	return crearNodoParentesis(crearNodoOpBin(nodoIzq, "+", nodoDer));
 }
 
-void partialNodoDiv(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoDiv(nodo *nodoFun, char *nVar)
 {
-	nodo *nodoIzq = malloc(sizeof(nodo));
-	nodo *nodoDer = malloc(sizeof(nodo));
-	nodo *nodoNum = malloc(sizeof(nodo));
-	nodo *nodoDen = malloc(sizeof(nodo));
+	nodo *nodoIzq, *nodoDer, *nodoNum, *nodoDen;
 
-	nodoIzq->tipo = nodoFun->tipo;
-	nodoIzq->nChild = nodoFun->nChild;
-	nodoIzq->lex = strdup("/");
-	nodoIzq->children[0] = partialExpr(nodoFun->children[0], nVar);
-	nodoIzq->children[1] = nodoFun->children[1];
-
-	nodoNum->tipo = nodoFun->tipo;
-	nodoNum->nChild = nodoFun->nChild;
-	nodoNum->lex = strdup("*");
-	nodoNum->children[0] = nodoFun->children[0];
-	nodoNum->children[1] = partialExpr(nodoFun->children[1], nVar);
-
-	nodoDen->tipo = nodoFun->tipo;
-	nodoDen->nChild = nodoFun->nChild;
-	nodoDen->lex = strdup("*");
-	nodoDen->children[0] = nodoFun->children[1];
-	nodoDen->children[1] = nodoFun->children[1];
-
-	nodoDer->tipo = nodoFun->tipo;
-	nodoDer->nChild = nodoFun->nChild;
-	nodoDer->lex = strdup("/");
-	nodoDer->children[0] = nodoNum;
-	nodoDer->children[1] = addParen(nodoDen);
-
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup("-");
-	nodoPar->children[0] = nodoIzq;
-	nodoPar->children[1] = nodoDer;
+	nodoIzq = crearNodoOpBin(partialExpr(nodoFun->children[0], nVar), "/", nodoFun->children[1]);
+	nodoNum = crearNodoOpBin(nodoFun->children[0], "*", partialExpr(nodoFun->children[1], nVar));
+	nodoDen = crearNodoOpBin(nodoFun->children[1], "^", crearNodoTipo("2", NODO_CTE, 0));
+	nodoDer = crearNodoOpBin(nodoNum, "/", crearNodoParentesis(nodoDen));
+	
+	return crearNodoOpBin(nodoIzq, "-", nodoDer);
 }
 
-void partialNodoExp(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoExp(nodo *nodoFun, char *nVar)
 {
-	nodo *nodoExp, *nodoLn, *nodoPotencia, *nodoPotenciaDer;
-
+	nodo *nodoExp, *nodoLn, *nodoPotencia, *nodoPotenciaDer, *nodoPar;
 
 	if (nodoFun->children[1]->tipo != NODO_CTE){	
 		if (strcmp(nodoFun->children[0]->lex, "E") == 0) {
 			nodoExp = nodoFun->children[1];
 		} else {
-			nodoLn = malloc(sizeof(nodo));
-			nodoLn->tipo = NODO_FUN;
-			nodoLn->nChild = 1;
-			nodoLn->lex = strdup("log");
-			nodoLn->children[0] = nodoFun->children[0];
-
-			nodoExp = malloc(sizeof(nodo));
-			nodoExp->tipo = nodoFun->tipo;
-			nodoExp->nChild = nodoFun->nChild;
-			nodoExp->lex = strdup("*");
-			nodoExp->children[0] = nodoFun->children[1];
-			nodoExp->children[1] = nodoLn;
+			nodoLn = crearNodoFun1par("log", nodoFun->children[0]);
+			nodoExp = crearNodoOpBin(nodoFun->children[1], "*", nodoLn);
 		}
 
-		nodoPar->tipo = nodoFun->tipo;
-		nodoPar->nChild = 2;
-		nodoPar->lex = strdup("*");
-		nodoPar->children[0] = nodoFun;
-		nodoPar->children[1] = addParen(partialExpr(nodoExp, nVar));
+		nodoPar = crearNodoOpBin(nodoFun, "*", crearNodoParentesis(partialExpr(nodoExp, nVar)));
+
 	} else {
 		if (strcmp(nodoFun->children[1]->lex, "0") == 0){
-			nodoPar->tipo = NODO_CTE;
-			nodoPar->nChild = 0;
-			nodoPar->lex = strdup("0");
+			nodoPar = crearNodoTipo("0", NODO_CTE, 0);
 		} else {
 			char *nExp;
+
 			nExp = (char *) malloc(100);
-			nExp[0]=0;
-
-			nodoPotencia = malloc(sizeof(nodo));
-			nodoPotencia->tipo = NODO_OP;
-			nodoPotencia->nChild = 2;
-			nodoPotencia->lex = strdup("^");
-			nodoPotencia->children[0] = nodoFun->children[0];
-
+			nExp[0] = 0;
 			sprintf(nExp, "%f", atof(nodoFun->children[1]->lex)-1);
-			nodoPotencia->children[1] = crearNodoTipo(nExp, NODO_CTE);
 
-			nodoPotenciaDer = malloc(sizeof(nodo));
-			nodoPotenciaDer->tipo = NODO_OP;
-			nodoPotenciaDer->nChild = 2;
-			nodoPotenciaDer->lex = strdup("*");
-			nodoPotenciaDer->children[0] = crearNodoTipo(nodoFun->children[1]->lex, NODO_CTE);
-			nodoPotenciaDer->children[1] = nodoPotencia;
-
-			nodoPar->tipo = NODO_OP;
-			nodoPar->nChild = 2;
-			nodoPar->lex = strdup("*");
-			nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
-			nodoPar->children[1] = nodoPotenciaDer;
+			nodoPotencia = crearNodoOpBin(nodoFun->children[0], "^", crearNodoTipo(nExp, NODO_CTE, 0));
+			nodoPotenciaDer = crearNodoOpBin(crearNodoTipo(nodoFun->children[1]->lex, NODO_CTE, 0), "*", nodoPotencia);
+			nodoPar = crearNodoOpBin(nodoPotenciaDer, "*", partialExpr(nodoFun->children[0], nVar));
 		}
 	}
 
-	
+	return nodoPar;
 }
 
-void partialNodoIf(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoIf(nodo *nodoFun, char *nVar)
 {
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = nodoFun->children[0];
-	nodoPar->children[1] = partialExpr(nodoFun->children[1], nVar);
-	nodoPar->children[2] = partialExpr(nodoFun->children[2], nVar);
+	return crearNodoIf(nodoFun->children[0], partialExpr(nodoFun->children[1], nVar), partialExpr(nodoFun->children[2], nVar));
 }
 
-void derivLog(nodo *nodoFun, nodo *nodoPar)
+nodo* derivLog(nodo *nodoFun)
 {
-	nodo *nodoNum = malloc(sizeof(nodo));
-
-	nodoNum->tipo = NODO_CTE;
-	nodoNum->nChild = 0;
-	nodoNum->lex = strdup("1");
-
-	nodoPar->tipo = NODO_OP;
-	nodoPar->nChild = 2;
-	nodoPar->lex = strdup("/");
-	nodoPar->children[0] = nodoNum;
-	nodoPar->children[1] = addParen(nodoFun->children[0]);
+	return crearNodoOpBin(crearNodoTipo("1", NODO_CTE, 0), "/", crearNodoParentesis(nodoFun->children[0]));
 }
 
-void derivSin(nodo *nodoFun, nodo *nodoPar)
+nodo* derivSin(nodo *nodoFun)
 {
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup("cos");
-	nodoPar->children[0] = nodoFun->children[0];
+	return crearNodoFun1par("cos", nodoFun->children[0]);
 }
 
-void derivCos(nodo *nodoFun, nodo *nodoPar)
+nodo* derivCos(nodo *nodoFun)
 {
-	nodo *nodoSin = malloc(sizeof(nodo));
-	nodo *nodoSum = malloc(sizeof(nodo));
-
-	nodoSin->tipo = nodoFun->tipo;
-	nodoSin->nChild = nodoFun->nChild;
-	nodoSin->lex = strdup("sin");
-	nodoSin->children[0] = nodoFun->children[0];
-
-	nodoSum->tipo = NODO_OP;
-	nodoSum->nChild = 1;
-	nodoSum->lex = strdup("-");
-	nodoSum->children[0] = nodoSin;
-
-	nodoPar->tipo = NODO_PAREN;
-	nodoPar->nChild = 1;
-	nodoPar->lex = strdup("()");
-	nodoPar->children[0] = nodoSum;
+	return crearNodoParentesis(crearNodoOpUn("-", crearNodoFun1par("sin", nodoFun->children[0])));
 }
 
-void derivTg(nodo *nodoFun, nodo *nodoPar)
+nodo* derivTg(nodo *nodoFun)
 {
-	nodo *nodoCos, *nodoNum, *nodoDen;
+	nodo *nodoNum, *nodoDen;
 
-	nodoCos = malloc(sizeof(nodo));
-	nodoCos->tipo = nodoFun->tipo;
-	nodoCos->nChild = nodoFun->nChild;
-	nodoCos->lex = strdup("cos");
-	nodoCos->children[0] = nodoFun->children[0];
+	nodoDen = crearNodoOpBin(crearNodoFun1par("cos", nodoFun->children[0]), "^", crearNodoTipo("2", NODO_CTE, 0));
+	nodoNum = crearNodoTipo("1", NODO_CTE, 0);
 
-	nodoNum = malloc(sizeof(nodo));
-	nodoNum->tipo = NODO_CTE;
-	nodoNum->nChild = 0;
-	nodoNum->lex = strdup("1");
-
-	nodoDen = malloc(sizeof(nodo));
-	nodoDen->tipo = NODO_OP;
-	nodoDen->nChild = 2;
-	nodoDen->lex = strdup("*");
-	nodoDen->children[0] = nodoCos;
-	nodoDen->children[1] = nodoCos;
-
-	nodoPar->tipo = NODO_OP;
-	nodoPar->nChild = 2;
-	nodoPar->lex = strdup("/");
-	nodoPar->children[0] = nodoNum;
-	nodoPar->children[1] = nodoDen;
+	return crearNodoOpBin(nodoNum, "/", nodoDen);
 }
 
-void derivAtan(nodo *nodoFun, nodo *nodoPar)
+nodo* derivAtan(nodo *nodoFun)
 {
 	nodo *nodoExp, *nodoDen;
 
-	nodoExp = malloc(sizeof(nodo));
-	nodoExp->tipo = NODO_OP;
-	nodoExp->nChild = 2;
-	nodoExp->lex = strdup("^");
-	nodoExp->children[0] = nodoFun->children[0];
-	nodoExp->children[1] = crearNodoTipo("2", NODO_CTE);
+	nodoExp = crearNodoOpBin(crearNodoParentesis(nodoFun->children[0]), "^", crearNodoTipo("2", NODO_CTE, 0));
+	nodoDen = crearNodoOpBin(crearNodoTipo("1", NODO_CTE, 0), "+", nodoExp);
 
-	nodoDen = malloc(sizeof(nodo));
-	nodoDen->tipo = NODO_OP;
-	nodoDen->nChild = 2;
-	nodoDen->lex = strdup("+");
-	nodoDen->children[0] = crearNodoTipo("1", NODO_CTE);
-	nodoDen->children[1] = nodoExp;
-
-	nodoPar->tipo = NODO_OP;
-	nodoPar->nChild = 2;
-	nodoPar->lex = strdup("/");
-	nodoPar->children[0] = crearNodoTipo("1", NODO_CTE);
-	nodoPar->children[1] = addParen(nodoDen);
+	return crearNodoOpBin(crearNodoTipo("1", NODO_CTE, 0), "/", crearNodoParentesis(nodoDen));
 }
 
 void replace(nodo *baseNode, nodo *nNew) {
@@ -704,7 +589,11 @@ void simplifyPartial(nodo *nodoPar){
 						}
 
 						if (strcmp(nodoPar->lex, "*") == 0 && strcmp(nodoPar->children[i]->lex, "0") == 0) {
-							isZero = 1;
+							if (nodoPar->children[j]->subTipo == NODO_NA) {
+								isZero = 1;
+							} else {
+								replace(nodoPar, addNodoArray(crearNodoTipo("0", NODO_CTE, nodoPar->children[j]->subTipo), nodoPar->children[j]->subTipo));
+							}
 						}
 
 						if (strcmp(nodoPar->lex, "*") == 0 && strcmp(nodoPar->children[i]->lex, "1") == 0) {
@@ -773,13 +662,14 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		}
 
 		nodo *nodoParExpr = partialExpr(nodoFunExpr, nVar);
-		//simplifyPartial(nodoParExpr);
+		simplifyPartial(nodoParExpr);
 
 		escribeFun(nombreParFun, nodoParExpr);
 	}
 
 	nodoPar = malloc(sizeof(nodo));
 	nodoPar->tipo = nodoFun->tipo;
+	nodoPar->subTipo = nodoFun->subTipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = nombreParFun;
 
@@ -790,8 +680,10 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 	return nodoPar;
 }
 
-void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoFun(nodo *nodoFun, char *nVar)
 {
+	nodo *nodoPar;
+
 	int i, iParFun;
 	int esArray = 	strcmp(nodoFun->lex, "vec2") == 0 ||
 					strcmp(nodoFun->lex, "vec3") == 0 ||
@@ -805,34 +697,34 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 					strcmp(nodoFun->lex, "atan") == 0;
 	
 	if (esArray) {
+		nodoPar = malloc(sizeof(nodo));
 		nodoPar->tipo = nodoFun->tipo;
+		nodoPar->subTipo = nodoFun->subTipo;
 		nodoPar->nChild = nodoFun->nChild;
 		nodoPar->lex = strdup(nodoFun->lex);
 
 		for (i = 0; i < nodoFun->nChild; i++) {
-			nodoPar->children[i] = addParen(partialExpr(nodoFun->children[i], nVar));
+			nodoPar->children[i] = crearNodoParentesis(partialExpr(nodoFun->children[i], nVar));
 		}
+
 	} else {
 		if (esPredef) {
-			nodo *nodoIzq = malloc(sizeof(nodo));
+			nodo *nodoIzq;
 
 			if (strcmp(nodoFun->lex, "log") == 0) {
-				derivLog(nodoFun, nodoIzq);
+				nodoIzq = derivLog(nodoFun);
 			} else if (strcmp(nodoFun->lex, "sin") == 0) {
-				derivSin(nodoFun, nodoIzq);
+				nodoIzq = derivSin(nodoFun);
 			} else if (strcmp(nodoFun->lex, "cos") == 0) {
-				derivCos(nodoFun, nodoIzq);
+				nodoIzq = derivCos(nodoFun);
 			} else if (strcmp(nodoFun->lex, "tg") == 0) {
-				derivTg(nodoFun, nodoIzq);
+				nodoIzq = derivTg(nodoFun);
 			} else if (strcmp(nodoFun->lex, "atan") == 0) {
-				derivAtan(nodoFun, nodoIzq);
+				nodoIzq = derivAtan(nodoFun);
 			}
 
-			nodoPar->tipo = NODO_OP;
-			nodoPar->nChild = 2;
-			nodoPar->lex = strdup("*");
-			nodoPar->children[0] = nodoIzq;
-			nodoPar->children[1] = addParen(partialExpr(nodoFun->children[0], nVar));
+			nodoPar = crearNodoOpBin(nodoIzq, "*", crearNodoParentesis(partialExpr(nodoFun->children[0], nVar)));
+		
 		} else {
 			int iFun;
 			nodo *nodoExprFun;
@@ -842,67 +734,43 @@ void partialNodoFun(nodo *nodoFun, nodo *nodoPar, char *nVar)
 			if (iFun == -1) {
 				printf("No existe la función: %s", nodoFun->lex);
 
-				return;
+				return NULL;
 			}
 
-			nodo *nodoSum;
-			
-			nodo *nodoMul0 = malloc(sizeof(nodo));
-			nodoMul0->tipo = NODO_OP;
-			nodoMul0->nChild = 2;
-			nodoMul0->lex = strdup("*");
-			nodoMul0->children[0] = checkPartialF(nodoFun, TS[iFun + 1].lex);
-			nodoMul0->children[1] = addParen(partialExpr(nodoFun->children[0], nVar));
+			nodo *nodoHijo1 = checkPartialF(nodoFun, TS[iFun + 1].lex);
+			nodo *nodoHijo2 = crearNodoParentesis(partialExpr(nodoFun->children[0], nVar));
+			nodo *nodoSum, *nodoMul;
+
+			nodoMul = crearNodoOpBin(nodoHijo1, "*", nodoHijo2);
 
 			if (nodoFun->nChild > 1) {
-				nodo *nodoMul1 = malloc(sizeof(nodo));
-				nodoMul1->tipo = NODO_OP;
-				nodoMul1->nChild = 2;
-				nodoMul1->lex = strdup("*");
-				nodoMul1->children[0] = checkPartialF(nodoFun, TS[iFun + 2].lex);
-				nodoMul1->children[1] = addParen(partialExpr(nodoFun->children[1], nVar));
-
-				nodoSum = malloc(sizeof(nodo));
-				nodoSum->tipo = NODO_OP;
-				nodoSum->nChild = 2;
-				nodoSum->lex = strdup("+");
-				nodoSum->children[0] = nodoMul0;
-				nodoSum->children[1] = nodoMul1;
+				nodoHijo1 = checkPartialF(nodoFun, TS[iFun + 2].lex);
+				nodoHijo2 = crearNodoParentesis(partialExpr(nodoFun->children[1], nVar));
+				nodoSum = crearNodoOpBin(nodoMul, "+", crearNodoOpBin(nodoHijo1, "*", nodoHijo2));
 			} else {
-				nodoSum = nodoMul0;
+				nodoSum = nodoMul;
 			}
 
 			for (i = 2; i < nodoFun->nChild; i++) {
-				nodo *nodoMul = malloc(sizeof(nodo));
-				nodoMul->tipo = NODO_OP;
-				nodoMul->nChild = 2;
-				nodoMul->lex = strdup("*");
-				nodoMul->children[0] = checkPartialF(nodoFun, TS[iFun + i + 1].lex);
-				nodoMul->children[1] = addParen(partialExpr(nodoFun->children[i], nVar));
-
-				nodo *nodoNewSum = malloc(sizeof(nodo));
-				nodoNewSum->tipo = NODO_OP;
-				nodoNewSum->nChild = 2;
-				nodoNewSum->lex = strdup("+");
-				nodoNewSum->children[0] = nodoSum;
-				nodoNewSum->children[1] = nodoMul;
-				nodoSum = nodoNewSum;
+				nodoHijo1 = checkPartialF(nodoFun, TS[iFun + i + 1].lex);
+				nodoHijo2 = crearNodoParentesis(partialExpr(nodoFun->children[i], nVar));
+				nodoMul = crearNodoOpBin(nodoHijo1, "*", nodoHijo2);
+				nodoSum = crearNodoOpBin(nodoSum, "+", nodoMul);
 			}
 
-			nodoPar->tipo = nodoSum->tipo;
-			nodoPar->nChild = nodoSum->nChild;
-			nodoPar->lex = nodoSum->lex;
-
-			for (i = 0; i < nodoSum->nChild; i++) {
-				nodoPar->children[i] = nodoSum->children[i];
-			}
+			nodoPar = nodoSum;
+			nodoPar->subTipo = nodoFun->subTipo;
 		}
 	}
+
+	return nodoPar;
 }
 
 
-void partialNodoInd(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoInd(nodo *nodoFun, char *nVar)
 {
+	nodo *nodoPar = malloc(sizeof(nodo));
+
 	nodoPar->tipo = nodoFun->tipo;
 	nodoPar->nChild = nodoFun->nChild;
 	nodoPar->lex = strdup(nodoFun->lex);
@@ -911,67 +779,55 @@ void partialNodoInd(nodo *nodoFun, nodo *nodoPar, char *nVar)
 	nodoPar->subTipo = nodoFun->subTipo;
 }
 
-void partialNodoParen(nodo *nodoFun, nodo *nodoPar, char *nVar)
+nodo* partialNodoParen(nodo *nodoFun, char *nVar)
 {
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup(nodoFun->lex);
-	nodoPar->children[0] = partialExpr(nodoFun->children[0], nVar);
+	return crearNodoParentesis(partialExpr(nodoFun->children[0], nVar));
 }
 
 nodo* partialExpr(nodo *nodoFun, char *nVar)
 {
-	nodo *nodoPar = malloc(sizeof(nodo));
+	nodo *nodoPar;
 	int i = 0;
-
-	nodoPar->tipo = nodoFun->tipo;
-	nodoPar->nChild = nodoFun->nChild;
-	nodoPar->lex = strdup(nodoFun->lex);
-
-	for (i = 0; i < nodoFun->nChild; i++) {
-		nodoPar->children[i] = nodoFun->children[i];
-	}
 	
 	if (nodoFun->nChild == 0){
+		nodoPar = crearNodoTipo("0", NODO_CTE, 0);
+
 		if (strcmp(nVar, nodoFun->lex) == 0){
 			nodoPar->lex = strdup("1");
-		} else {
-			nodoPar->lex = strdup("0");
 		}
 
-		nodoPar->tipo = NODO_CTE;
-		nodoPar->nChild = 0;
 	} else if (nodoFun->tipo == NODO_OP){
 		if (nodoFun->nChild == 1) {
 			if (strcmp("-", nodoFun->lex) == 0){
-				partialNodoMenos(nodoFun, nodoPar, nVar);
+				nodoPar = partialNodoMenos(nodoFun, nVar);
 			}
 		}
 		if (nodoFun->nChild == 2) {
 			if (strcmp("+", nodoFun->lex) == 0 || strcmp("-", nodoFun->lex) == 0){
-				partialNodoSum(nodoFun, nodoPar, nVar);
+				nodoPar = partialNodoSum(nodoFun, nVar);
 			} else if (strcmp("*", nodoFun->lex) == 0){
-				partialNodoMul(nodoFun, nodoPar, nVar);
+				nodoPar = partialNodoMul(nodoFun, nVar);
 			} else if (strcmp("/", nodoFun->lex) == 0){
-				partialNodoDiv(nodoFun, nodoPar, nVar);
+				nodoPar = partialNodoDiv(nodoFun, nVar);
 			} else if (strcmp("^", nodoFun->lex) == 0){
-				partialNodoExp(nodoFun, nodoPar, nVar);
+				nodoPar = partialNodoExp(nodoFun, nVar);
 			}
 		}
 	} else if (nodoFun->tipo == NODO_IF){
-		partialNodoIf(nodoFun, nodoPar, nVar);
+		nodoPar = partialNodoIf(nodoFun, nVar);
 	} else if (nodoFun->tipo == NODO_FUN){
-		partialNodoFun(nodoFun, nodoPar, nVar);
+		nodoPar = partialNodoFun(nodoFun, nVar);
 	} else if (nodoFun->tipo == NODO_IND){
-		partialNodoInd(nodoFun, nodoPar, nVar);
+		nodoPar = partialNodoInd(nodoFun, nVar);
 	} else if (nodoFun->tipo == NODO_PAREN){
-		partialNodoParen(nodoFun, nodoPar, nVar);
+		nodoPar = partialNodoParen(nodoFun, nVar);
 	}
 
-	return addParen(nodoPar);
+	return crearNodoParentesis(nodoPar);
 }
 
 void escribeNorm(atributos fun, atributos e1){
+				
 	if (e1.dimension == 1 && e1.tam == 3) {
 		int indexFun, indexNorm, i;
 		char *nVarU = "u";
@@ -983,16 +839,17 @@ void escribeNorm(atributos fun, atributos e1){
 			return;
 		}
 
-		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN);
+		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN, 0);
 		
 		nodoFun->nChild = TS[indexFun].nParam;
 
 		for (i = 0; i < TS[indexFun].nParam; i++){
-			nodoFun->children[i] = crearNodoTipo(strdup(TS[indexFun + i + 1].lex), NODO_VAR);
+			nodoFun->children[i] = crearNodoTipo(strdup(TS[indexFun + i + 1].lex), NODO_VAR, 0);
 		}
 
 		nodo *nodoParU = checkPartialF(nodoFun, nVarU);
 		nodo *nodoParV = checkPartialF(nodoFun, nVarV);
+
 
 		atributos attNorm;
 
@@ -1013,7 +870,7 @@ void escribeNorm(atributos fun, atributos e1){
 		}
 
 		escribeFun(attNorm.lex, crearNodoNormal(nodoParU, nodoParV));
-	}
+	}		
 }
 
 void escribeVal(char *id, nodo *expr){

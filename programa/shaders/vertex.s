@@ -86,43 +86,43 @@ vec3 f(float u, float v, float t0, float ori) {
 }
 
 float compxPu(float u, float v) {
-	return (1 / ((1 + ( pow(u, 2)) + 2 * u *  cos(v)) / (1 + ( pow(u, 2)) - 2 * u *  cos(v))) * (((((((0) + ((((1) * 2 *  pow(u, 1.000000))))) + (((((0) * u + 2 * (1))) *  cos(v) + 2 * u * (( -  sin(v)) * ((0)))))))) / (1 + ( pow(u, 2)) - 2 * u *  cos(v)) - (1 + ( pow(u, 2)) + 2 * u *  cos(v)) * (((((0) + ((((1) * 2 *  pow(u, 1.000000))))) - (((((0) * u + 2 * (1))) *  cos(v) + 2 * u * (( -  sin(v)) * ((0)))))))) / ((1 + ( pow(u, 2)) - 2 * u *  cos(v)) * (1 + ( pow(u, 2)) - 2 * u *  cos(v))))));
+	return (1 / ((1 + ( pow(u, 2)) + 2 * u *  cos(v)) / (1 + ( pow(u, 2)) - 2 * u *  cos(v))) * (((2 *  pow(u, 1.000000)) + (2 *  cos(v))) / (1 + ( pow(u, 2)) - 2 * u *  cos(v)) - (1 + ( pow(u, 2)) + 2 * u *  cos(v)) * ((2 *  pow(u, 1.000000)) - (2 *  cos(v))) / ( pow((1 + ( pow(u, 2)) - 2 * u *  cos(v)), 2))));
 }
 
 float compxPv(float u, float v) {
-	return (1 / ((1 + ( pow(u, 2)) + 2 * u *  cos(v)) / (1 + ( pow(u, 2)) - 2 * u *  cos(v))) * (((((((0) + ((((0) * 2 *  pow(u, 1.000000))))) + (((((0) * u + 2 * (0))) *  cos(v) + 2 * u * (( -  sin(v)) * ((1)))))))) / (1 + ( pow(u, 2)) - 2 * u *  cos(v)) - (1 + ( pow(u, 2)) + 2 * u *  cos(v)) * (((((0) + ((((0) * 2 *  pow(u, 1.000000))))) - (((((0) * u + 2 * (0))) *  cos(v) + 2 * u * (( -  sin(v)) * ((1)))))))) / ((1 + ( pow(u, 2)) - 2 * u *  cos(v)) * (1 + ( pow(u, 2)) - 2 * u *  cos(v))))));
+	return (1 / ((1 + ( pow(u, 2)) + 2 * u *  cos(v)) / (1 + ( pow(u, 2)) - 2 * u *  cos(v))) * ((2 * u * ( -  sin(v))) / (1 + ( pow(u, 2)) - 2 * u *  cos(v)) - (1 + ( pow(u, 2)) + 2 * u *  cos(v)) * ( - (2 * u * ( -  sin(v)))) / ( pow((1 + ( pow(u, 2)) - 2 * u *  cos(v)), 2))));
 }
 
 float compyPu(float u, float v, float t0, float ori) {
-	return ((0) + (((((0) * 2 + ori * (0))) *  atan((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)) + ori * 2 * (1 / (1 +  pow((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1), 2)) * (((((((((0) * ( pow(u, 2)) + 2 * ((((1) * 2 *  pow(u, 1.000000)))))) *  sin(2 * v) + 2 * ( pow(u, 2)) * ( cos(2 * v) * ((((0) * v + 2 * (0))))))))) / ( pow(u, 4) - 1) - (2 * ( pow(u, 2)) *  sin(2 * v)) * (((((1) * 4 *  pow(u, 3.000000)) - (0)))) / (( pow(u, 4) - 1) * ( pow(u, 4) - 1))))))));
+	return (ori * 2 * (1 / (1 +  pow(((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)), 2)) * (((2 * (2 *  pow(u, 1.000000))) *  sin(2 * v)) / ( pow(u, 4) - 1) - (2 * ( pow(u, 2)) *  sin(2 * v)) * (4 *  pow(u, 3.000000)) / ( pow(( pow(u, 4) - 1), 2)))));
 }
 
 float compyPv(float u, float v, float t0, float ori) {
-	return ((0) + (((((0) * 2 + ori * (0))) *  atan((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)) + ori * 2 * (1 / (1 +  pow((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1), 2)) * (((((((((0) * ( pow(u, 2)) + 2 * ((((0) * 2 *  pow(u, 1.000000)))))) *  sin(2 * v) + 2 * ( pow(u, 2)) * ( cos(2 * v) * ((((0) * v + 2 * (1))))))))) / ( pow(u, 4) - 1) - (2 * ( pow(u, 2)) *  sin(2 * v)) * (((((0) * 4 *  pow(u, 3.000000)) - (0)))) / (( pow(u, 4) - 1) * ( pow(u, 4) - 1))))))));
+	return (ori * 2 * (1 / (1 +  pow(((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)), 2)) * ((2 * ( pow(u, 2)) * ( cos(2 * v) * 2)) / ( pow(u, 4) - 1))));
 }
 
 float compyPt0(float u, float v, float t0, float ori) {
-	return ((1) + (((((0) * 2 + ori * (0))) *  atan((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)) + ori * 2 * (1 / (1 +  pow((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1), 2)) * (((((((((0) * ( pow(u, 2)) + 2 * ((((0) * 2 *  pow(u, 1.000000)))))) *  sin(2 * v) + 2 * ( pow(u, 2)) * ( cos(2 * v) * ((((0) * v + 2 * (0))))))))) / ( pow(u, 4) - 1) - (2 * ( pow(u, 2)) *  sin(2 * v)) * (((((0) * 4 *  pow(u, 3.000000)) - (0)))) / (( pow(u, 4) - 1) * ( pow(u, 4) - 1))))))));
+	return 1;
 }
 
 float compyPori(float u, float v, float t0, float ori) {
-	return ((0) + (((((1) * 2 + ori * (0))) *  atan((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)) + ori * 2 * (1 / (1 +  pow((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1), 2)) * (((((((((0) * ( pow(u, 2)) + 2 * ((((0) * 2 *  pow(u, 1.000000)))))) *  sin(2 * v) + 2 * ( pow(u, 2)) * ( cos(2 * v) * ((((0) * v + 2 * (0))))))))) / ( pow(u, 4) - 1) - (2 * ( pow(u, 2)) *  sin(2 * v)) * (((((0) * 4 *  pow(u, 3.000000)) - (0)))) / (( pow(u, 4) - 1) * ( pow(u, 4) - 1))))))));
+	return (2 *  atan((2 * ( pow(u, 2)) *  sin(2 * v)) / ( pow(u, 4) - 1)));
 }
 
 float compzPu(float u, float v) {
-	return (1 / ((1 + ( pow(u, 2)) - 2 * u *  sin(v)) / (1 + ( pow(u, 2)) + 2 * u *  sin(v))) * (((((((0) + ((((1) * 2 *  pow(u, 1.000000))))) - (((((0) * u + 2 * (1))) *  sin(v) + 2 * u * ( cos(v) * ((0)))))))) / (1 + ( pow(u, 2)) + 2 * u *  sin(v)) - (1 + ( pow(u, 2)) - 2 * u *  sin(v)) * (((((0) + ((((1) * 2 *  pow(u, 1.000000))))) + (((((0) * u + 2 * (1))) *  sin(v) + 2 * u * ( cos(v) * ((0)))))))) / ((1 + ( pow(u, 2)) + 2 * u *  sin(v)) * (1 + ( pow(u, 2)) + 2 * u *  sin(v))))));
+	return (1 / ((1 + ( pow(u, 2)) - 2 * u *  sin(v)) / (1 + ( pow(u, 2)) + 2 * u *  sin(v))) * (((2 *  pow(u, 1.000000)) - (2 *  sin(v))) / (1 + ( pow(u, 2)) + 2 * u *  sin(v)) - (1 + ( pow(u, 2)) - 2 * u *  sin(v)) * ((2 *  pow(u, 1.000000)) + (2 *  sin(v))) / ( pow((1 + ( pow(u, 2)) + 2 * u *  sin(v)), 2))));
 }
 
 float compzPv(float u, float v) {
-	return (1 / ((1 + ( pow(u, 2)) - 2 * u *  sin(v)) / (1 + ( pow(u, 2)) + 2 * u *  sin(v))) * (((((((0) + ((((0) * 2 *  pow(u, 1.000000))))) - (((((0) * u + 2 * (0))) *  sin(v) + 2 * u * ( cos(v) * ((1)))))))) / (1 + ( pow(u, 2)) + 2 * u *  sin(v)) - (1 + ( pow(u, 2)) - 2 * u *  sin(v)) * (((((0) + ((((0) * 2 *  pow(u, 1.000000))))) + (((((0) * u + 2 * (0))) *  sin(v) + 2 * u * ( cos(v) * ((1)))))))) / ((1 + ( pow(u, 2)) + 2 * u *  sin(v)) * (1 + ( pow(u, 2)) + 2 * u *  sin(v))))));
+	return (1 / ((1 + ( pow(u, 2)) - 2 * u *  sin(v)) / (1 + ( pow(u, 2)) + 2 * u *  sin(v))) * (( - (2 * u *  cos(v))) / (1 + ( pow(u, 2)) + 2 * u *  sin(v)) - (1 + ( pow(u, 2)) - 2 * u *  sin(v)) * (2 * u *  cos(v)) / ( pow((1 + ( pow(u, 2)) + 2 * u *  sin(v)), 2))));
 }
 
 vec3 fPu(float u, float v, float t0, float ori) {
-	return ( vec3((( compxPu(u, v) * ((1)) +  compxPv(u, v) * ((0)))), (( compyPu(u, v, t0, ori) * ((1)) +  compyPv(u, v, t0, ori) * ((0)) +  compyPt0(u, v, t0, ori) * ((0)) +  compyPori(u, v, t0, ori) * ((0)))), (( compzPu(u, v) * ((1)) +  compzPv(u, v) * ((0))))));
+	return  vec3( compxPu(u, v),  compyPu(u, v, t0, ori),  compzPu(u, v));
 }
 
 vec3 fPv(float u, float v, float t0, float ori) {
-	return ( vec3((( compxPu(u, v) * ((0)) +  compxPv(u, v) * ((1)))), (( compyPu(u, v, t0, ori) * ((0)) +  compyPv(u, v, t0, ori) * ((1)) +  compyPt0(u, v, t0, ori) * ((0)) +  compyPori(u, v, t0, ori) * ((0)))), (( compzPu(u, v) * ((0)) +  compzPv(u, v) * ((1))))));
+	return  vec3( compxPv(u, v),  compyPv(u, v, t0, ori),  compzPv(u, v));
 }
 
 vec3 fNormal(float u, float v, float t0, float ori) {
@@ -134,19 +134,19 @@ vec3 gD(float u, float v, float t0) {
 }
 
 vec3 fPt0(float u, float v, float t0, float ori) {
-	return ( vec3((( compxPu(u, v) * ((0)) +  compxPv(u, v) * ((0)))), (( compyPu(u, v, t0, ori) * ((0)) +  compyPv(u, v, t0, ori) * ((0)) +  compyPt0(u, v, t0, ori) * ((1)) +  compyPori(u, v, t0, ori) * ((0)))), (( compzPu(u, v) * ((0)) +  compzPv(u, v) * ((0))))));
+	return  vec3(0,  compyPt0(u, v, t0, ori), 0);
 }
 
 vec3 fPori(float u, float v, float t0, float ori) {
-	return ( vec3((( compxPu(u, v) * ((0)) +  compxPv(u, v) * ((0)))), (( compyPu(u, v, t0, ori) * ((0)) +  compyPv(u, v, t0, ori) * ((0)) +  compyPt0(u, v, t0, ori) * ((0)) +  compyPori(u, v, t0, ori) * ((1)))), (( compzPu(u, v) * ((0)) +  compzPv(u, v) * ((0))))));
+	return  vec3(0,  compyPori(u, v, t0, ori), 0);
 }
 
 vec3 gDPu(float u, float v, float t0) {
-	return ( fPu(0.9999999 * u, v * 2 * PI, t0, 1) * ((((0) * u + 0.9999999 * (1)))) +  fPv(0.9999999 * u, v * 2 * PI, t0, 1) * ((((((0) * 2 + v * (0))) * PI + v * 2 * (0)))) +  fPt0(0.9999999 * u, v * 2 * PI, t0, 1) * ((0)) +  fPori(0.9999999 * u, v * 2 * PI, t0, 1) * ((0)));
+	return ( fPu(0.9999999 * u, v * 2 * PI, t0, 1) * 0.9999999);
 }
 
 vec3 gDPv(float u, float v, float t0) {
-	return ( fPu(0.9999999 * u, v * 2 * PI, t0, 1) * ((((0) * u + 0.9999999 * (0)))) +  fPv(0.9999999 * u, v * 2 * PI, t0, 1) * ((((((1) * 2 + v * (0))) * PI + v * 2 * (0)))) +  fPt0(0.9999999 * u, v * 2 * PI, t0, 1) * ((0)) +  fPori(0.9999999 * u, v * 2 * PI, t0, 1) * ((0)));
+	return ( fPv(0.9999999 * u, v * 2 * PI, t0, 1) * (2 * PI));
 }
 
 vec3 gDNormal(float u, float v, float t0) {
@@ -158,11 +158,11 @@ vec3 gU(float u, float v, float t0) {
 }
 
 vec3 gUPu(float u, float v, float t0) {
-	return ( fPu(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (((0) - (((0) * u + 0.9999 * (1))))) +  fPv(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * ((((((0) * 2 + v * (0))) * PI + v * 2 * (0)))) +  fPt0(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (((((0) * PI + 2 * (0))) + (0))) +  fPori(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (( - (0))));
+	return ( fPu(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * ( - 0.9999));
 }
 
 vec3 gUPv(float u, float v, float t0) {
-	return ( fPu(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (((0) - (((0) * u + 0.9999 * (0))))) +  fPv(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * ((((((1) * 2 + v * (0))) * PI + v * 2 * (0)))) +  fPt0(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (((((0) * PI + 2 * (0))) + (0))) +  fPori(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (( - (0))));
+	return ( fPv(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (2 * PI));
 }
 
 vec3 gUNormal(float u, float v, float t0) {
@@ -173,20 +173,20 @@ vec3 gSS(float u, float v, float t0) {
 	return  funcionIf((v < 0.5),  gU(u, v * 2, t0),  gD(u, (v - 0.5) * 2, t0));
 }
 
-vec3 gUPt0(float u, float v, float t0) {
-	return ( fPu(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (((0) - (((0) * u + 0.9999 * (0))))) +  fPv(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * ((((((0) * 2 + v * (0))) * PI + v * 2 * (0)))) +  fPt0(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (((((0) * PI + 2 * (0))) + (1))) +  fPori(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1) * (( - (0))));
+vec3 gDPt0(float u, float v, float t0) {
+	return  fPt0(0.9999999 * u, v * 2 * PI, t0, 1);
 }
 
-vec3 gDPt0(float u, float v, float t0) {
-	return ( fPu(0.9999999 * u, v * 2 * PI, t0, 1) * ((((0) * u + 0.9999999 * (0)))) +  fPv(0.9999999 * u, v * 2 * PI, t0, 1) * ((((((0) * 2 + v * (0))) * PI + v * 2 * (0)))) +  fPt0(0.9999999 * u, v * 2 * PI, t0, 1) * ((1)) +  fPori(0.9999999 * u, v * 2 * PI, t0, 1) * ((0)));
+vec3 gUPt0(float u, float v, float t0) {
+	return  fPt0(0.99999 - 0.9999 * u, v * 2 * PI, 2 * PI + t0,  - 1);
 }
 
 vec3 gSSPu(float u, float v, float t0) {
-	return ( funcionIf((v < 0.5), ( gUPu(u, v * 2, t0) * ((1)) +  gUPv(u, v * 2, t0) * ((((0) * 2 + v * (0)))) +  gUPt0(u, v * 2, t0) * ((0))), ( gDPu(u, (v - 0.5) * 2, t0) * ((1)) +  gDPv(u, (v - 0.5) * 2, t0) * (((((((0) - (0)))) * 2 + (v - 0.5) * (0)))) +  gDPt0(u, (v - 0.5) * 2, t0) * ((0)))));
+	return  funcionIf((v < 0.5),  gUPu(u, v * 2, t0),  gDPu(u, (v - 0.5) * 2, t0));
 }
 
 vec3 gSSPv(float u, float v, float t0) {
-	return ( funcionIf((v < 0.5), ( gUPu(u, v * 2, t0) * ((0)) +  gUPv(u, v * 2, t0) * ((((1) * 2 + v * (0)))) +  gUPt0(u, v * 2, t0) * ((0))), ( gDPu(u, (v - 0.5) * 2, t0) * ((0)) +  gDPv(u, (v - 0.5) * 2, t0) * (((((((1) - (0)))) * 2 + (v - 0.5) * (0)))) +  gDPt0(u, (v - 0.5) * 2, t0) * ((0)))));
+	return  funcionIf((v < 0.5), ( gUPv(u, v * 2, t0) * 2), ( gDPv(u, (v - 0.5) * 2, t0) * 2));
 }
 
 vec3 gSSNormal(float u, float v, float t0) {
@@ -198,15 +198,15 @@ vec3 gSS2(float u, float v, float t0) {
 }
 
 vec3 gSSPt0(float u, float v, float t0) {
-	return ( funcionIf((v < 0.5), ( gUPu(u, v * 2, t0) * ((0)) +  gUPv(u, v * 2, t0) * ((((0) * 2 + v * (0)))) +  gUPt0(u, v * 2, t0) * ((1))), ( gDPu(u, (v - 0.5) * 2, t0) * ((0)) +  gDPv(u, (v - 0.5) * 2, t0) * (((((((0) - (0)))) * 2 + (v - 0.5) * (0)))) +  gDPt0(u, (v - 0.5) * 2, t0) * ((1)))));
+	return  funcionIf((v < 0.5),  gUPt0(u, v * 2, t0),  gDPt0(u, (v - 0.5) * 2, t0));
 }
 
 vec3 gSS2Pu(float u, float v, float t0) {
-	return ( gSSPu(u, v, 4 * PI) * ((1)) +  gSSPv(u, v, 4 * PI) * ((0)) +  gSSPt0(u, v, 4 * PI) * ((((0) * PI + 4 * (0)))));
+	return  gSSPu(u, v, 4 * PI);
 }
 
 vec3 gSS2Pv(float u, float v, float t0) {
-	return ( gSSPu(u, v, 4 * PI) * ((0)) +  gSSPv(u, v, 4 * PI) * ((1)) +  gSSPt0(u, v, 4 * PI) * ((((0) * PI + 4 * (0)))));
+	return  gSSPv(u, v, 4 * PI);
 }
 
 vec3 gSS2Normal(float u, float v, float t0) {
@@ -217,11 +217,8 @@ void main() {
 	vec3 aPosSurf, aNormSurf;
 
 	if (funPlot==0) {
-		aPosSurf = gSS(aPos.x, aPos.y, param_t[0]);
-		aNormSurf = gSSNormal(aPos.x, aPos.y, param_t[0]);
-	} else if (funPlot==1) {
-		aPosSurf = gSS2(aPos.x, aPos.y, param_t[0]);
-		aNormSurf = gSS2Normal(aPos.x, aPos.y, param_t[0]);
+		aPosSurf = gD(aPos.x, aPos.y, param_t[0]);
+		aNormSurf = gDNormal(aPos.x, aPos.y, param_t[0]);
 	}
 
 	vertex.FragPos = vec3(vec4(aPosSurf, 1.0));
