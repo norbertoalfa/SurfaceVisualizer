@@ -162,14 +162,70 @@ nodo* crearNodoNormal(nodo *parU, nodo *parV)
 
 nodo* crearNodoArea(nodo *parU, nodo *parV)
 {
-	nodo *nodoActual;
+	nodo *nodoArea;
 	
-	nodoActual = crearNodoTipo(strdup("distance"), NODO_FUN, 0);
-	nodoActual->nChild = 2;
-	nodoActual->children[0] = parU;
-	nodoActual->children[1] = parV;
+	nodoArea = crearNodoTipo(strdup("distance"), NODO_FUN, 0);
+	nodoArea->nChild = 2;
+	nodoArea->children[0] = parU;
+	nodoArea->children[1] = parV;
 	
-	return nodoActual;
+	return nodoArea;
+}
+
+nodo* crearNodoK(nodo *parU, nodo *parV)
+{
+	nodo *nodoK, *nodoNum, *nodoDen;
+
+	nodo *nodoNumIzq, *nodoNumIzq1, *nodoNumIzq2;
+	nodo *nodoNumDer, *nodoDetUV;
+
+	nodo *nodoDenIzq, *nodoDenIzq1, *nodoDenIzq2;
+	nodo *nodoDenDer, *nodoDot;
+
+	nodo *nodoMatIzq1 = crearNodoTipo(strdup("mat3"), NODO_FUN, NODO_MAT3);
+	nodoMatIzq1->nChild = 3;
+	nodoMatIzq1->children[0] = checkPartialF(parU, "u");
+	nodoMatIzq1->children[1] = parU;
+	nodoMatIzq1->children[2] = parV;
+
+	nodoNumIzq1 = crearNodoFun1par("determinant", nodoMatIzq1);
+
+	nodo *nodoMatIzq2 = crearNodoTipo(strdup("mat3"), NODO_FUN, NODO_MAT3);
+	nodoMatIzq2->nChild = 3;
+	nodoMatIzq2->children[0] = checkPartialF(parV, "v");
+	nodoMatIzq2->children[1] = parU;
+	nodoMatIzq2->children[2] = parV;
+
+	nodoNumIzq2 = crearNodoFun1par("determinant", nodoMatIzq2);
+
+	nodo *nodoMatUV = crearNodoTipo(strdup("mat3"), NODO_FUN, NODO_MAT3);
+	nodoMatUV->nChild = 3;
+	nodoMatUV->children[0] = checkPartialF(parU, "v");
+	nodoMatUV->children[1] = parU;
+	nodoMatUV->children[2] = parV;
+
+	nodoDetUV = crearNodoFun1par("determinant", nodoMatUV);
+
+	nodoNumIzq = crearNodoOpBin(nodoNumIzq1, "*", nodoNumIzq2);
+	nodoNumDer = crearNodoOpBin(nodoDetUV, "^", crearNodoTipo("2", NODO_CTE, 0));
+	nodoNum = crearNodoOpBin(nodoNumIzq, "-", nodoNumDer);
+
+	nodoDenIzq1 = crearNodoOpBin(crearNodoFun1par("length", parU), "^", crearNodoTipo("2", NODO_CTE, 0));
+	nodoDenIzq2 = crearNodoOpBin(crearNodoFun1par("length", parV), "^", crearNodoTipo("2", NODO_CTE, 0));
+	nodoDenIzq = crearNodoOpBin(nodoDenIzq1, "*", nodoDenIzq2);
+
+	nodoDot = crearNodoTipo(strdup("dot"), NODO_FUN, 0);
+	nodoDot->nChild = 2;
+	nodoDot->children[0] = parU;
+	nodoDot->children[1] = parV;
+
+	nodoDenDer = crearNodoOpBin(nodoDot, "^", crearNodoTipo("2", NODO_CTE, 0));
+
+	nodoDen = crearNodoOpBin(crearNodoOpBin(nodoDenIzq, "-", nodoDenDer), "^", crearNodoTipo("2", NODO_CTE, 0));
+
+	nodoK = crearNodoOpBin(nodoNum, "/", nodoDen);
+	
+	return nodoK;
 }
 
 void actualizaNodo(nodo *nodoFun, nodo *expr) {
@@ -929,6 +985,53 @@ void escribeArea(atributos fun, atributos e1){
 		}
 
 		escribeFun(attArea.lex, crearNodoArea(nodoParU, nodoParV));
+	}		
+}
+
+void escribeK(atributos fun, atributos e1){
+				
+	if (e1.dimension == 1 && e1.tam == 3) {
+		int indexFun, indexArea, i;
+		char *nVarU = "u";
+		char *nVarV = "v";
+
+		indexFun = TS_BuscarFUN(fun.lex);
+
+		if (indexFun == -1) {
+			return;
+		}
+
+		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN, 0);
+		
+		nodoFun->nChild = TS[indexFun].nParam;
+
+		for (i = 0; i < TS[indexFun].nParam; i++){
+			nodoFun->children[i] = crearNodoTipo(strdup(TS[indexFun + i + 1].lex), NODO_VAR, 0);
+		}
+
+		nodo *nodoParU = checkPartialF(nodoFun, nVarU);
+		nodo *nodoParV = checkPartialF(nodoFun, nVarV);
+
+
+		atributos attArea;
+
+		attArea.lex = strdup(fun.lex);
+		strcat(attArea.lex, "K");
+		attArea.tipo = REAL;
+
+		TS_InsertaFUN(attArea);
+		indexArea = TS_BuscarFUN(attArea.lex);
+
+		TS[indexArea].dimension = TS[indexFun].dimension;
+		TS[indexArea].tam = TS[indexFun].tam;
+		TS[indexArea].nParam = TS[indexFun].nParam;
+		TS[indexArea].tipo = REAL;
+
+		for (i = 0; i <  TS[indexFun].nParam; i++) {
+			TS_InsertaEntrada(TS[indexFun + i + 1]);
+		}
+
+		escribeFun(attArea.lex, crearNodoK(nodoParU, nodoParV));
 	}		
 }
 

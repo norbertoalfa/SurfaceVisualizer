@@ -1424,7 +1424,7 @@ yyreduce:
 
   case 12:
 #line 66 "semantico.y"
-                                                                                                                                                                                    {	comprobarTipoFun(yyvsp[-9], yyvsp[0]); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun(yyvsp[-9].lex, yyvsp[0].nodoPropio); escribeNorm(yyvsp[-9], yyvsp[0]); escribeArea(yyvsp[-9], yyvsp[0]); }
+                                                                                                                                                                                    {	comprobarTipoFun(yyvsp[-9], yyvsp[0]); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun(yyvsp[-9].lex, yyvsp[0].nodoPropio); escribeNorm(yyvsp[-9], yyvsp[0]); escribeArea(yyvsp[-9], yyvsp[0]); escribeK(yyvsp[-9], yyvsp[0]); }
 #line 1429 "y.tab.c"
     break;
 

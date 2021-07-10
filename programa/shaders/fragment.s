@@ -28,6 +28,8 @@ void main()
         FragColor = vec4(color, 0.0);
     } else if (showNormals) {
         FragColor = vec4(colorNormals, 0.0);
+    } else if (showDiffArea) {
+        FragColor = vec4(color, 0.0);
     } else {
         // ambient
         float ambientStrength = 0.4;
@@ -47,7 +49,7 @@ void main()
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 4);
         vec3 specular = specularStrength * spec * lightColor;  
             
-        vec3 result = color; //(ambient + diffuse + specular) * color;
+        vec3 result = (ambient + diffuse + specular) * color;
         FragColor = vec4(result, 0.0);
     }
 } 

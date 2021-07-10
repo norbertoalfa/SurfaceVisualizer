@@ -89,6 +89,9 @@ void escribeNorm(atributos fun, atributos e1);
 // Escribe la función que aporta una medida sobre el área localmente
 void escribeArea(atributos fun, atributos e1);
 
+// Escribe la función de curvatura de Gauss
+void escribeK(atributos fun, atributos e1);
+
 // Escribe la declaración de la constante indicada
 void escribeVal(char *id, nodo *expr);
 
