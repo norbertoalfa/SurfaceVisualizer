@@ -14,4 +14,4 @@ gU(u,v :real, t0 : real) : vec3 = f(0.99999-0.9999*u, v*2*PI, 2*PI + t0, -1);
 gSS(u,v :real, t0 : real) : vec3 = if (v < 0.5) then gU(u,v*2,t0) else gD(u,(v-0.5)*2,t0);
 gSS2(u,v :real, t0 : real) : vec3 = gSS(u,v, 4*PI);
 
-plot gD;//gSS, gSS2;
+plot gSS, gSS2;

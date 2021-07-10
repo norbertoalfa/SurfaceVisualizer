@@ -85,7 +85,7 @@ void visualizeInterface(ProgramStatus &status)
             status.showDiffArea = showDiffArea;
         }
         ImGui::SameLine();
-        ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 10.0f, 50.0f);
+        ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
 
         /*ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 

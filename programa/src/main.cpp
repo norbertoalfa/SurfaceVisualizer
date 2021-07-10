@@ -39,7 +39,7 @@ glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWi
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 
-const int SIZE = 40;
+const int SIZE = 10;
 const int SIZE_POINT = 2;
 float step = 1.0/((float) SIZE);
 
