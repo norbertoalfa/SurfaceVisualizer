@@ -160,6 +160,18 @@ nodo* crearNodoNormal(nodo *parU, nodo *parV)
 	return nodoActual;
 }
 
+nodo* crearNodoArea(nodo *parU, nodo *parV)
+{
+	nodo *nodoActual;
+	
+	nodoActual = crearNodoTipo(strdup("distance"), NODO_FUN, 0);
+	nodoActual->nChild = 2;
+	nodoActual->children[0] = parU;
+	nodoActual->children[1] = parV;
+	
+	return nodoActual;
+}
+
 void actualizaNodo(nodo *nodoFun, nodo *expr) {
 	nodo *nodoActual = malloc(sizeof(nodo));
 	
@@ -181,7 +193,7 @@ void generaFich(){
   	
     sprintf(sent,"#version 440 core\n");
     sprintf(sent,"%slayout (location = 0) in vec2 aPos;\n\n", sent);
-    sprintf(sent,"%sout vData {vec3 FragPos; vec3 Normal;} vertex;\n\n", sent);
+    sprintf(sent,"%sout vData {vec3 FragPos; vec3 Normal; float Area;} vertex;\n\n", sent);
     sprintf(sent,"%suniform mat4 model;\n", sent);
     sprintf(sent,"%suniform mat4 view;\n", sent);
     sprintf(sent,"%suniform mat4 projection;\n", sent);
@@ -873,6 +885,53 @@ void escribeNorm(atributos fun, atributos e1){
 	}		
 }
 
+void escribeArea(atributos fun, atributos e1){
+				
+	if (e1.dimension == 1 && e1.tam == 3) {
+		int indexFun, indexArea, i;
+		char *nVarU = "u";
+		char *nVarV = "v";
+
+		indexFun = TS_BuscarFUN(fun.lex);
+
+		if (indexFun == -1) {
+			return;
+		}
+
+		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN, 0);
+		
+		nodoFun->nChild = TS[indexFun].nParam;
+
+		for (i = 0; i < TS[indexFun].nParam; i++){
+			nodoFun->children[i] = crearNodoTipo(strdup(TS[indexFun + i + 1].lex), NODO_VAR, 0);
+		}
+
+		nodo *nodoParU = checkPartialF(nodoFun, nVarU);
+		nodo *nodoParV = checkPartialF(nodoFun, nVarV);
+
+
+		atributos attArea;
+
+		attArea.lex = strdup(fun.lex);
+		strcat(attArea.lex, "Area");
+		attArea.tipo = REAL;
+
+		TS_InsertaFUN(attArea);
+		indexArea = TS_BuscarFUN(attArea.lex);
+
+		TS[indexArea].dimension = TS[indexFun].dimension;
+		TS[indexArea].tam = TS[indexFun].tam;
+		TS[indexArea].nParam = TS[indexFun].nParam;
+		TS[indexArea].tipo = REAL;
+
+		for (i = 0; i <  TS[indexFun].nParam; i++) {
+			TS_InsertaEntrada(TS[indexFun + i + 1]);
+		}
+
+		escribeFun(attArea.lex, crearNodoArea(nodoParU, nodoParV));
+	}		
+}
+
 void escribeVal(char *id, nodo *expr){
 	int indexVal;
 	char * sent;
@@ -928,6 +987,20 @@ void escribeIfPlot(char *sent, entradaTS fun){
 	if (fun.nParam > totalParam)
 		totalParam = fun.nParam;
 	
+	sprintf(sent,"%s);\n\t\t", sent);
+
+	// Para el area
+	i = 2;
+    sprintf(sent,"%saAreaSurf = %sArea(aPos.x, aPos.y", sent, fun.lex);
+
+	while(i<fun.nParam){
+    	sprintf(sent,"%s, param_t[%d]", sent, i-2);
+    	i++;
+    }
+
+	if (fun.nParam > totalParam)
+		totalParam = fun.nParam;
+	
 	sprintf(sent,"%s);\n\t}", sent);
 	  	
 }
@@ -947,7 +1020,8 @@ void escribeIniPlot(char *fun){
   		return;
   	}
   	
-    sprintf(sent,"void main() {\n\tvec3 aPosSurf, aNormSurf;\n\n\t");
+    sprintf(sent,"void main() {\n\tvec3 aPosSurf, aNormSurf;\n\t");
+    sprintf(sent,"%sfloat aAreaSurf;\n\n\t", sent);
     escribeIfPlot(sent, TS[indexFun]);
     
   	fputs(sent,file);
@@ -990,6 +1064,7 @@ void escribeFinPlot(){
   	
     sprintf(sent,"\n\n\tvertex.FragPos = vec3(vec4(aPosSurf, 1.0));"); // model *
     sprintf(sent,"%s\n\tvertex.Normal = aNormSurf;", sent);
+    sprintf(sent,"%s\n\tvertex.Area = aAreaSurf;", sent);
     sprintf(sent,"%s\n\tgl_Position = vec4(aPosSurf, 1.0);\n}", sent); // projection * view * model *
 
   	fputs(sent,file);

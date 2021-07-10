@@ -227,8 +227,10 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     
     sh->setBool("showPol", showPol);
     sh->setBool("showNormals", showNormals);
+    sh->setBool("showDiffArea", status.showDiffArea);
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorNormals", glm::vec3(1.0f, 0.3f, 0.3f));
+    sh->setFloat("coeffArea", status.coeffArea);
 
     sh->setVec3("objectColor", object.getColor());
     sh->setVec3("lightColor", light.getColor());

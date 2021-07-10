@@ -40,6 +40,7 @@ void visualizeInterface(ProgramStatus &status)
     bool autoRot = status.getAutoRotation();
     bool polMode = status.getActivePolMode();
     bool showNormals = status.getShowNormals();
+    bool showDiffArea = status.showDiffArea;
 
     strcpy(nameFile, status.getParamFile().c_str());
 
@@ -78,6 +79,13 @@ void visualizeInterface(ProgramStatus &status)
         ImGui::Checkbox("Editor", &show_editor_window);
         ImGui::Checkbox("Params", &show_params_window);
         ImGui::Checkbox("Render info", &show_render_info);
+
+        ImGui::Checkbox("Show diff area", &showDiffArea);
+        if (showDiffArea != status.showDiffArea) {
+            status.showDiffArea = showDiffArea;
+        }
+        ImGui::SameLine();
+        ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 10.0f, 50.0f);
 
         /*ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 

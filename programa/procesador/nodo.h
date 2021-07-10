@@ -86,6 +86,9 @@ void escribeFun(char *fun, nodo *expr);
 // Escribe la normal de la función indicada
 void escribeNorm(atributos fun, atributos e1);
 
+// Escribe la función que aporta una medida sobre el área localmente
+void escribeArea(atributos fun, atributos e1);
+
 // Escribe la declaración de la constante indicada
 void escribeVal(char *id, nodo *expr);
 

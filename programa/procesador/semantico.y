@@ -63,7 +63,7 @@ sentencia : sentencia_declar_valor
 sentencia_declar_valor : IDENT DOSPTOS IDENT ASIGN expresion { setTipo($3); TS_InsertaIDENT($1.lex); comprobarTipoCte($5); escribeVal($1.lex, $5.nodoPropio); }
 ;
 
-sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($1, $10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun($1.lex, $10.nodoPropio); escribeNorm($1, $10); }
+sentencia_declar_fun : IDENT {setTipoDesc(); TS_InsertaFUN($1); } PAR_IZQ lista_param PAR_DER DOSPTOS IDENT { setTipo($7); TS_ActualizarFun(); TS_InsertaMARCA(); } ASIGN expresion {	comprobarTipoFun($1, $10); TS_VaciarENTRADAS(); nParam = 0; decParam=0; escribeFun($1.lex, $10.nodoPropio); escribeNorm($1, $10); escribeArea($1, $10); }
 ;
 
 sentencia_plot : sentencia_plot COMA IDENT	{ TS_InsertaPLOT($3.lex); escribeContPlot($3.lex); }

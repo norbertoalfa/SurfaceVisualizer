@@ -2,9 +2,9 @@
 layout (triangles) in;
 layout (line_strip, max_vertices = 2) out;
 
-in vData {vec3 FragPos; vec3 Normal;} vertices[];
+in vData {vec3 FragPos; vec3 Normal; float Area;} vertices[];
 
-out fData {vec3 FragPos; vec3 Normal;} frag;
+out fData {vec3 FragPos; vec3 Normal; float Area;} frag;
 
 uniform mat4 model;
 uniform mat4 view;

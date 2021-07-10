@@ -17,7 +17,6 @@ class ProgramStatus
 
 		float lastMouseX;
 		float lastMouseY;
-
 		
 		bool activePolMode;
 		bool showNormals;
@@ -34,6 +33,9 @@ class ProgramStatus
 	public:
 		float params[10];
 		bool autoParams[10];
+		
+		float coeffArea;
+		bool showDiffArea;
 
 		ProgramStatus(unsigned int width=1280, unsigned int height=720)
 		{
@@ -48,6 +50,9 @@ class ProgramStatus
 
 			lastMouseX = width / 2.0f;
 			lastMouseY = height / 2.0f;
+
+			coeffArea = 20.0f;
+			coeffArea = false;
 
 			activePolMode = false;
 			showNormals = false;

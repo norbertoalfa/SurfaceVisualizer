@@ -1,5 +1,5 @@
 #version 440 core
-in fData {vec3 FragPos; vec3 Normal;} frag;
+in fData {vec3 FragPos; vec3 Normal; float Area;} frag;
 
 out vec4 FragColor;
   
@@ -7,15 +7,25 @@ uniform vec3 lightPos;
 uniform vec3 viewPos; 
 uniform vec3 lightColor;
 uniform vec3 objectColor;
+uniform float coeffArea;
 uniform bool showPol;
 uniform bool showNormals;
+uniform bool showDiffArea;
 uniform vec3 colorPol;
 uniform vec3 colorNormals;
 
 void main()
 {
+    vec3 color = objectColor;
+
+    if (showDiffArea) {
+        color = vec3(1.0 - frag.Area/coeffArea, 0.0, frag.Area/coeffArea);
+    } else if (showPol) {
+        color = colorPol;
+    }
+
     if (showPol) {
-        FragColor = vec4(colorPol, 0.0);
+        FragColor = vec4(color, 0.0);
     } else if (showNormals) {
         FragColor = vec4(colorNormals, 0.0);
     } else {
@@ -37,7 +47,7 @@ void main()
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 4);
         vec3 specular = specularStrength * spec * lightColor;  
             
-        vec3 result = (ambient + diffuse + specular) * objectColor;
+        vec3 result = color; //(ambient + diffuse + specular) * color;
         FragColor = vec4(result, 0.0);
     }
 } 

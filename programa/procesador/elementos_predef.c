@@ -89,6 +89,12 @@ void addPredefFunc() {
 	paramsCross[1] = createParam("y", ARRAY, 1, 3);
 	addFunc("cross", ARRAY, 2, 1, 3, paramsCross);
 	
+	// distance
+	entradaTS paramsDist[2];
+	paramsDist[0] = createParam("x", ARRAY, 1, 3);
+	paramsDist[1] = createParam("y", ARRAY, 1, 3);
+	addFunc("distance", ARRAY, 2, 1, 3, paramsDist);
+	
 	// atan
 	entradaTS paramsAtan[1];
 	paramsAtan[0] = createParam("x", REAL, 0, 0);
