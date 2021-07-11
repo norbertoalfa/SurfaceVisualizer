@@ -223,7 +223,7 @@ nodo* crearNodoK(nodo *parU, nodo *parV)
 
 	nodoDen = crearNodoOpBin(crearNodoOpBin(nodoDenIzq, "-", nodoDenDer), "^", crearNodoTipo("2", NODO_CTE, 0));
 
-	nodoK = crearNodoOpBin(nodoNum, "/", nodoDen);
+	nodoK = crearNodoOpBin(crearNodoParentesis(nodoNum), "/", nodoDen);
 	
 	return nodoK;
 }

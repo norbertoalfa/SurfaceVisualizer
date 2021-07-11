@@ -108,7 +108,7 @@ vec3 gPuPv(float u, float v) {
 }
 
 float gK(float u, float v) {
-	return  determinant( mat3( gPuPu(u, v),  gPu(u, v),  gPv(u, v))) *  determinant( mat3( gPvPv(u, v),  gPu(u, v),  gPv(u, v))) -  pow( determinant( mat3( gPuPv(u, v),  gPu(u, v),  gPv(u, v))), 2) /  pow( pow( length( gPu(u, v)), 2) *  pow( length( gPv(u, v)), 2) -  pow( dot( gPu(u, v),  gPv(u, v)), 2), 2);
+	return ( determinant( mat3( gPuPu(u, v),  gPu(u, v),  gPv(u, v))) *  determinant( mat3( gPvPv(u, v),  gPu(u, v),  gPv(u, v))) -  pow( determinant( mat3( gPuPv(u, v),  gPu(u, v),  gPv(u, v))), 2)) /  pow( pow( length( gPu(u, v)), 2) *  pow( length( gPv(u, v)), 2) -  pow( dot( gPu(u, v),  gPv(u, v)), 2), 2);
 }
 
 vec3 h(float u, float v) {
@@ -144,7 +144,7 @@ vec3 hPuPv(float u, float v) {
 }
 
 float hK(float u, float v) {
-	return  determinant( mat3( hPuPu(u, v),  hPu(u, v),  hPv(u, v))) *  determinant( mat3( hPvPv(u, v),  hPu(u, v),  hPv(u, v))) -  pow( determinant( mat3( hPuPv(u, v),  hPu(u, v),  hPv(u, v))), 2) /  pow( pow( length( hPu(u, v)), 2) *  pow( length( hPv(u, v)), 2) -  pow( dot( hPu(u, v),  hPv(u, v)), 2), 2);
+	return ( determinant( mat3( hPuPu(u, v),  hPu(u, v),  hPv(u, v))) *  determinant( mat3( hPvPv(u, v),  hPu(u, v),  hPv(u, v))) -  pow( determinant( mat3( hPuPv(u, v),  hPu(u, v),  hPv(u, v))), 2)) /  pow( pow( length( hPu(u, v)), 2) *  pow( length( hPv(u, v)), 2) -  pow( dot( hPu(u, v),  hPv(u, v)), 2), 2);
 }
 
 vec3 f(float u, float v) {
@@ -184,7 +184,7 @@ vec3 fPuPv(float u, float v) {
 }
 
 float fK(float u, float v) {
-	return  determinant( mat3( fPuPu(u, v),  fPu(u, v),  fPv(u, v))) *  determinant( mat3( fPvPv(u, v),  fPu(u, v),  fPv(u, v))) -  pow( determinant( mat3( fPuPv(u, v),  fPu(u, v),  fPv(u, v))), 2) /  pow( pow( length( fPu(u, v)), 2) *  pow( length( fPv(u, v)), 2) -  pow( dot( fPu(u, v),  fPv(u, v)), 2), 2);
+	return ( determinant( mat3( fPuPu(u, v),  fPu(u, v),  fPv(u, v))) *  determinant( mat3( fPvPv(u, v),  fPu(u, v),  fPv(u, v))) -  pow( determinant( mat3( fPuPv(u, v),  fPu(u, v),  fPv(u, v))), 2)) /  pow( pow( length( fPu(u, v)), 2) *  pow( length( fPv(u, v)), 2) -  pow( dot( fPu(u, v),  fPv(u, v)), 2), 2);
 }
 
 float compx(float u, float v, float t1, float t2) {
@@ -376,7 +376,7 @@ vec3 g2PuPv(float u, float v, float t0, float t1, float t2) {
 }
 
 float g2K(float u, float v, float t0, float t1, float t2) {
-	return  determinant( mat3( g2PuPu(u, v, t0, t1, t2),  g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2))) *  determinant( mat3( g2PvPv(u, v, t0, t1, t2),  g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2))) -  pow( determinant( mat3( g2PuPv(u, v, t0, t1, t2),  g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2))), 2) /  pow( pow( length( g2Pu(u, v, t0, t1, t2)), 2) *  pow( length( g2Pv(u, v, t0, t1, t2)), 2) -  pow( dot( g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2)), 2), 2);
+	return ( determinant( mat3( g2PuPu(u, v, t0, t1, t2),  g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2))) *  determinant( mat3( g2PvPv(u, v, t0, t1, t2),  g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2))) -  pow( determinant( mat3( g2PuPv(u, v, t0, t1, t2),  g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2))), 2)) /  pow( pow( length( g2Pu(u, v, t0, t1, t2)), 2) *  pow( length( g2Pv(u, v, t0, t1, t2)), 2) -  pow( dot( g2Pu(u, v, t0, t1, t2),  g2Pv(u, v, t0, t1, t2)), 2), 2);
 }
 
 vec3 f2(float u, float v) {
@@ -452,7 +452,7 @@ vec3 f2PuPv(float u, float v) {
 }
 
 float f2K(float u, float v) {
-	return  determinant( mat3( f2PuPu(u, v),  f2Pu(u, v),  f2Pv(u, v))) *  determinant( mat3( f2PvPv(u, v),  f2Pu(u, v),  f2Pv(u, v))) -  pow( determinant( mat3( f2PuPv(u, v),  f2Pu(u, v),  f2Pv(u, v))), 2) /  pow( pow( length( f2Pu(u, v)), 2) *  pow( length( f2Pv(u, v)), 2) -  pow( dot( f2Pu(u, v),  f2Pv(u, v)), 2), 2);
+	return ( determinant( mat3( f2PuPu(u, v),  f2Pu(u, v),  f2Pv(u, v))) *  determinant( mat3( f2PvPv(u, v),  f2Pu(u, v),  f2Pv(u, v))) -  pow( determinant( mat3( f2PuPv(u, v),  f2Pu(u, v),  f2Pv(u, v))), 2)) /  pow( pow( length( f2Pu(u, v)), 2) *  pow( length( f2Pv(u, v)), 2) -  pow( dot( f2Pu(u, v),  f2Pv(u, v)), 2), 2);
 }
 
 vec3 fAmbas(float u, float v, float t0) {
@@ -496,7 +496,7 @@ vec3 fAmbasPuPv(float u, float v, float t0) {
 }
 
 float fAmbasK(float u, float v, float t0) {
-	return  determinant( mat3( fAmbasPuPu(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))) *  determinant( mat3( fAmbasPvPv(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))) -  pow( determinant( mat3( fAmbasPuPv(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))), 2) /  pow( pow( length( fAmbasPu(u, v, t0)), 2) *  pow( length( fAmbasPv(u, v, t0)), 2) -  pow( dot( fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0)), 2), 2);
+	return ( determinant( mat3( fAmbasPuPu(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))) *  determinant( mat3( fAmbasPvPv(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))) -  pow( determinant( mat3( fAmbasPuPv(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))), 2)) /  pow( pow( length( fAmbasPu(u, v, t0)), 2) *  pow( length( fAmbasPv(u, v, t0)), 2) -  pow( dot( fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0)), 2), 2);
 }
 
 void main() {
@@ -506,7 +506,7 @@ void main() {
 	if (funPlot==0) {
 		aPosSurf = fAmbas(aPos.x, aPos.y, param_t[0]);
 		aNormSurf = fAmbasNormal(aPos.x, aPos.y, param_t[0]);
-		aAreaSurf = fAmbasK(aPos.x, aPos.y, param_t[0]);
+		aAreaSurf = fAmbasArea(aPos.x, aPos.y, param_t[0]);
 	}
 
 	vertex.FragPos = vec3(vec4(aPosSurf, 1.0));
