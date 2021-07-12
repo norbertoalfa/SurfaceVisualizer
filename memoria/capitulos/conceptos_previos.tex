@@ -1,0 +1,51 @@
+% !TeX root = ../libro.tex
+% !TeX encoding = utf8
+
+\chapter{Conceptos previos}
+
+\begin{definicion} Una \textbf{variedad topológica} 2-dimensional es un espacio de Hausdorff localmente Euclídeo que verifica el segundo axioma de numerabilidad, es decir, su topología tiene una base numerable.
+\end{definicion}
+
+\begin{definicion} Un \textbf{embebimiento o encaje} es una aplicación continua e inyectiva de un espacio topológico en otro. La restricción de su imagen aporta un homeomorfismo.
+\end{definicion}
+
+\begin{definicion} Un \textbf{sistema coordenado} sobre $S$ es un embebimiento $h : \mathbb{R}^2 \rightarrow S$.
+\end{definicion}
+
+\begin{definicion} Sea $S$ un espacio topoógico Hausdorff, una \textbf{estructura diferenciable} $2-dimensional$ sobre $S$ es una familia de conjuntos coordenados $E=\{h_i\}_{i\in \Lambda}$ verificando:
+	\begin{enumerate}
+		\item $\{h_i(\mathbb{R}^2)\}_{i\in \Lambda}$ es un recubrimiento abierto de $S$.
+		\item Si $h_i(\mathbb{R}^2) \cap h_j(\mathbb{R}^2) \neq \varnothing$ entonces $h_j^{-1} \circ h_i:h_i^{-1}(h_i(\mathbb{R}^2)\cap h_j(\mathbb{R}^2)) \rightarrow h_j^{-1}(h_i(\mathbb{R}^2)\cap h_j(\mathbb{R}^2))$ es un difeomorfismo.
+		\item $E$ es maximal entre todas las familias que cumplen los puntos anteriores.
+	\end{enumerate}
+\end{definicion}
+
+\begin{definicion} Una \textbf{variedad diferenciable} 2-dimensional es una variedad topológica $2-dimensional$ $S$ junto con una estructura diferenciable $E$, es decir, el par $(S, E)$.
+\end{definicion}
+
+\begin{definicion} Una \textbf{inmersión} es una aplicación diferenciable entre variedades diferenciables cuya derivada es inyectiva en todo punto.
+\end{definicion}
+
+\begin{definicion} Sean $f$ y $g$ homeomorfismos entre los espacios topológicos $X$ e $Y$. Una \textbf{isotopía} es una homotopía entre $f$ y $g$, $H: X \times [0,1] \rightarrow Y$, con:
+	\begin{enumerate}
+		\item $H_0 = f$.
+		\item $H_1 = g$.
+		\item $\forall t \in [0,1]$, $H_t$ es un homeomorfismo.
+	\end{enumerate}
+\end{definicion}
+
+\begin{definicion} Sean $f$ y $g$ embebimientos entre las variedades $N$ e $M$. Una \textbf{isotopía de embebimientos} es un homeomorfismo $H: M \times [0,1] \rightarrow M \times [0,1]$ cumpliendo:
+	\begin{enumerate}
+		\item $H(y, 0) = (y, 0)$ $\forall y \in M$.
+		\item $H(f(x), 1) = (g(x), 1)$ $\forall x \in N$.
+		\item $H(M \times \{t\}) = M \times \{t\}$ $\forall t \in [0,1]$.
+	\end{enumerate}
+	
+	Equivalentemente podemos decir que $H$ es la isotopía de $Id_M$ en $g \circ f^{-1}$ donde tenga sentido.
+\end{definicion}
+
+
+\endinput
+%------------------------------------------------------------------------------------
+% FIN DEL CAPÍTULO. 
+%------------------------------------------------------------------------------------
