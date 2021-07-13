@@ -1,14 +1,4 @@
 #version 440 core
-layout (location = 0) in vec2 aPos;
-
-out vData {vec3 FragPos; vec3 Normal; float Area; float u; float v;} vertex;
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-uniform float param_t[10];
-uniform int funPlot;
-
 
 float PI = 3.1415926;
 float E = 2.71828182;
@@ -497,22 +487,4 @@ vec3 fAmbasPuPv(float u, float v, float t0) {
 
 float fAmbasK(float u, float v, float t0) {
 	return ( determinant( mat3( fAmbasPuPu(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))) *  determinant( mat3( fAmbasPvPv(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))) -  pow( determinant( mat3( fAmbasPuPv(u, v, t0),  fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0))), 2)) /  pow( pow( length( fAmbasPu(u, v, t0)), 2) *  pow( length( fAmbasPv(u, v, t0)), 2) -  pow( dot( fAmbasPu(u, v, t0),  fAmbasPv(u, v, t0)), 2), 2);
-}
-
-void main() {
-	vec3 aPosSurf, aNormSurf;
-	float aAreaSurf;
-
-	if (funPlot==0) {
-		aPosSurf = fAmbas(aPos.x, aPos.y, param_t[0]);
-		aNormSurf = fAmbasNormal(aPos.x, aPos.y, param_t[0]);
-		aAreaSurf = fAmbasArea(aPos.x, aPos.y, param_t[0]);
-	}
-
-	vertex.FragPos = vec3(vec4(aPosSurf, 1.0));
-	vertex.Normal = aNormSurf;
-	vertex.Area = aAreaSurf;
-	vertex.u = aPos.x;
-	vertex.v = aPos.y;
-	gl_Position = vec4(aPosSurf, 1.0);
 }

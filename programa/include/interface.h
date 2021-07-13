@@ -80,6 +80,8 @@ void visualizeInterface(ProgramStatus &status)
         ImGui::Checkbox("Params", &show_params_window);
         ImGui::Checkbox("Render info", &show_render_info);
 
+        ImGui::SliderFloat("Umbral Area", &(status.umbralArea), 0.0f, 2.0f);
+
         ImGui::Checkbox("Show diff area", &showDiffArea);
         if (showDiffArea != status.showDiffArea) {
             status.showDiffArea = showDiffArea;

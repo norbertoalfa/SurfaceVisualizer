@@ -35,6 +35,7 @@ class ProgramStatus
 		bool autoParams[10];
 		
 		float coeffArea;
+		float umbralArea;
 		bool showDiffArea;
 
 		ProgramStatus(unsigned int width=1280, unsigned int height=720)
@@ -52,6 +53,7 @@ class ProgramStatus
 			lastMouseY = height / 2.0f;
 
 			coeffArea = 20.0f;
+			umbralArea = 0.5f;
 			coeffArea = false;
 
 			activePolMode = false;

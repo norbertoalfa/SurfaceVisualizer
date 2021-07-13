@@ -39,7 +39,7 @@ glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWi
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 
-const int SIZE = 10;
+const int SIZE = 4;
 const int SIZE_POINT = 2;
 float step = 1.0/((float) SIZE);
 
@@ -227,6 +227,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setMat4("projection", projection);
     sh->setMat4("view", view);
     sh->setMat4("model", model);
+    sh->setMat4("tr_inv_model", glm::transpose(glm::inverse(model)));
     
     sh->setBool("showPol", showPol);
     sh->setBool("showNormals", showNormals);
@@ -234,6 +235,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorNormals", glm::vec3(1.0f, 0.3f, 0.3f));
     sh->setFloat("coeffArea", status.coeffArea);
+    sh->setFloat("umbralArea", status.umbralArea);
 
     sh->setVec3("objectColor", object.getColor());
     sh->setVec3("lightColor", light.getColor());

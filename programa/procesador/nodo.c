@@ -249,7 +249,7 @@ void generaFich(){
   	
     sprintf(sent,"#version 440 core\n");
     sprintf(sent,"%slayout (location = 0) in vec2 aPos;\n\n", sent);
-    sprintf(sent,"%sout vData {vec3 FragPos; vec3 Normal; float Area;} vertex;\n\n", sent);
+    sprintf(sent,"%sout vData {vec3 FragPos; vec3 Normal; float Area; float u; float v;} vertex;\n\n", sent);
     sprintf(sent,"%suniform mat4 model;\n", sent);
     sprintf(sent,"%suniform mat4 view;\n", sent);
     sprintf(sent,"%suniform mat4 projection;\n", sent);
@@ -1168,6 +1168,8 @@ void escribeFinPlot(){
     sprintf(sent,"\n\n\tvertex.FragPos = vec3(vec4(aPosSurf, 1.0));"); // model *
     sprintf(sent,"%s\n\tvertex.Normal = aNormSurf;", sent);
     sprintf(sent,"%s\n\tvertex.Area = aAreaSurf;", sent);
+    sprintf(sent,"%s\n\tvertex.u = aPos.x;", sent);
+    sprintf(sent,"%s\n\tvertex.v = aPos.y;", sent);
     sprintf(sent,"%s\n\tgl_Position = vec4(aPosSurf, 1.0);\n}", sent); // projection * view * model *
 
   	fputs(sent,file);
