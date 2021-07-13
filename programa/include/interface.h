@@ -13,7 +13,7 @@ char nameFile[100];
 char text[10000];
 const char* glsl_version = "#version 130";
 bool show_editor_window = false;
-bool show_params_window = false;
+bool show_params_window = true;
 bool show_render_info = true;
 
 ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

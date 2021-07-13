@@ -39,7 +39,7 @@ glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWi
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 
-const int SIZE = 40;
+const int SIZE = 10;
 const int SIZE_POINT = 2;
 float step = 1.0/((float) SIZE);
 
@@ -63,9 +63,9 @@ static void glfw_error_callback(int error, const char* description)
 // ---------------------------------------------------------------------------------------------------------
 void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    /*if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
-    }
+    }*/
         
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     	camera.processKeyboard(FORWARD, deltaTime);
@@ -87,17 +87,20 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
     	status.setSomeChange(true);
     }
     
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS &&
+        glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
     	status.setFirstPress('R', true);
     	status.setSomeChange(true);
     }
     
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
+        glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		status.setFirstPress('P', true);
 		status.setSomeChange(true);
     }
     
-    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS &&
+        glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		status.setFirstPress('N', true);
 		status.setSomeChange(true);
     }
@@ -327,7 +330,7 @@ void initializeBuffers()
 
 void render()
 { 
-	glClearColor(0.9f, 0.9f, 0.9f, 0.7f);
+	glClearColor(1.0f, 1.0f, 1.0f, 0.7f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLineWidth(1.2);
 
