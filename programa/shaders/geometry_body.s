@@ -25,45 +25,6 @@ float tetraVol(vec3 p1, vec3 p2, vec3 p3, vec3 p_medio) {
 }
 
 /*void checkTriangle3(vec2 p1, vec2 p2, vec2 p3){
-    vec2 p_medio = (p1 + p2 + p3)/3.0;
-    float vol = tetraVol(functionParam(p1), functionParam(p2), functionParam(p3), functionParam(p_medio));
-    
-    if (vol > umbralArea) {
-        genTriangle(p1, p2, p_medio);
-        genTriangle(p2, p3, p_medio);
-        genTriangle(p3, p1, p_medio);
-    } else {
-        genTriangle(p1, p2, p3);
-    }
-}
-
-void checkTriangle2(vec2 p1, vec2 p2, vec2 p3){
-    vec2 p_medio = (p1 + p2 + p3)/3.0;
-    float vol = tetraVol(functionParam(p1), functionParam(p2), functionParam(p3), functionParam(p_medio));
-    
-    if (vol > umbralArea) {
-        checkTriangle3(p1, p2, p_medio);
-        checkTriangle3(p2, p3, p_medio);
-        checkTriangle3(p3, p1, p_medio);
-    } else {
-        genTriangle(p1, p2, p3);
-    }
-}
-
-void checkTriangle(vec2 p1, vec2 p2, vec2 p3){
-    vec2 p_medio = (p1 + p2 + p3)/3.0;
-    float vol = tetraVol(functionParam(p1), functionParam(p2), functionParam(p3), functionParam(p_medio));
-    
-    if (vol > umbralArea) {
-        checkTriangle2(p1, p2, p_medio);
-        checkTriangle2(p2, p3, p_medio);
-        checkTriangle2(p3, p1, p_medio);
-    } else {
-        genTriangle(p1, p2, p3);
-    }
-}*/
-
-void checkTriangle3(vec2 p1, vec2 p2, vec2 p3){
     vec2 p_medio12, p_medio23, p_medio31;
     float area12, area23, area31;
 
@@ -113,9 +74,9 @@ void checkTriangle2(vec2 p1, vec2 p2, vec2 p3){
     } else {
         genTriangle(p1, p2, p3);
     }
-}
+}*/
 
-void checkTriangle(vec2 p1, vec2 p2, vec2 p3){
+void checkTriangleOld(vec2 p1, vec2 p2, vec2 p3){
     vec2 p_medio, step;
     vec2 p_medio12, p_medio23, p_medio31;
     float area12, area23, area31;
@@ -158,6 +119,61 @@ void checkTriangle(vec2 p1, vec2 p2, vec2 p3){
         genTriangle(p3, p_medio31, p_medio23);
 
         genTriangle(p_medio12, p_medio23, p_medio31);
+    } else {
+        genTriangle(p1, p2, p3);
+    }
+}
+
+void checkTriangle(vec2 p1, vec2 p2, vec2 p3){
+    vec2 p_medio, step;
+    vec2 p_medio12, p_medio23, p_medio31;
+    float area12, area23, area31;
+    float nPts12, nPts23, nPts31, nPtsInt;
+
+    p_medio = (p1 + p2 + p3)/3.0;
+    p_medio12 = (p1 + p2 + p_medio)/3.0;
+    p_medio23 = (p2 + p3 + p_medio)/3.0;
+    p_medio31 = (p3 + p1 + p_medio)/3.0;
+
+    area12 = triangleArea(functionParam(p1), functionParam(p2), functionParam((p1 + p2)/2.0));
+    area23 = triangleArea(functionParam(p2), functionParam(p3), functionParam((p2 + p3)/2.0));
+    area31 = triangleArea(functionParam(p3), functionParam(p1), functionParam((p3 + p1)/2.0));
+    
+    nPts12 = floor(area12 / umbralArea) + 1;
+    nPts23 = floor(area23 / umbralArea) + 1;
+    nPts31 = floor(area31 / umbralArea) + 1;
+
+    nPtsInt = max(nPts12, max(nPts23, nPts31));
+    
+    if (nPts12 + nPts23 + nPts31 > 3) {
+        vec2 step1 = (p2 - p1) / nPts12;
+        vec2 step2 = (p3 - p2) / nPts23;
+        vec2 step3 = (p1 - p3) / nPts31;
+
+        for (int i = 0; i < nPtsInt; i++) {
+            for (int j = 0; j <= nPts12; j++) {
+                genVertex(((nPtsInt - i - 1) * (p1 + j*step1) + (i+1)*p_medio) / nPtsInt);
+                genVertex(((nPtsInt - i) * (p1 + j*step1) + i*p_medio) / nPtsInt);
+            }
+
+            EndPrimitive();
+
+            for (int j = 0; j <= nPts23; j++) {
+                genVertex(((nPtsInt - i - 1) * (p2 + j*step2) + (i+1)*p_medio) / nPtsInt);
+                genVertex(((nPtsInt - i) * (p2 + j*step2) + i*p_medio) / nPtsInt);
+            }
+
+            EndPrimitive();
+
+            for (int j = 0; j <= nPts31; j++) {
+                genVertex(((nPtsInt - i - 1) * (p3 + j*step3) + (i+1)*p_medio) / nPtsInt);
+                genVertex(((nPtsInt - i) * (p3 + j*step3) + i*p_medio) / nPtsInt);
+            }
+
+            EndPrimitive();
+
+        }
+        
     } else {
         genTriangle(p1, p2, p3);
     }
