@@ -53,7 +53,7 @@ class ProgramStatus
 			lastMouseY = height / 2.0f;
 
 			coeffArea = 20.0f;
-			umbralArea = 0.5f;
+			umbralArea = 0.01f;
 			coeffArea = false;
 
 			activePolMode = false;

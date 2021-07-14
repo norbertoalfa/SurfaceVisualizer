@@ -39,7 +39,7 @@ glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWi
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 
-const int SIZE = 4;
+const int SIZE = 8;
 const int SIZE_POINT = 2;
 float step = 1.0/((float) SIZE);
 
@@ -366,8 +366,8 @@ void render()
         delete shader;
 
 		system(cmd.c_str());
-		shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
-		shaderNormals = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometryNormals.s");
+		shader = new Shader();
+		shaderNormals = new Shader(true);
         
         int n;
 
@@ -423,11 +423,11 @@ int main()
     plainDeclar();
     initializeBuffers();
 
-    shaderNormals = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometryNormals.s");
+    shaderNormals = new Shader(true);
 	shaderNormals -> use();
 	updateUniforms(shaderNormals);
 
-    shader = new Shader("shaders/vertex.s", "shaders/fragment.s", "shaders/geometry.s");
+    shader = new Shader();
     shader -> use();
 	updateUniforms(shader);
     

@@ -5,6 +5,9 @@
 
 
 FILE * file;
+char *sFunParam;
+char *sNormalParam;
+char *sAreaParam;
 int nPlot=0;
 int totalParam=0;
 
@@ -240,24 +243,7 @@ void actualizaNodo(nodo *nodoFun, nodo *expr) {
 }
 
 void generaFich(){
-	char * sent;
-	
-  	sent = (char *) malloc(1000);
-  	sent[0]=0;
-  	
-    file = fopen("../shaders/vertex.s","w");
-  	
-    sprintf(sent,"#version 440 core\n");
-    sprintf(sent,"%slayout (location = 0) in vec2 aPos;\n\n", sent);
-    sprintf(sent,"%sout vData {vec3 FragPos; vec3 Normal; float Area; float u; float v;} vertex;\n\n", sent);
-    sprintf(sent,"%suniform mat4 model;\n", sent);
-    sprintf(sent,"%suniform mat4 view;\n", sent);
-    sprintf(sent,"%suniform mat4 projection;\n", sent);
-    sprintf(sent,"%suniform float param_t[%d];\n", sent, LIMIT_FUN);
-    sprintf(sent,"%suniform int funPlot;\n\n", sent);
-    
-  	fputs(sent,file);
-  	free(sent);	
+    file = fopen("../shaders/functions.s","w");
 }
 
 // Añade las ctes predefinidas
@@ -1063,40 +1049,10 @@ void escribeVal(char *id, nodo *expr){
 void escribeIfPlot(char *sent, entradaTS fun){
 	int i = 2;
 
-	// Para el vértice
     sprintf(sent,"%sif (funPlot==%d) {\n\t\t", sent, nPlot);
-    sprintf(sent,"%saPosSurf = %s(aPos.x, aPos.y", sent, fun.lex);
-    nPlot++;
+    sprintf(sent,"%sreturn %s(p.x, p.y", sent, fun.lex);
     
     while(i<fun.nParam){
-    	sprintf(sent,"%s, param_t[%d]", sent, i-2);
-    	i++;
-    }
-
-	if (fun.nParam > totalParam)
-		totalParam = fun.nParam;
-    
-	sprintf(sent,"%s);\n\t\t", sent);
-
-	// Para la normal
-	i = 2;
-    sprintf(sent,"%saNormSurf = %sNormal(aPos.x, aPos.y", sent, fun.lex);
-
-	while(i<fun.nParam){
-    	sprintf(sent,"%s, param_t[%d]", sent, i-2);
-    	i++;
-    }
-
-	if (fun.nParam > totalParam)
-		totalParam = fun.nParam;
-	
-	sprintf(sent,"%s);\n\t\t", sent);
-
-	// Para el area
-	i = 2;
-    sprintf(sent,"%saAreaSurf = %sArea(aPos.x, aPos.y", sent, fun.lex);
-
-	while(i<fun.nParam){
     	sprintf(sent,"%s, param_t[%d]", sent, i-2);
     	i++;
     }
@@ -1109,76 +1065,114 @@ void escribeIfPlot(char *sent, entradaTS fun){
 }
 
 void escribeIniPlot(char *fun){
-	int indexFun, i;
-	char * sent;
+	int indexFun, indexNormal, indexArea, i;
+	char *sent, *normal, *area;
 	
+	normal = strcat(strdup(fun), "Normal");
+	area = strcat(strdup(fun), "Area");
+
   	sent = (char *) malloc(1000);
   	sent[0]=0;
   	
   	indexFun = TS_BuscarFUN(fun);
+  	indexNormal = TS_BuscarFUN(normal);
+  	indexArea = TS_BuscarFUN(area);
+
   	nPlot = 0;
   	i = 1;
   	
-  	if (indexFun == -1) {
+  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1) {
   		return;
   	}
   	
-    sprintf(sent,"void main() {\n\tvec3 aPosSurf, aNormSurf;\n\t");
-    sprintf(sent,"%sfloat aAreaSurf;\n\n\t", sent);
     escribeIfPlot(sent, TS[indexFun]);
+
+	sFunParam = (char *) malloc(1000);
+  	sFunParam[0]=0;
+	sprintf(sFunParam,"vec3 functionParam(vec2 p) {\n\t%s", sent);
+
+	free(sent);
+	sent = (char *) malloc(1000);
+  	sent[0]=0;
+
+    escribeIfPlot(sent, TS[indexNormal]);
+
+	sNormalParam = (char *) malloc(1000);
+  	sNormalParam[0]=0;
+	sprintf(sNormalParam,"vec3 normalParam(vec2 p) {\n\t%s", sent);
+
+	free(sent);
+	sent = (char *) malloc(1000);
+  	sent[0]=0;
+
+    escribeIfPlot(sent, TS[indexArea]);
+
+	sAreaParam = (char *) malloc(1000);
+  	sAreaParam[0]=0;
+	sprintf(sAreaParam,"float areaParam(vec2 p) {\n\t%s", sent);
     
-  	fputs(sent,file);
+	nPlot++;
+
   	free(sent);
-  	
 }
 
 void escribeContPlot(char *fun){
-	int indexFun, i;
-	char * sent;
+	int indexFun, indexNormal, indexArea, i;
+	char *sent, *normal, *area;
+
+	normal = strcat(strdup(fun), "Normal");
+	area = strcat(strdup(fun), "Area");
 	
   	sent = (char *) malloc(1000);
   	sent[0]=0;
+
   	indexFun = TS_BuscarFUN(fun);
+  	indexNormal = TS_BuscarFUN(normal);
+  	indexArea = TS_BuscarFUN(area);
   	
-  	if (indexFun == -1) {
+  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1) {
   		return;
   	}
   	
   	i = 1;
   	
-    sprintf(sent," else ");
-    escribeIfPlot(sent, TS[indexFun]);
-    
-  	fputs(sent,file);
+    sprintf(sFunParam,"%s else ", sFunParam);
+    escribeIfPlot(sFunParam, TS[indexFun]);
+
+    sprintf(sNormalParam,"%s else ", sNormalParam);
+    escribeIfPlot(sNormalParam, TS[indexNormal]);
+
+    sprintf(sAreaParam,"%s else ", sAreaParam);
+    escribeIfPlot(sAreaParam, TS[indexArea]);
+
+	nPlot++;
+
   	free(sent);
-  	
 }
 
 void escribeFinPlot(){
-	char *sent, *sent_temp;
-	
-  	sent = (char *) malloc(1000);
-  	sent_temp = (char *) malloc(1000);
+	FILE *temp_file = fopen("../temp","w");
+	char *sent;
 
-  	sent[0]=0;
-  	sent_temp[0]=0;
-  	
-    FILE *temp_file = fopen("../temp","w");
-  	
-    sprintf(sent,"\n\n\tvertex.FragPos = vec3(vec4(aPosSurf, 1.0));"); // model *
-    sprintf(sent,"%s\n\tvertex.Normal = aNormSurf;", sent);
-    sprintf(sent,"%s\n\tvertex.Area = aAreaSurf;", sent);
-    sprintf(sent,"%s\n\tvertex.u = aPos.x;", sent);
-    sprintf(sent,"%s\n\tvertex.v = aPos.y;", sent);
-    sprintf(sent,"%s\n\tgl_Position = vec4(aPosSurf, 1.0);\n}", sent); // projection * view * model *
+	sent = (char *) malloc(1000);
+	sent[0]=0;
 
-  	fputs(sent,file);
-  	free(sent);
+	sprintf(sent,"%d\n", nPlot);
+	sprintf(sent,"%s%d", sent, totalParam-2);
 
-	sprintf(sent_temp,"%d\n", nPlot);
-	sprintf(sent_temp,"%s%d", sent_temp, totalParam-2);
+	fputs(sent,temp_file);
+	free(sent);
+	fclose(temp_file);
 
-	fputs(sent_temp,temp_file);
-  	free(sent_temp);
-    fclose(temp_file);
+	sprintf(sFunParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sFunParam);
+	sprintf(sNormalParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sNormalParam);
+	sprintf(sAreaParam,"%s\n\n\treturn 0.0;\n}\n\n", sAreaParam);
+
+	fputs(sFunParam,file);
+	fputs(sNormalParam,file);
+	fputs(sAreaParam,file);
+
+	free(sFunParam);
+	free(sNormalParam);
+	free(sAreaParam);
 }
