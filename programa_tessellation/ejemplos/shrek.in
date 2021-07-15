@@ -1,0 +1,17 @@
+compx(u,v :real) : real = log((1 + (u^2) + 2*u*cos(v)) / (1 + (u^2) - 2*u*cos(v)));
+
+compy(u,v :real, t0, ori :real) : real = t0 + ori*2*atan((2*(u^2) * sin(2*v)) / (u^4 - 1));
+
+compz(u,v :real) : real = log((1 + (u^2) - 2*u*sin(v)) / (1 + (u^2) + 2*u*sin(v)));
+
+f(u,v :real, t0, ori :real) : vec3 = vec3(  compx(u, v), 
+                                            compy(u, v, t0, ori), 
+                                            compz(u, v));
+
+gD(u,v :real, t0 : real) : vec3 = f(0.9999999*u, v*2*PI, t0, 1);
+gU(u,v :real, t0 : real) : vec3 = f(0.99999-0.9999*u, v*2*PI, 2*PI + t0, -1);
+
+gSS(u,v :real, t0 : real) : vec3 = if (v < 0.5) then gU(u,v*2,t0) else gD(u,(v-0.5)*2,t0);
+gSS2(u,v :real, t0 : real) : vec3 = gSS(u,v, 4*PI);
+
+plot gSS, gSS2;
