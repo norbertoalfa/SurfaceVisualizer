@@ -39,7 +39,7 @@ glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWi
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 
-const int SIZE = 20;
+const int SIZE = 4;
 const int SIZE_POINT = 2;
 float step = 1.0/((float) SIZE);
 
@@ -391,7 +391,7 @@ void render()
 
         for (int i = 0; i < status.getTotalFPlot(); i++) {
             shader->setInt("funPlot", i);
-            glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_PATCHES, sizeof(indices), GL_UNSIGNED_INT, 0);
         }
     }
 
@@ -404,7 +404,7 @@ void render()
 
 	for (int i = 0; i < status.getTotalFPlot(); i++) {
 		shader->setInt("funPlot", i);
-		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_PATCHES, sizeof(indices), GL_UNSIGNED_INT, 0);
 	}
 }
 

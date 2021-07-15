@@ -16,6 +16,7 @@ uniform vec3 colorNormals;
 
 void main()
 {
+    //FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     vec3 color = objectColor;
 
     if (showDiffArea) {
