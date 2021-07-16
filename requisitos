@@ -1,0 +1,6 @@
+install gcc
+install bison
+install g++
+install glfw
+install glut
+install glew
