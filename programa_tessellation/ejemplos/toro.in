@@ -11,6 +11,6 @@ compz(u, v : real, t1, t2 : real) : real = t2*sin(v*2*PI);
 
 g(u, v, t0 : real, t1, t2 : real) : vec3 = vec3(compx(u*cos(t0),v, t1, t2), compy(u,v, t1, t2), compz(u,v, t1, t2));
 
-f(u, v, t0 : real, t1, t2 : real) : vec3 = 2*g(u-0.5, v-0.5, t0, t1 + R, t2 + r);
+f(u, v, t0 : real, t1, t2 : real) : vec3 = 2*g((u-0.5), (v-0.5), t0, t1 + R, t2 + r);
 
 plot f;

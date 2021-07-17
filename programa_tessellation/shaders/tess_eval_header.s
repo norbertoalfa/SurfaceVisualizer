@@ -1,8 +1,8 @@
 #version 440
 layout (triangles, equal_spacing, cw) in;
 
-in vData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} control[];
-out fData {vec3 FragPos; vec3 Normal; float Area;} frag;
+in cData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} control[];
+out gData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} geo;
 
 
 uniform mat4 model;

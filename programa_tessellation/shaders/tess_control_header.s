@@ -2,7 +2,7 @@
 layout (vertices = 3) out;
 
 in vData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} vertex[];
-out vData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} control[];
+out cData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} control[];
 
 uniform mat4 model;
 uniform mat4 view;

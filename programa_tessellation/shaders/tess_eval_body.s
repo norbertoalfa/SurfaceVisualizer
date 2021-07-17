@@ -1,11 +1,9 @@
 
 void genVertex(vec2 p) {
-    gl_Position = projection * view * model * vec4(functionParam(p), 1.0);
-    frag.FragPos = functionParam(p);
-    frag.Normal = mat3(tr_inv_model) * normalParam(p);
-    frag.Area = 1.0;
-
-    //EmitVertex( );
+    gl_Position = vec4(functionParam(p), 1.0);
+    geo.FragPos = functionParam(p);
+    geo.Normal = normalParam(p);
+    geo.Area = areaParam(p);
 }
 
 void main() {
