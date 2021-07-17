@@ -7,9 +7,37 @@ A continuación se enuncian los ``hechos'' utilizados para las demostraciones de
 	Todo $W \subset \R^2$ abierto tiene una triangulación clásica tal que el tamaño de los triángulos se aproxima a $0$ en la frontera de $W$.
 \end{hecho}
 
+\begin{proof}
+	Tomamos la cuadrícula generada de forma natural por $\Z^2$ sobre $\R^2$. Vamos a definir de forma incremental el conjunto de cuadrados que cubren todo $W$.\\
+	\\ Tomamos primero todos los cuadrados (cerrados) que estén contenidos estrictamente en $W$. Vamos a llamar $U$ a la parte cubierta por el conjunto de cuadrados actual.\\
+	\\ Dado un $p \in W$ y $p \not \in U$ entonces existe un cuadrado que lo contiene pero que no está contenido estrictamente en $W$. Por ser $W$ abierto sabemos que para $p$ existe una bola abierta $B \subset W$ que lo contiene. De forma equivalente podemos subdividir el cuadrado inicial en $4$ cuadrados iguales, $8$ ... y así sucesivamente hasta encontrar una subdivisión en la que algún cuadrado contenga a $p$ y sea lo suficientemente pequeño como para que esté contenido en la bola $B \subset W$. Añadimos al conjunto todos los cuadrados anteriores que estén contenidos en $W$. Realizamos esta operación de manera indefinida.\\
+	\\ Una vez definido el conjunto de cuadrados, podemos definir la triangulación como los triángulos resultantes de dividir por la diagonal dichos cuadrados. De esta forma tenemos una triangulación $T$ tal que la unión de sus triángulos, $U$, está contenida en $W$ pero todo punto $p \in W$ está en algún triángulo, por lo que $U = W$. Además, cuando tomamos $p$ tendiendo a $\partial W$, la bola $B \subset W$ que lo contiene tiene radio $\epsilon$ tendiendo a $0$, es decir, el cuadrado necesario para cubrirlo correctamente tiende a $0$, y como consecuencia los dos triángulos de los que se compone también.
+\end{proof}
+
 \begin{hecho}
 	Toda variedad diferenciable $S$ tiene una triangulación diferenciable.
 \end{hecho}
+
+\begin{proof}
+	Vamos a contruir una malla de polígonos diferenciables, que nos dará paso de forma trivial a una malla de triángulos diferenciables.\\
+	\\ Podemos tomar $f:S \rightarrow \R$ función de Morse apropiada, es decir, los inversos de compactos son compactos y todos sus puntos críticos están a distintos niveles (es posible porque están aislados). Cortamos $S$ por los niveles de puntos no críticos, para separar los puntos críticos entre sí, obteniendo así una descomposición de $S$ en piezas difeomorfas a:
+	\begin{itemize}
+		\item Discos, tiene un punto crítico de orden $0$ o $2$.
+		\item Anillos, no tiene puntos críticos.
+		\item ``Pantalones'', o de forma equivalente, medio toro al que se le ha quitado un disco en el interior. Tiene un punto crítico de orden $1$.
+		\item ``Pantalones cruzados'', o también se pueden ver como medio toro suma conexa con un espacio proyectivo $\mathbb{RP}^2$. Por ello, se puede dividir en unos ``pantalones'' normales y una cinta de Möbius. Tiene un punto crítico de orden $1$.
+	\end{itemize} 
+	
+	Por la teoría de Morse tenemos una división de $S$ en conjuntos difeomorfos a alguno de los anteriores, todos ellos pegados por circunferencias (los bordes de los conjuntos descritos). Podemos obtener una malla añadiendo un vértice a cada circunferencia y seguidamente si es:
+	\begin{itemize}
+		\item Un disco, se toma el centro y se divide el disco en $3$ partes, teniendo $3$ sectores difeomorfos a un triángulo.
+		\item Un anillo, se unen los $2$ vértices (uno de cada circunferencia del borde) mediante un arco, obteniendo así un cuadrilátero.
+		\item Unos ``pantalones'', se unen los $3$ vértices mediante $2$ arcos (un vértice común a los $2$ arcos), dando lugar a un heptágono.
+		\item Una cinta de Möbius, se une el vértice con él mismo mediante un arco, el cual recorre la mitad de la cara de la cinta, obteniendo así un triángulo.
+	\end{itemize} 
+	
+	Finalmente tenemos la malla de polígonos diferenciables, la cual podemos convertir en una triangulación diferenciable dividiendo de forma adecuada los polígonos.
+\end{proof}
 
 \begin{hecho}
 	Para toda estructura diferenciable $E$ del toro punteado $T'_E$ existe un subconjunto compacto suyo cuyo complemento es difeomorfo a $S^1 \times \R$ con la estructura diferenciable usual.
