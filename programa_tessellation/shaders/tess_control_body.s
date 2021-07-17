@@ -31,11 +31,6 @@ void main(void) {
     nPts31 = floor(area31 / umbralArea) + 1;
 
     nPtsInt = floor((nPts12 + nPts23 + nPts31) / 3.0);
-    //nPtsInt = floor(vol / umbralVol) + 1;
-
-    //nPtsInt = min(nPts12, max(nPts23, min(nPts31, nPtsInt)));
-
-    //nPtsInt = floor((nPts12 + nPts23 + nPts31)  / 2.0);
 
     if (gl_InvocationID == 0) {
         gl_TessLevelInner[0] = nPtsInt;
@@ -46,6 +41,6 @@ void main(void) {
 
     gl_out[gl_InvocationID].gl_Position = vec4(vertex[gl_InvocationID].Coord, 0.0, 0.0); //gl_in[gl_InvocationID].gl_Position;
 
-    control[gl_InvocationID].FragPos = vertex[gl_InvocationID].FragPos;
-    control[gl_InvocationID].Normal = vertex[gl_InvocationID].Normal;
+    //control[gl_InvocationID].FragPos = vertex[gl_InvocationID].FragPos;
+    //control[gl_InvocationID].Normal = vertex[gl_InvocationID].Normal;
 }

@@ -1,5 +1,5 @@
 #version 440 core
-in fData {vec3 FragPos; vec3 Normal; float Area;} frag;
+in fData {vec3 FragPos; vec3 Normal; float Area; float K;} frag;
 
 out vec4 FragColor;
   
@@ -8,9 +8,11 @@ uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform float coeffArea;
+uniform float coeffK;
 uniform bool showPol;
 uniform bool showNormals;
 uniform bool showDiffArea;
+uniform bool showK;
 uniform vec3 colorPol;
 uniform vec3 colorNormals;
 
@@ -21,6 +23,8 @@ void main()
 
     if (showDiffArea) {
         color = vec3(1.0 - frag.Area/coeffArea, 0.0, frag.Area/coeffArea);
+    }else if (showK) {
+        color = vec3(0.5 - frag.K/coeffK, 0.0, 0.5 + frag.K/coeffK);
     } else if (showPol) {
         color = colorPol;
     }
@@ -29,8 +33,6 @@ void main()
         FragColor = vec4(color, 0.0);
     } else if (showNormals) {
         FragColor = vec4(colorNormals, 0.0);
-    } else if (showDiffArea) {
-        FragColor = vec4(color, 0.0);
     } else {
         // ambient
         float ambientStrength = 0.4;

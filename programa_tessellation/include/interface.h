@@ -15,6 +15,7 @@ const char* glsl_version = "#version 130";
 bool show_editor_window = false;
 bool show_params_window = true;
 bool show_render_info = true;
+bool firstEditor = true;
 
 ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -41,6 +42,7 @@ void visualizeInterface(ProgramStatus &status)
     bool polMode = status.getActivePolMode();
     bool showNormals = status.getShowNormals();
     bool showDiffArea = status.showDiffArea;
+    bool showK = status.showK;
 
     strcpy(nameFile, status.getParamFile().c_str());
 
@@ -58,6 +60,11 @@ void visualizeInterface(ProgramStatus &status)
 
         if(ImGui::InputText("", nameFile, sizeof(nameFile), ImGuiInputTextFlags_EnterReturnsTrue)) {
             status.setParamFile(nameFile);
+            status.setLoadShader(true);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Compile")){
+            status.saveText();
             status.setLoadShader(true);
         }
 
@@ -89,6 +96,13 @@ void visualizeInterface(ProgramStatus &status)
         ImGui::SameLine();
         ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
 
+        ImGui::Checkbox("Show K", &showK);
+        if (showK != status.showK) {
+            status.showK = showK;
+        }
+        ImGui::SameLine();
+        ImGui::SliderFloat("Coeff K", &(status.coeffK), 0.2f, 5.0f);
+
         /*ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
         ImGui::SameLine();
@@ -105,13 +119,15 @@ void visualizeInterface(ProgramStatus &status)
         ImGui::PushID(0);
         if(ImGui::InputText("", nameFile, sizeof(nameFile), ImGuiInputTextFlags_EnterReturnsTrue)) {
             status.setParamFile(nameFile);
-            status.setLoadShader(true);
+            status.loadText();
+            strcpy(text, status.getFileText().c_str());
         }
         ImGui::PopID();
         
-        if (ImGui::Button("Load")){
+        if (ImGui::Button("Load") || firstEditor){
             status.loadText();
             strcpy(text, status.getFileText().c_str());
+            firstEditor = false;
         }
 
         ImGui::SameLine();
@@ -119,7 +135,6 @@ void visualizeInterface(ProgramStatus &status)
         if (ImGui::Button("Save")){
             status.setFileText(std::string(text));
             status.saveText();
-            status.setLoadShader(true);
         }
 
         ImGui::PushID(1);

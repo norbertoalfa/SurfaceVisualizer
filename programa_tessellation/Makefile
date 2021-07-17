@@ -36,7 +36,7 @@ $(TARGET_EXEC): bin/$(TARGET_EXEC)
 
 bin/$(TARGET_EXEC): $(OBJS)
 	echo $(SRCS)
-	g++ $(OBJS) -o $@ -W -Wall -Werror -lGLEW -lglut -lglfw -lGL -ldl -I./include
+	g++ $(OBJS) -o $@ -W -Wall -Werror -lglfw -lGL -ldl -I./include
 
 # Build step for C source
 $(BUILD_DIR)/%.c.o: src/%.c
@@ -48,8 +48,8 @@ $(BUILD_DIR)/%.cpp.o: src/%.cpp
 	#mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@ -I./include
 
-shader: parametrizacion.in
-	cd ./procesador/ && $(MAKE)
+shader: variedades/lastParam.in
+	cd ./procesador/ && $(MAKE) all
 	cd ..
 
 clean:

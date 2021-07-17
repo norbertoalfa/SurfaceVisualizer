@@ -1,8 +1,10 @@
 .SUFFIXES:
 
-FILE?=../parametrizacion.in
+FILE?=../lastParam.in
 
 all: analizador
+
+read: $(FILE) analizador
 	./analizador < '$(FILE)'
 
 analizador: y.tab.o semantico.o nodo.o elementos_predef.o

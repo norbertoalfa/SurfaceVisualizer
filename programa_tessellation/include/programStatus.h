@@ -10,7 +10,7 @@ class ProgramStatus
 		unsigned int SCR_WIDTH;
 		unsigned int SCR_HEIGHT;
 
-		std::string paramFile, fileText;
+		std::string paramFile, dirPath, fileText;
 
 		int totalFPlot;
 		int totalParam;
@@ -35,16 +35,23 @@ class ProgramStatus
 		bool autoParams[10];
 		
 		float coeffArea;
+		float coeffK;
 		float umbralArea;
 		bool showDiffArea;
+		bool showK;
 
 		ProgramStatus(unsigned int width=1280, unsigned int height=720)
 		{
 			SCR_WIDTH = width;
 			SCR_HEIGHT = height;
 
-			paramFile = "parametrizacion.in";
-			loadText();
+			dirPath = "variedades";
+			paramFile = "lastParam.in";
+
+			if (loadText() == -1) {
+				paramFile = "toro.in";
+				loadText();
+			}
 
 			totalFPlot = 1;
 			totalParam = 0;
@@ -54,10 +61,12 @@ class ProgramStatus
 
 			coeffArea = 20.0f;
 			umbralArea = 0.01f;
-			coeffArea = false;
+			coeffK = 1.0;
 
 			activePolMode = false;
 			showNormals = false;
+			showDiffArea = false;
+			showK = false;
 			autoRotation = false;
 			perDisplace = false;
 			perRotate = false;
@@ -164,7 +173,7 @@ class ProgramStatus
 			std::ifstream inFile;
 			std::string data;
 
-			inFile.open(paramFile);
+			inFile.open(dirPath + "/" + paramFile);
 
 			if (!inFile) {
 				std::cerr << "No se ha podido abrir el archivo de parametrización para leer." << std::endl;

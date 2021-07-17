@@ -6,7 +6,7 @@ g(u, v : real) : vec3 = 2*vec3(cos(v*PI2)*cos(u*2*PI2), cos(v*PI2)*sin(u*2*PI2),
 
 h(u, v :real) : vec3 = 2*vec3(u, v, cos(10*u) + cos(10*v));
 
-f(u,v :real) : vec3 = g((u-0.5)/1, v-0.5);
+f(u,v :real) : vec3 = g(u-0.5, v-0.5);
 
 //f(u,v, t0, t1 :real) : vec3 = if t0<0.5 then g(u-t0, v-t1) else g(u-0.5, v-0.5);
 
@@ -14,6 +14,4 @@ f(u,v :real) : vec3 = g((u-0.5)/1, v-0.5);
 
 f2(u,v : real) : vec3 = if u<0.51 then f(2*u,v) else h(2*u,v);
 
-//f(u,v :real) : vec3 = 10*vec3(u, (u+v-1.0)^2, v);
-
-plot f;//f2;
+plot f2;//f2;

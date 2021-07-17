@@ -2,17 +2,14 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-in gData {vec3 FragPos; vec3 Normal; float Area; vec2 Coord;} geo[];
+in gData {vec3 FragPos; vec3 Normal; float Area; float K;} geo[];
 
-out fData {vec3 FragPos; vec3 Normal; float Area;} frag;
+out fData {vec3 FragPos; vec3 Normal; float Area; float K;} frag;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 tr_inv_model;
-
-uniform float param_t[10];
-uniform int funPlot;
 
 void main() {
 
@@ -21,6 +18,7 @@ void main() {
         frag.FragPos = geo[i].FragPos;
         frag.Normal = mat3(tr_inv_model) * geo[i].Normal;
         frag.Area = geo[i].Area;
+        frag.K = geo[i].K;
         EmitVertex( );
     }
 

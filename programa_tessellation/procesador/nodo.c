@@ -8,6 +8,7 @@ FILE * file;
 char *sFunParam;
 char *sNormalParam;
 char *sAreaParam;
+char *sKParam;
 int nPlot=0;
 int totalParam=0;
 
@@ -1065,11 +1066,12 @@ void escribeIfPlot(char *sent, entradaTS fun){
 }
 
 void escribeIniPlot(char *fun){
-	int indexFun, indexNormal, indexArea, i;
-	char *sent, *normal, *area;
+	int indexFun, indexNormal, indexArea, indexK, i;
+	char *sent, *normal, *area, *curvature;
 	
 	normal = strcat(strdup(fun), "Normal");
 	area = strcat(strdup(fun), "Area");
+	curvature = strcat(strdup(fun), "K");
 
   	sent = (char *) malloc(1000);
   	sent[0]=0;
@@ -1077,11 +1079,12 @@ void escribeIniPlot(char *fun){
   	indexFun = TS_BuscarFUN(fun);
   	indexNormal = TS_BuscarFUN(normal);
   	indexArea = TS_BuscarFUN(area);
+  	indexK = TS_BuscarFUN(curvature);
 
   	nPlot = 0;
   	i = 1;
   	
-  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1) {
+  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1 || indexK == -1) {
   		return;
   	}
   	
@@ -1110,6 +1113,16 @@ void escribeIniPlot(char *fun){
 	sAreaParam = (char *) malloc(1000);
   	sAreaParam[0]=0;
 	sprintf(sAreaParam,"float areaParam(vec2 p) {\n\t%s", sent);
+
+	free(sent);
+	sent = (char *) malloc(1000);
+  	sent[0]=0;
+
+    escribeIfPlot(sent, TS[indexK]);
+
+	sKParam = (char *) malloc(1000);
+  	sKParam[0]=0;
+	sprintf(sKParam,"float curvatureParam(vec2 p) {\n\t%s", sent);
     
 	nPlot++;
 
@@ -1117,11 +1130,12 @@ void escribeIniPlot(char *fun){
 }
 
 void escribeContPlot(char *fun){
-	int indexFun, indexNormal, indexArea, i;
-	char *sent, *normal, *area;
+	int indexFun, indexNormal, indexArea, indexK, i;
+	char *sent, *normal, *area, *curvature;
 
 	normal = strcat(strdup(fun), "Normal");
 	area = strcat(strdup(fun), "Area");
+	curvature = strcat(strdup(fun), "K");
 	
   	sent = (char *) malloc(1000);
   	sent[0]=0;
@@ -1129,8 +1143,9 @@ void escribeContPlot(char *fun){
   	indexFun = TS_BuscarFUN(fun);
   	indexNormal = TS_BuscarFUN(normal);
   	indexArea = TS_BuscarFUN(area);
+  	indexK = TS_BuscarFUN(curvature);
   	
-  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1) {
+  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1 || indexK == -1) {
   		return;
   	}
   	
@@ -1144,6 +1159,9 @@ void escribeContPlot(char *fun){
 
     sprintf(sAreaParam,"%s else ", sAreaParam);
     escribeIfPlot(sAreaParam, TS[indexArea]);
+
+    sprintf(sKParam,"%s else ", sKParam);
+    escribeIfPlot(sKParam, TS[indexK]);
 
 	nPlot++;
 
@@ -1167,12 +1185,15 @@ void escribeFinPlot(){
 	sprintf(sFunParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sFunParam);
 	sprintf(sNormalParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sNormalParam);
 	sprintf(sAreaParam,"%s\n\n\treturn 0.0;\n}\n\n", sAreaParam);
+	sprintf(sKParam,"%s\n\n\treturn 0.0;\n}\n\n", sKParam);
 
 	fputs(sFunParam,file);
 	fputs(sNormalParam,file);
 	fputs(sAreaParam,file);
+	fputs(sKParam,file);
 
 	free(sFunParam);
 	free(sNormalParam);
 	free(sAreaParam);
+	free(sKParam);
 }

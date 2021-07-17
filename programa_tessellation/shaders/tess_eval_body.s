@@ -4,6 +4,7 @@ void genVertex(vec2 p) {
     geo.FragPos = functionParam(p);
     geo.Normal = normalParam(p);
     geo.Area = areaParam(p);
+    geo.K = curvatureParam(p);
 }
 
 void main() {

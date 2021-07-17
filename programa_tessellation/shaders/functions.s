@@ -133,15 +133,15 @@ float hK(float u, float v) {
 }
 
 vec3 f(float u, float v) {
-	return  g((u - 0.5) / 1, v - 0.5);
+	return  g(u - 0.5, v - 0.5);
 }
 
 vec3 fPu(float u, float v) {
-	return  gPu((u - 0.5), v - 0.5);
+	return  gPu(u - 0.5, v - 0.5);
 }
 
 vec3 fPv(float u, float v) {
-	return  gPv((u - 0.5), v - 0.5);
+	return  gPv(u - 0.5, v - 0.5);
 }
 
 vec3 fNormal(float u, float v) {
@@ -153,7 +153,7 @@ float fArea(float u, float v) {
 }
 
 vec3 fPuPu(float u, float v) {
-	return  gPuPu((u - 0.5), v - 0.5);
+	return  gPuPu(u - 0.5, v - 0.5);
 }
 
 vec3 gPvPu(float u, float v) {
@@ -161,11 +161,11 @@ vec3 gPvPu(float u, float v) {
 }
 
 vec3 fPvPv(float u, float v) {
-	return  gPvPv((u - 0.5), v - 0.5);
+	return  gPvPv(u - 0.5, v - 0.5);
 }
 
 vec3 fPuPv(float u, float v) {
-	return  gPuPv((u - 0.5), v - 0.5);
+	return  gPuPv(u - 0.5, v - 0.5);
 }
 
 float fK(float u, float v) {
@@ -201,7 +201,7 @@ vec3 hPvPu(float u, float v) {
 }
 
 vec3 fPvPu(float u, float v) {
-	return  gPvPu((u - 0.5), v - 0.5);
+	return  gPvPu(u - 0.5, v - 0.5);
 }
 
 vec3 f2PvPv(float u, float v) {
@@ -218,7 +218,7 @@ float f2K(float u, float v) {
 
 vec3 functionParam(vec2 p) {
 	if (funPlot==0) {
-		return f(p.x, p.y);
+		return f2(p.x, p.y);
 	}
 
 	return vec3(0.0, 0.0, 0.0);
@@ -226,7 +226,7 @@ vec3 functionParam(vec2 p) {
 
 vec3 normalParam(vec2 p) {
 	if (funPlot==0) {
-		return fNormal(p.x, p.y);
+		return f2Normal(p.x, p.y);
 	}
 
 	return vec3(0.0, 0.0, 0.0);
@@ -234,7 +234,15 @@ vec3 normalParam(vec2 p) {
 
 float areaParam(vec2 p) {
 	if (funPlot==0) {
-		return fArea(p.x, p.y);
+		return f2Area(p.x, p.y);
+	}
+
+	return 0.0;
+}
+
+float curvatureParam(vec2 p) {
+	if (funPlot==0) {
+		return f2K(p.x, p.y);
 	}
 
 	return 0.0;

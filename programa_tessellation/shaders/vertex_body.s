@@ -7,9 +7,9 @@ void main() {
 	aNormSurf = normalParam(aPos);
 	aAreaSurf = areaParam(aPos);
 
-	vertex.FragPos = vec3(vec4(aPosSurf, 1.0));
-	vertex.Normal = aNormSurf;
-	vertex.Area = aAreaSurf;
+	//vertex.FragPos = vec3(vec4(aPosSurf, 1.0));
+	//vertex.Normal = aNormSurf;
+	//vertex.Area = aAreaSurf;
 	vertex.Coord = aPos;
 	gl_Position = vec4(aPosSurf, 1.0);
 }

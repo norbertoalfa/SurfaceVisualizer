@@ -6,8 +6,6 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -105,6 +103,12 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
 		status.setSomeChange(true);
     }
     
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS &&
+        glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+    	status.setLoadShader(true);
+    	status.setSomeChange(true);
+    }
+    
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE) {
     	if (status.getFirstPress('R')) {
     		status.switchAutoRot();
@@ -126,11 +130,6 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
     		status.setFirstPress('N', false);
     		status.setSomeChange(true);
     	}
-    }
-    
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-    	status.setLoadShader(true);
-    	status.setSomeChange(true);
     }
 }
 
@@ -232,9 +231,11 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setBool("showPol", showPol);
     sh->setBool("showNormals", showNormals);
     sh->setBool("showDiffArea", status.showDiffArea);
+    sh->setBool("showK", status.showK);
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorNormals", glm::vec3(1.0f, 0.3f, 0.3f));
     sh->setFloat("coeffArea", status.coeffArea);
+    sh->setFloat("coeffK", status.coeffK);
     sh->setFloat("umbralArea", status.umbralArea);
 
     sh->setVec3("objectColor", object.getColor());
@@ -360,7 +361,7 @@ void render()
     }
 	
 	if (status.getLoadShader()) {
-        std::string cmd = "cd procesador && make FILE=../'" + status.getParamFile() + "'";
+        std::string cmd = "cd procesador && make read FILE=../'" + status.getParamFile() + "'";
 
 		delete shaderNormals;
         delete shader;
