@@ -21,12 +21,14 @@ public:
     {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
-        std::string fragmentCode;
         std::string tessCCode, tessVCode;
+        std::string geometryCode;
+        std::string fragmentCode;
         std::ifstream functionsFile;
         std::ifstream vHeaderFile, vBodyFile;
         std::ifstream tcHeaderFile, tcBodyFile;
         std::ifstream tvHeaderFile, tvBodyFile;
+        std::ifstream gShaderFile;
         std::ifstream fShaderFile;
 
         // ensure ifstream objects can throw exceptions:
@@ -37,6 +39,7 @@ public:
         tcBodyFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         tvHeaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         tvBodyFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+        gShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         try 
         {
@@ -44,6 +47,7 @@ public:
             std::stringstream vHeaderStream, vBodyStream;
             std::stringstream tcHeaderStream, tcBodyStream;
             std::stringstream tvHeaderStream, tvBodyStream;
+            std::stringstream gShaderStream;
             std::stringstream fShaderStream;
 
             // open files
@@ -51,15 +55,16 @@ public:
             vHeaderFile.open("shaders/vertex_header.s");
             vBodyFile.open("shaders/vertex_body.s");
 
-            /*if (normalMode) {
-                tcShaderFile.open("shaders/geometryN_header.s");
-                tvShaderFile.open("shaders/geometryN_body.s");
-            } else {*/
-                tcHeaderFile.open("shaders/tess_control_header.s");
-                tcBodyFile.open("shaders/tess_control_body.s");
-                tvHeaderFile.open("shaders/tess_eval_header.s");
-                tvBodyFile.open("shaders/tess_eval_body.s");
-            //}
+            tcHeaderFile.open("shaders/tess_control_header.s");
+            tcBodyFile.open("shaders/tess_control_body.s");
+            tvHeaderFile.open("shaders/tess_eval_header.s");
+            tvBodyFile.open("shaders/tess_eval_body.s");
+
+            if (normalMode) {
+                gShaderFile.open("shaders/geometryN.s");
+            } else {
+                gShaderFile.open("shaders/geometry.s");
+            }
 
             fShaderFile.open("shaders/fragment.s");
 
@@ -74,6 +79,8 @@ public:
             tvHeaderStream << tvHeaderFile.rdbuf();
             tvBodyStream << tvBodyFile.rdbuf();
 
+            gShaderStream << gShaderFile.rdbuf();
+
             fShaderStream << fShaderFile.rdbuf();	
 
             // close file handlers
@@ -84,12 +91,14 @@ public:
             tcBodyFile.close();
             tvHeaderFile.close();
             tvBodyFile.close();
+            gShaderFile.close();
             fShaderFile.close();
 
             // convert stream into string
             vertexCode = vHeaderStream.str() + functionsStream.str() + vBodyStream.str();
             tessCCode = tcHeaderStream.str() + functionsStream.str() + tcBodyStream.str();
             tessVCode = tvHeaderStream.str() + functionsStream.str() + tvBodyStream.str();
+            geometryCode = gShaderStream.str();
             fragmentCode = fShaderStream.str();
         }
         catch (std::ifstream::failure& e)
@@ -99,10 +108,11 @@ public:
         const char * vShaderCode = vertexCode.c_str();
         const char * tcShaderCode = tessCCode.c_str();
         const char * tvShaderCode = tessVCode.c_str();
+        const char * gShaderCode = geometryCode.c_str();
         const char * fShaderCode = fragmentCode.c_str();
 
         // 2. compile shaders
-        unsigned int vertex, tess_control, tess_evaluation, fragment;
+        unsigned int vertex, tess_control, tess_evaluation, geometry, fragment;
         // vertex shader
         vertex = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertex, 1, &vShaderCode, NULL);
@@ -121,6 +131,12 @@ public:
         glCompileShader(tess_evaluation);
         checkCompileErrors(tess_evaluation, "TESSELLATION EVAL");
 
+        // geometry Shader
+        geometry = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(geometry, 1, &gShaderCode, NULL);
+        glCompileShader(geometry);
+        checkCompileErrors(geometry, "GEOMETRY");
+
         // fragment Shader
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragment, 1, &fShaderCode, NULL);
@@ -133,15 +149,17 @@ public:
         glAttachShader(ID, vertex);
         glAttachShader(ID, tess_control);
         glAttachShader(ID, tess_evaluation);
+        glAttachShader(ID, geometry);
         glAttachShader(ID, fragment);
         glLinkProgram(ID);
         checkCompileErrors(ID, "PROGRAM");
 
         // delete the shaders as they're linked into our program now and no longer necessery
         glDeleteShader(vertex);
-        glDeleteShader(fragment);
         glDeleteShader(tess_control);
         glDeleteShader(tess_evaluation);
+        glDeleteShader(geometry);
+        glDeleteShader(fragment);
     }
     
     // activate the shader
