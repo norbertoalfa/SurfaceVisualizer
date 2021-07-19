@@ -39,8 +39,5 @@ void main(void) {
         gl_TessLevelOuter[2] = nPts12;
     }
 
-    gl_out[gl_InvocationID].gl_Position = vec4(vertex[gl_InvocationID].Coord, 0.0, 0.0); //gl_in[gl_InvocationID].gl_Position;
-
-    //control[gl_InvocationID].FragPos = vertex[gl_InvocationID].FragPos;
-    //control[gl_InvocationID].Normal = vertex[gl_InvocationID].Normal;
+    gl_out[gl_InvocationID].gl_Position = vec4(vertex[gl_InvocationID].Coord, 0.0, 0.0);
 }

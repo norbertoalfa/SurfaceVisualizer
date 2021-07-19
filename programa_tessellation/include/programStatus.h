@@ -156,6 +156,8 @@ class ProgramStatus
 		
 		std::string getParamFile() { return paramFile; }
 		
+		std::string getParamPath() { return dirPath; }
+		
 		std::string getFileText() { return fileText; }
 
 		int getTotalFPlot() { return totalFPlot; }
@@ -195,7 +197,7 @@ class ProgramStatus
 		int saveText(){
 			std::ofstream offFile;
 
-			offFile.open(paramFile);
+			offFile.open(dirPath + "/" + paramFile);
 
 			if (!offFile) {
 				std::cerr << "No se ha podido abrir el archivo de parametrización para escribir." << std::endl;
