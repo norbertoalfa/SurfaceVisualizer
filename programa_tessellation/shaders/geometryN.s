@@ -27,7 +27,8 @@ void main() {
         frag.Area = geo[i].Area;
         frag.K = geo[i].K;
         EmitVertex( );
+        
+        EndPrimitive( );
     }
 
-    EndPrimitive( );
-}
+}   

@@ -35,24 +35,25 @@ void main()
         FragColor = vec4(colorNormals, 0.0);
     } else {
         // ambient
-        float ambientStrength = 0.4;
+        float ambientStrength = 0.2;
         vec3 ambient = ambientStrength * lightColor;
         
         // diffuse 
+        float diffStrength = 0.7;
         vec3 norm = normalize(frag.Normal);
         float distance = length(lightPos - frag.FragPos);
         vec3 lightDir = normalize(lightPos - frag.FragPos);
         float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
+        vec3 diffuse = diffStrength * diff * lightColor;
         
         // specular
         float specularStrength = 0.5;
         vec3 viewDir = normalize(viewPos - frag.FragPos);
         vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 4);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8);
         vec3 specular = specularStrength * spec * lightColor;  
             
-        vec3 result = (ambient + diffuse + specular) * color;
+        vec3 result = (ambient + diffuse) * color + specular;
         FragColor = vec4(result, 0.0);
     }
 } 

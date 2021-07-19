@@ -180,18 +180,5 @@ void checkTriangle(vec2 p1, vec2 p2, vec2 p3){
 }
 
 void main() {
-
-    checkTriangle(vertices[0].Coord, vertices[1].Coord, vertices[2].Coord);
-
-    /*for( int i=0; i<gl_in.length( ); i++ )
-    {
-        gl_Position = projection * view * model * gl_in[i].gl_Position;
-        frag.FragPos = vertices[i].FragPos;
-        frag.Normal = mat3(tr_inv_model) * vertices[i].Normal;
-        frag.Area = vertices[i].Area;
-        EmitVertex( );
-    }
-
-    EndPrimitive( );*/
-    
+    checkTriangle(vertices[0].Coord, vertices[1].Coord, vertices[2].Coord);    
 }
