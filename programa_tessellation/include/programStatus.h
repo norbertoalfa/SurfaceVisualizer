@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <glm/glm.hpp>
 
 class ProgramStatus
 {
@@ -33,12 +34,24 @@ class ProgramStatus
 	public:
 		float params[10];
 		bool autoParams[10];
+
+		bool changeWinTitle;
+
+		bool showDiffArea;
+		bool showK;
+
+		float umbralArea;
 		
 		float coeffArea;
 		float coeffK;
-		float umbralArea;
-		bool showDiffArea;
-		bool showK;
+
+		float ambientStrength;
+		float diffStrength;
+		float specularStrength;
+		float phongExp;
+
+		glm::vec3 fontColor;
+
 
 		ProgramStatus(unsigned int width=1280, unsigned int height=720)
 		{
@@ -47,36 +60,45 @@ class ProgramStatus
 
 			dirPath = "variedades";
 			paramFile = "lastParam.in";
+			changeWinTitle = true;
 
 			if (loadText() == -1) {
 				paramFile = "toro.in";
 				loadText();
 			}
 
-			totalFPlot = 1;
-			totalParam = 0;
-
 			lastMouseX = width / 2.0f;
 			lastMouseY = height / 2.0f;
-
-			coeffArea = 20.0f;
-			umbralArea = 0.01f;
-			coeffK = 1.0;
-
-			activePolMode = false;
-			showNormals = false;
-			showDiffArea = false;
-			showK = false;
-			autoRotation = false;
-			perDisplace = false;
-			perRotate = false;
-			loadShader = true;
 
 			firstMouseDetected = true;
 			
 			for (int i = 0; i < 91; i++) {
 				firstTimePress[i] = false;
 			}
+
+			activePolMode = false;
+			autoRotation = false;
+			perDisplace = false;
+			perRotate = false;
+			loadShader = true;
+
+			totalFPlot = 1;
+			totalParam = 0;
+
+			showNormals = false;
+			showDiffArea = false;
+			showK = false;
+
+			coeffArea = 20.0f;
+			umbralArea = 0.01f;
+			coeffK = 1.0;
+
+			ambientStrength = 0.2;
+			diffStrength = 0.5;
+			specularStrength = 0.3;
+			phongExp = 8.0;
+
+			fontColor = glm::vec3(1.0f, 1.0f, 1.0f);
 			
 			someChange = true;
 		}
@@ -99,7 +121,7 @@ class ProgramStatus
 		
 		void setHeight(unsigned int height) { SCR_HEIGHT = height; someChange = true; }
 		
-		void setParamFile(std::string file) { paramFile = file; someChange = true; }
+		void setParamFile(std::string file) { paramFile = file; changeWinTitle = true; someChange = true; }
 
 		void setFileText(std::string text) { fileText = text; }
 		

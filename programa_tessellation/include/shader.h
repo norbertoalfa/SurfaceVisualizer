@@ -25,7 +25,7 @@ public:
         std::string geometryCode;
         std::string fragmentCode;
         std::ifstream functionsFile;
-        std::ifstream vHeaderFile, vBodyFile;
+        std::ifstream vShaderFile;
         std::ifstream tcHeaderFile, tcBodyFile;
         std::ifstream tvHeaderFile, tvBodyFile;
         std::ifstream gShaderFile;
@@ -33,8 +33,7 @@ public:
 
         // ensure ifstream objects can throw exceptions:
         functionsFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-        vHeaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-        vBodyFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+        vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         tcHeaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         tcBodyFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
         tvHeaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
@@ -44,7 +43,7 @@ public:
         try 
         {
             std::stringstream functionsStream;
-            std::stringstream vHeaderStream, vBodyStream;
+            std::stringstream vShaderStream;
             std::stringstream tcHeaderStream, tcBodyStream;
             std::stringstream tvHeaderStream, tvBodyStream;
             std::stringstream gShaderStream;
@@ -52,8 +51,7 @@ public:
 
             // open files
             functionsFile.open("shaders/functions.s");
-            vHeaderFile.open("shaders/vertex_header.s");
-            vBodyFile.open("shaders/vertex_body.s");
+            vShaderFile.open("shaders/vertex.s");
 
             tcHeaderFile.open("shaders/tess_control_header.s");
             tcBodyFile.open("shaders/tess_control_body.s");
@@ -71,8 +69,7 @@ public:
             // read file's buffer contents into streams
             functionsStream << functionsFile.rdbuf();
 
-            vHeaderStream << vHeaderFile.rdbuf();
-            vBodyStream << vBodyFile.rdbuf();
+            vShaderStream << vShaderFile.rdbuf();
 
             tcHeaderStream << tcHeaderFile.rdbuf();
             tcBodyStream << tcBodyFile.rdbuf();
@@ -85,8 +82,7 @@ public:
 
             // close file handlers
             functionsFile.close();
-            vHeaderFile.close();
-            vBodyFile.close();
+            vShaderFile.close();
             tcHeaderFile.close();
             tcBodyFile.close();
             tvHeaderFile.close();
@@ -95,7 +91,7 @@ public:
             fShaderFile.close();
 
             // convert stream into string
-            vertexCode = vHeaderStream.str() + functionsStream.str() + vBodyStream.str();
+            vertexCode = vShaderStream.str();
             tessCCode = tcHeaderStream.str() + functionsStream.str() + tcBodyStream.str();
             tessVCode = tvHeaderStream.str() + functionsStream.str() + tvBodyStream.str();
             geometryCode = gShaderStream.str();

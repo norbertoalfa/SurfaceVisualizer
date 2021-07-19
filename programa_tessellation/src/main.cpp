@@ -234,14 +234,20 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setBool("showK", status.showK);
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorNormals", glm::vec3(1.0f, 0.3f, 0.3f));
-    sh->setFloat("coeffArea", status.coeffArea);
-    sh->setFloat("coeffK", status.coeffK);
-    sh->setFloat("umbralArea", status.umbralArea);
 
     sh->setVec3("objectColor", object.getColor());
     sh->setVec3("lightColor", light.getColor());
     sh->setVec3("lightPos", light.getPos());
     sh->setVec3("viewPos", camera.cameraLocation);
+
+    sh->setFloat("umbralArea", status.umbralArea);
+    sh->setFloat("coeffArea", status.coeffArea);
+    sh->setFloat("coeffK", status.coeffK);
+    
+    sh->setFloat("ambientStrength", status.ambientStrength);
+    sh->setFloat("diffStrength", status.diffStrength);
+    sh->setFloat("specularStrength", status.specularStrength);
+    sh->setFloat("phongExp", status.phongExp);
     
     sh->setFloat("STEP", step);
 	sh->setArray("param_t", status.params, sizeof(status.params));
@@ -258,7 +264,7 @@ int initializeGLFW()
     glfwWindowHint(GLFW_SAMPLES, N_SAMPLES);
 
     // glfw window creation
-    window = glfwCreateWindow(status.getWidth(), status.getHeight(), "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(status.getWidth(), status.getHeight(), "Surface VS", NULL, NULL);
     
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -333,7 +339,12 @@ void initializeBuffers()
 
 void render()
 { 
-	glClearColor(1.0f, 1.0f, 1.0f, 0.7f);
+    if (status.changeWinTitle) {
+        glfwSetWindowTitle(window, ("Surface VS - " + status.getParamFile()).c_str());
+        status.changeWinTitle = false;
+    }
+
+	glClearColor(status.fontColor.r, status.fontColor.g, status.fontColor.b, 0.7f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLineWidth(1.2);
 
@@ -452,11 +463,11 @@ int main()
         glfwPollEvents();
     	
         // render
-    	visualizeInterface(status);
+    	visualizeInterface(status, object);
     	render();
     	
     	for (int i = 0; i < 2; i++)
-			visualizeInterface(status);
+			visualizeInterface(status, object);
 		
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.) 
     	glfwSwapBuffers(window);

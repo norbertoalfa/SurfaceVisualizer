@@ -1,10 +1,14 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+#include <glm/glm.hpp>
 
 class Object {
 	private:
-		glm::vec3 color;
 		bool colorChange;
 		
 	public:
+		glm::vec3 color;
+
 		Object(glm::vec3 objColor=glm::vec3(0.5f, 0.5f, 0.5f)) {
 			color = objColor;
 			colorChange = false;
@@ -18,3 +22,5 @@ class Object {
 		
 		bool getColorChange() { return colorChange; }
 };
+
+#endif
