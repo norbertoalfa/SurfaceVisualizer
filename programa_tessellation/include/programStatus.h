@@ -37,6 +37,8 @@ class ProgramStatus
 
 		bool changeWinTitle;
 
+		bool invertNorm;
+
 		bool showDiffArea;
 		bool showK;
 
@@ -84,6 +86,8 @@ class ProgramStatus
 
 			totalFPlot = 1;
 			totalParam = 0;
+
+			invertNorm = false;
 
 			showNormals = false;
 			showDiffArea = false;

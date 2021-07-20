@@ -230,6 +230,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     
     sh->setBool("showPol", showPol);
     sh->setBool("showNormals", showNormals);
+    sh->setBool("invertNorm", status.invertNorm);
     sh->setBool("showDiffArea", status.showDiffArea);
     sh->setBool("showK", status.showK);
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));

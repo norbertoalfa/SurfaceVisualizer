@@ -97,6 +97,8 @@ void visualizeInterface(ProgramStatus &status, Object &object)
         if (showNormals != status.getShowNormals()) {
             status.switchShowNormals();
         }
+        ImGui::SameLine();
+        ImGui::Checkbox("Invert normal", &status.invertNorm);
 
         ImGui::Checkbox("AutoRotate", &autoRot);
         if (autoRot != status.getAutoRotation()) {

@@ -1,0 +1,5 @@
+g(u, v : real, A, sigu, sigv :real) : real = A * E ^ (- (u^2 / (2 * sigu^2) + v^2 / (2 * sigv^2)));
+
+f(u, v : real, t0, t1, t2 :real) : vec3 = vec3(u, g(u, v, t0, t1, t2), v);
+
+plot f;
