@@ -12,12 +12,14 @@
 \begin{definicion} Un \textbf{sistema coordenado} sobre $S$ es un embebimiento $h : \mathbb{R}^2 \rightarrow S$.
 \end{definicion}
 
-\begin{definicion} Sea $S$ un espacio topoógico Hausdorff, una \textbf{estructura diferenciable} $2-dimensional$ sobre $S$ es una familia de conjuntos coordenados $E=\{h_i\}_{i\in \Lambda}$ verificando:
+\begin{definicion} Sea $S$ un espacio topoógico Hausdorff, un \textbf{atlas} $2-dimensional$ sobre $S$ es una familia de cartas $E=\{h_i\}_{i\in \Lambda}$ verificando:
 	\begin{enumerate}
 		\item $\{h_i(\mathbb{R}^2)\}_{i\in \Lambda}$ es un recubrimiento abierto de $S$.
 		\item Si $h_i(\mathbb{R}^2) \cap h_j(\mathbb{R}^2) \neq \varnothing$ entonces $h_j^{-1} \circ h_i:h_i^{-1}(h_i(\mathbb{R}^2)\cap h_j(\mathbb{R}^2)) \rightarrow h_j^{-1}(h_i(\mathbb{R}^2)\cap h_j(\mathbb{R}^2))$ es un difeomorfismo.
-		\item $E$ es maximal entre todas las familias que cumplen los puntos anteriores.
 	\end{enumerate}
+\end{definicion}
+
+\begin{definicion} Sea $S$ un espacio topoógico Hausdorff, una \textbf{estructura diferenciable} $2-dimensional$ sobre $S$ es un atlas maximal.
 \end{definicion}
 
 \begin{definicion} Una \textbf{variedad diferenciable} 2-dimensional es una variedad topológica $2-dimensional$ $S$ junto con una estructura diferenciable $E$, es decir, el par $(S, E)$.
