@@ -2,7 +2,9 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "programStatus.h"
+#include "light.h"
 #include "object.h"
+#include "imGuIZMOquat.h"
 #include <iostream>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
@@ -16,11 +18,13 @@ const char* glsl_version = "#version 130";
 bool show_editor_window = false;
 bool show_params_window = true;
 bool show_render_info = true;
+bool show_light_vector = false;
 bool firstEditor = true;
-bool firstColor = true;
+bool firstTime = true;
 
 ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 glm::vec3 objectColor, fontColor;
+vec3 lightDir;
 
 void initImGUI(GLFWwindow* window)
 {
@@ -39,7 +43,7 @@ void initImGUI(GLFWwindow* window)
     ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
-void visualizeInterface(ProgramStatus &status, Object &object)
+void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm::mat4 pvm, glm::mat4 pvm_inv)
 { 
     bool autoRot = status.getAutoRotation();
     bool polMode = status.getActivePolMode();
@@ -47,11 +51,15 @@ void visualizeInterface(ProgramStatus &status, Object &object)
     bool showDiffArea = status.showDiffArea;
     bool showK = status.showK;
     ImVec4 titleColor = ImVec4(0.3, 0.3, 1.0, 1.0);
-    
-    if (firstColor) {
+
+    glm::vec4 lightVector, lightDirGlm;
+    lightVector = pvm * glm::vec4(light.getDir(), 0.0);
+    lightDir = vec3(-lightVector.x, -lightVector.y, lightVector.z);
+
+    if (firstTime) {
         objectColor =  object.getColor();
         fontColor = status.fontColor;
-        firstColor = false;
+        firstTime = false;
     }
 
     strcpy(nameFile, status.getParamFile().c_str());
@@ -144,6 +152,8 @@ void visualizeInterface(ProgramStatus &status, Object &object)
         ImGui::TextColored(titleColor, "Lighting");
         ImGui::Separator();
 
+        ImGui::Checkbox("Light vector", &show_light_vector);
+
         if (ImGui::CollapsingHeader("Advanced lighting")) {
             ImGui::SliderFloat("Ambient Strength", &(status.ambientStrength), 0.0f, 1.0f);
             ImGui::SliderFloat("Diffuse Strength", &(status.diffStrength), 0.0f, 1.0f);
@@ -205,6 +215,17 @@ void visualizeInterface(ProgramStatus &status, Object &object)
             ImGui::PopID();
         }
 
+        ImGui::End();
+    }
+
+    if (show_light_vector) {
+        ImGui::Begin("Light vector", &show_render_info, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
+
+        if (ImGui::gizmo3D("##Dir1", lightDir, 200, imguiGizmo::modeDirection)) {
+            lightDirGlm = pvm_inv * glm::vec4(-lightDir.x, -lightDir.y, lightDir.z, lightVector.w);
+            light.setDir(glm::vec3(lightDirGlm.x, lightDirGlm.y, lightDirGlm.z));
+        }
+        
         ImGui::End();
     }
 

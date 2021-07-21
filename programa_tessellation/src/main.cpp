@@ -36,6 +36,8 @@ float lastFrame = 0.0f;
 glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
+glm::mat4 pvm = projection * view * model;
+glm::mat4 pvm_inv = glm::inverse(pvm);
 
 const int SIZE = 10;
 const int SIZE_POINT = 2;
@@ -363,7 +365,9 @@ void render()
 	}
 
 	projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
-	
+	pvm = projection * view * model;
+    pvm_inv = glm::inverse(pvm);
+
     for (int i = 0; i < 10; i++) {
         float newParam = (1.0 + sin(glfwGetTime() / 2.0))/2.0;
 
@@ -464,11 +468,11 @@ int main()
         glfwPollEvents();
     	
         // render
-    	visualizeInterface(status, object);
+    	visualizeInterface(status, light, object, pvm, pvm_inv);
     	render();
     	
     	for (int i = 0; i < 2; i++)
-			visualizeInterface(status, object);
+			visualizeInterface(status, light, object, pvm, pvm_inv);
 		
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.) 
     	glfwSwapBuffers(window);
