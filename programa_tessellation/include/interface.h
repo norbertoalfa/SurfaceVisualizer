@@ -16,7 +16,7 @@ char nameFile[100];
 char text[10000];
 const char* glsl_version = "#version 130";
 bool show_editor_window = false;
-bool show_params_window = true;
+bool show_params_window = false;
 bool show_render_info = true;
 bool show_light_vector = false;
 bool firstEditor = true;
@@ -53,13 +53,20 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
     ImVec4 titleColor = ImVec4(0.3, 0.3, 1.0, 1.0);
 
     glm::vec4 lightVector, lightDirGlm;
-    lightVector = pvm * glm::vec4(light.getDir(), 0.0);
-    lightDir = vec3(-lightVector.x, -lightVector.y, lightVector.z);
+
+    if (show_light_vector) {
+        lightVector = pvm * glm::vec4(light.getDir(), 0.0);
+        lightDir = vec3(-lightVector.x, -lightVector.y, lightVector.z);
+    }
 
     if (firstTime) {
         objectColor =  object.getColor();
         fontColor = status.fontColor;
         firstTime = false;
+
+        if (status.getTotalParam() > 0) {
+            show_params_window = true;
+        }
     }
 
     strcpy(nameFile, status.getParamFile().c_str());
@@ -127,7 +134,7 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
             ImGui::SetColumnWidth(0, 280);
             ImGui::SetColumnWidth(1, 100);
 
-            ImGui::SliderFloat("Umbral Area", &(status.umbralArea), 0.006f, 2.5f, "%.5f");
+            ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.1f, "%.8f");
 
             ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
             ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
@@ -206,7 +213,7 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
     if (show_params_window) {
         ImGui::Begin("Params", &show_params_window, ImGuiWindowFlags_AlwaysAutoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
         
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < status.getTotalParam(); i++) {
             std::string nameParam = "t" + std::to_string(i);
             ImGui::SliderFloat(nameParam.c_str(), &(status.params[i]), 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::SameLine();

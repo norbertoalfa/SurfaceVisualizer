@@ -42,7 +42,9 @@ class ProgramStatus
 		bool showDiffArea;
 		bool showK;
 
-		float umbralArea;
+		float umbralLength;
+		int ptsLimit;
+		int failsLimit;
 		
 		float coeffArea;
 		float coeffK;
@@ -94,8 +96,11 @@ class ProgramStatus
 			showK = false;
 
 			coeffArea = 20.0f;
-			umbralArea = 0.01f;
 			coeffK = 1.0;
+
+			umbralLength = 0.01f;
+			ptsLimit = 20;
+			failsLimit = 5;
 
 			ambientStrength = 0.2;
 			diffStrength = 0.5;

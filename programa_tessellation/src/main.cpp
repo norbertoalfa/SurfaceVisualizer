@@ -243,7 +243,10 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setVec3("lightPos", light.getPos());
     sh->setVec3("viewPos", camera.cameraLocation);
 
-    sh->setFloat("umbralArea", status.umbralArea);
+    sh->setFloat("umbralLength", status.umbralLength);
+    sh->setInt("ptsLimit", status.ptsLimit);
+    sh->setInt("failsLimit", status.failsLimit);
+
     sh->setFloat("coeffArea", status.coeffArea);
     sh->setFloat("coeffK", status.coeffK);
     
