@@ -30,17 +30,43 @@
 		\\ Tenemos $W\subset \R^2$ abierto, por el \textbf{Hecho 1} sabemos que existe una triangulación geométrica suya y al ir acercándose a la frontera topológica los triángulos convergen a puntos. Queremos aplicar el ``Teorema de alisamiento de asas'' en los vértices de los triángulos, seguidamente en los lados y finalmente en el interior de cada uno (aplicar los 3 apartados del teorema de forma consecutiva), pero para ello es necesario partir de un embebimiento de $\R^2$:
 		\begin{enumerate}
 			\item Para todos y cada uno de los vértices de la triangulación elegimos una bola $B(p, \epsilon_p) \subset W$ cuyos cierres topológicos en $\R^2$ no se corten mutuamente. $B(p,\varepsilon _p)$ es abierto y queremos obtener $\widehat{h}$ diferenciable entorno a $p$. \\
-			\\ Podemos aplicar el Corolario del apartado 1 del Teorema de Alisamiento de Asas ya que cumplimos todas las hipótesis necesarias. Así obtenemos una $\widehat{h}$ isotópica a $h$, que es diferenciable en $O_p$ entorno abierto de $p$ y además queda fija fuera de otro entorno un poco mayor $O_p'\supset O_p$, con $O'_p\subset B(p, \epsilon_p) $.\\
+			\newpage
+			\begin{figure}[h]
+  				\centering
+  				\includegraphics[width=0.5\textwidth]{triangulacion_bolas}
+  				\caption{$B(p, \epsilon_p)$ para cada vértice.}
+  				\label{fig:triangulacion_bolas}
+			\end{figure}
+			Podemos aplicar el Corolario del apartado 1 del Teorema de Alisamiento de Asas ya que cumplimos todas las hipótesis necesarias. Así obtenemos una $\widehat{h}$ isotópica a $h$, que es diferenciable en $O_p$ entorno abierto de $p$ y además queda fija fuera de otro entorno un poco mayor $O_p'\supset O_p$, con $O'_p\subset B(p, \epsilon_p) $.\\
 			\\ De manera acumulativa, este procedimiento se puede realizar simultáneamente en todos los vértices $p$ en la triangulación de $W$. Esto prueba que $h_n: \R^2 \rightarrow h_n(\R^2)$ es isotópica a un homeomorfismo $\widehat{h}_n: \R^2 \rightarrow h_n(\R^2)$ que es diferenciable, como aplicación sobre la superficie diferenciable $U_{n-1}$, en un entorno $O_p \subset W$ alrededor de cada vértice $p$ de la triangulación de $W$. Además la isotopía coincide con $h_n$ fuera de entornos $O'_p \subset W$ mayores que $O_p$ para cada $p$, disjuntos $2$ a $2$.\\
+			\begin{figure}[h]
+  				\centering
+  				\includegraphics[width=0.5\textwidth]{triangulacion_bolas_suavizado}
+  				\caption{$O_p$ para cada vértice.}
+  				\label{fig:triangulacion_bolas_suavizado}
+			\end{figure}
 
-			\item Tenemos por el paso anterior un $h_n: \R^2 \rightarrow h_n(\R^2)$ isotópico al original en las condiciones explicadas, y que es diferenciable como aplicación $W \rightarrow U_{n-1}$ entorno a los vértices de la triangulación de $W$. Queremos utilizar el apartado $2$ del Teorema de Alisamiento de Asas para generar otra isotopía que nos lleve $h_n$ a otro homeomorfismo (al que le daremos el mismo nombre) cuya restricción a $W \rightarrow U_{n-1}$ sea diferenciable además entorno a los lados de la triangulación anterior, coincidiendo con el $h_n$ original fuera de un entorno del $1$-esqueleto de esa triangulación. Para ello, consideramos para cada lado $l$ de la triangulación de $W$ un subconjunto $R_l$ (rectángulo) dentro de $W$ que sea difeomorfo a $D^1 \times \R$, cumpliendo:
+			\item Tenemos por el paso anterior un $h_n: \R^2 \rightarrow h_n(\R^2)$ isotópico al original en las condiciones explicadas, y que es diferenciable como aplicación $W \rightarrow U_{n-1}$ entorno a los vértices de la triangulación de $W$. Queremos utilizar el apartado $2$ del Teorema de Alisamiento de Asas para generar otra isotopía que nos lleve $h_n$ a otro homeomorfismo (al que le daremos el mismo nombre) cuya restricción a $W \rightarrow U_{n-1}$ sea diferenciable además entorno a los lados de la triangulación anterior, coincidiendo con el $h_n$ original fuera de un entorno del $1$-esqueleto de esa triangulación.\\
+			\\ Para ello, consideramos para cada lado $l$ de la triangulación de $W$ un subconjunto $R_l$ (rectángulo) dentro de $W$ que sea difeomorfo a $D^1 \times \R$, cumpliendo:
 				\begin{enumerate}
 					\item $R_l$ corta a $l$ en un segmento compacto y es disjunto con cualquier otro lado de la triangulación de $W$. En particular, $R_l$ no contiene ningún vértice de la triangulación de $W$.
 					\item Si $p_1$ y $p_2$ son los vértices extremos de $l$, una componente del borde de $R_l$ está contenida en $O_{p_1}$ y la otra en $O_{p_2}$, es decir, $h_n$ es diferenciable en 2 componentes de $\partial R_l$.
 					\item Los cierres de los rectángulos $R_l$ en $\R^2$ son disjuntos $2$ a $2$ y están contenidos en $W$.
 				\end{enumerate}
+			\begin{figure}[h]
+  				\centering
+  				\includegraphics[width=0.5\textwidth]{triangulacion_rectangulos_suavizado}
+  				\caption{Entorno de $l$ donde $h_n$ es diferenciable.}
+  				\label{fig:triangulacion_rectangulos_suavizado}
+			\end{figure}
 
-			Ahora es evidente como en el apartado $2$ del Teorema de Alisamiento de Asas nos produce la isotopía deseada realizando el trabajo simultáneamente en todos los rectángulos $R_l$, generando el nuevo $h_n:\R^2 \rightarrow h_n(\R^2)$ deseado.\\
+			Ahora es evidente como en el apartado $2$ del Teorema de Alisamiento de Asas nos produce la isotopía deseada realizando el trabajo simultáneamente en todos los rectángulos $R_l$, generando el nuevo $h_n:\R^2 \rightarrow h_n(\R^2)$ deseado.
+			\begin{figure}[h]
+  				\centering
+  				\includegraphics[width=0.45\textwidth]{triangulacion_aristas}
+  				\caption{Entorno del $1$-esqueleto donde $h_n$ es diferenciable.}
+  				\label{fig:triangulacion_aristas}
+			\end{figure}
 
 			\item El tercer paso es similar a los anteriores, pero ahora usando el apartado $3$ del Teorema de Alisamiento de Asas. Lo que hacemos en considerar para cada triángulo $T$ de la triangulación de $W$ un dominio de Jordan $D_T$ satisfaciendo:
 			\begin{enumerate}
