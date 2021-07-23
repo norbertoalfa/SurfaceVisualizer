@@ -47,9 +47,6 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
 { 
     bool autoRot = status.getAutoRotation();
     bool polMode = status.getActivePolMode();
-    bool showNormals = status.getShowNormals();
-    bool showDiffArea = status.showDiffArea;
-    bool showK = status.showK;
     ImVec4 titleColor = ImVec4(0.3, 0.3, 1.0, 1.0);
 
     glm::vec4 lightVector, lightDirGlm;
@@ -108,12 +105,13 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
             status.switchPolMode();
         }
         ImGui::SameLine();
-        ImGui::Checkbox("Show normal", &showNormals);
-        if (showNormals != status.getShowNormals()) {
-            status.switchShowNormals();
-        }
-        ImGui::SameLine();
         ImGui::Checkbox("Invert normal", &status.invertNorm);
+
+        ImGui::Checkbox("Show tangent", &status.showTangents);
+        ImGui::SameLine();
+        ImGui::Checkbox("Show cotan", &status.showCotangents);
+        ImGui::SameLine();
+        ImGui::Checkbox("Show normal", &status.showNormals);
 
         ImGui::Checkbox("AutoRotate", &autoRot);
         if (autoRot != status.getAutoRotation()) {
@@ -138,19 +136,16 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
 
             ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
             ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
+            ImGui::SliderFloat("Coeff Height\t", &(status.coeffHeight), 0.01f, 20.0f);
+            ImGui::SliderFloat("Ref Height\t", &(status.refHeight), -10.0f, 10.0f);
 
             ImGui::NextColumn();
             ImGui::NewLine();
 
-            ImGui::Checkbox("Show area", &showDiffArea);
-            if (showDiffArea != status.showDiffArea) {
-                status.showDiffArea = showDiffArea;
-            }
-
-            ImGui::Checkbox("Show K", &showK);
-            if (showK != status.showK) {
-                status.showK = showK;
-            }
+            if (ImGui::Checkbox("Show area", &status.showDiffArea)) status.updateShowArea();
+            if (ImGui::Checkbox("Show K", &status.showK)) status.updateShowK();
+            if (ImGui::Checkbox("Show height", &status.showHeight)) status.updateShowHeight();
+            if (ImGui::Checkbox("Show critic", &status.showCritic)) status.updateShowCritic();
 
             ImGui::Columns(1);
         }

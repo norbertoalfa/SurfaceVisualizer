@@ -6,7 +6,7 @@
 
 FILE * file;
 char *sFunParam;
-char *sNormalParam;
+char *sNormalParam, *sTanParam, *sCoTanParam;
 char *sAreaParam;
 char *sKParam;
 int nPlot=0;
@@ -1066,10 +1066,14 @@ void escribeIfPlot(char *sent, entradaTS fun){
 }
 
 void escribeIniPlot(char *fun){
-	int indexFun, indexNormal, indexArea, indexK, i;
-	char *sent, *normal, *area, *curvature;
+	int indexFun, indexNormal, indexTan, indexCoTan;
+	int indexArea, indexK, i;
+	char *sent, *normal, *tangente, *cotan;
+	char *area, *curvature;
 	
 	normal = strcat(strdup(fun), "Normal");
+	tangente = strcat(strdup(fun), "Pu");
+	cotan = strcat(strdup(fun), "Pv");
 	area = strcat(strdup(fun), "Area");
 	curvature = strcat(strdup(fun), "K");
 
@@ -1078,22 +1082,27 @@ void escribeIniPlot(char *fun){
   	
   	indexFun = TS_BuscarFUN(fun);
   	indexNormal = TS_BuscarFUN(normal);
+  	indexTan = TS_BuscarFUN(tangente);
+  	indexCoTan = TS_BuscarFUN(cotan);
   	indexArea = TS_BuscarFUN(area);
   	indexK = TS_BuscarFUN(curvature);
 
   	nPlot = 0;
   	i = 1;
   	
-  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1 || indexK == -1) {
+  	if (indexFun == -1 || indexNormal == -1 ||  indexTan == -1 ||  indexCoTan == -1 || 
+	  	indexArea == -1 || indexK == -1) {
   		return;
   	}
   	
+	// Parametrización
     escribeIfPlot(sent, TS[indexFun]);
 
 	sFunParam = (char *) malloc(1000);
   	sFunParam[0]=0;
 	sprintf(sFunParam,"vec3 functionParam(vec2 p) {\n\t%s", sent);
 
+	// Normal
 	free(sent);
 	sent = (char *) malloc(1000);
   	sent[0]=0;
@@ -1104,6 +1113,29 @@ void escribeIniPlot(char *fun){
   	sNormalParam[0]=0;
 	sprintf(sNormalParam,"vec3 normalParam(vec2 p) {\n\t%s", sent);
 
+	// Tangente
+	free(sent);
+	sent = (char *) malloc(1000);
+  	sent[0]=0;
+
+    escribeIfPlot(sent, TS[indexTan]);
+
+	sTanParam = (char *) malloc(1000);
+  	sTanParam[0]=0;
+	sprintf(sTanParam,"vec3 tangentParam(vec2 p) {\n\t%s", sent);
+
+	// Cotangente
+	free(sent);
+	sent = (char *) malloc(1000);
+  	sent[0]=0;
+
+    escribeIfPlot(sent, TS[indexCoTan]);
+
+	sCoTanParam = (char *) malloc(1000);
+  	sCoTanParam[0]=0;
+	sprintf(sCoTanParam,"vec3 cotangentParam(vec2 p) {\n\t%s", sent);
+
+	// Area diferencial
 	free(sent);
 	sent = (char *) malloc(1000);
   	sent[0]=0;
@@ -1114,6 +1146,7 @@ void escribeIniPlot(char *fun){
   	sAreaParam[0]=0;
 	sprintf(sAreaParam,"float areaParam(vec2 p) {\n\t%s", sent);
 
+	// Curvatura de Gauss
 	free(sent);
 	sent = (char *) malloc(1000);
   	sent[0]=0;
@@ -1130,22 +1163,29 @@ void escribeIniPlot(char *fun){
 }
 
 void escribeContPlot(char *fun){
-	int indexFun, indexNormal, indexArea, indexK, i;
-	char *sent, *normal, *area, *curvature;
-
+	int indexFun, indexNormal, indexTan, indexCoTan;
+	int indexArea, indexK, i;
+	char *sent, *normal, *tangente, *cotan;
+	char *area, *curvature;
+	
 	normal = strcat(strdup(fun), "Normal");
+	tangente = strcat(strdup(fun), "Pu");
+	cotan = strcat(strdup(fun), "Pv");
 	area = strcat(strdup(fun), "Area");
 	curvature = strcat(strdup(fun), "K");
-	
+
   	sent = (char *) malloc(1000);
   	sent[0]=0;
 
   	indexFun = TS_BuscarFUN(fun);
   	indexNormal = TS_BuscarFUN(normal);
+  	indexTan = TS_BuscarFUN(tangente);
+  	indexCoTan = TS_BuscarFUN(cotan);
   	indexArea = TS_BuscarFUN(area);
   	indexK = TS_BuscarFUN(curvature);
   	
-  	if (indexFun == -1 || indexNormal == -1 || indexArea == -1 || indexK == -1) {
+  	if (indexFun == -1 || indexNormal == -1 ||  indexTan == -1 ||  indexCoTan == -1 || 
+	  	indexArea == -1 || indexK == -1) {
   		return;
   	}
   	
@@ -1156,6 +1196,12 @@ void escribeContPlot(char *fun){
 
     sprintf(sNormalParam,"%s else ", sNormalParam);
     escribeIfPlot(sNormalParam, TS[indexNormal]);
+
+    sprintf(sTanParam,"%s else ", sTanParam);
+    escribeIfPlot(sTanParam, TS[indexTan]);
+
+    sprintf(sCoTanParam,"%s else ", sCoTanParam);
+    escribeIfPlot(sCoTanParam, TS[indexCoTan]);
 
     sprintf(sAreaParam,"%s else ", sAreaParam);
     escribeIfPlot(sAreaParam, TS[indexArea]);
@@ -1184,16 +1230,22 @@ void escribeFinPlot(){
 
 	sprintf(sFunParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sFunParam);
 	sprintf(sNormalParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sNormalParam);
+	sprintf(sTanParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sTanParam);
+	sprintf(sCoTanParam,"%s\n\n\treturn vec3(0.0, 0.0, 0.0);\n}\n\n", sCoTanParam);
 	sprintf(sAreaParam,"%s\n\n\treturn 0.0;\n}\n\n", sAreaParam);
 	sprintf(sKParam,"%s\n\n\treturn 0.0;\n}\n\n", sKParam);
 
 	fputs(sFunParam,file);
 	fputs(sNormalParam,file);
+	fputs(sTanParam,file);
+	fputs(sCoTanParam,file);
 	fputs(sAreaParam,file);
 	fputs(sKParam,file);
 
 	free(sFunParam);
 	free(sNormalParam);
+	free(sTanParam);
+	free(sCoTanParam);
 	free(sAreaParam);
 	free(sKParam);
 }

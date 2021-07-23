@@ -2,9 +2,9 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-in gData {vec3 FragPos; vec3 Normal; float Area; float K;} geo[];
+in gData {vec3 FragPos; vec3 Tangent; vec3 Cotan; vec3 Normal; float Area; float K; float Critic;} geo[];
 
-out fData {vec3 FragPos; vec3 Normal; float Area; float K;} frag;
+out fData {vec3 FragPos; vec3 Normal; float Area; float K; float Critic;} frag;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -57,6 +57,7 @@ void main() {
         }
 
         frag.K = curvature;
+        frag.Critic = geo[i].Critic;
 
         EmitVertex( );
     }

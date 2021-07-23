@@ -6,8 +6,8 @@
 - SOLVED: Estudiar una medida mejor para decidir la subdivisión en el tess_control.
 	* DONE: Mejorar en el tess_control.
 	* FAILED: Mejorar en el tess_eval.
-- Mostrar tangente y cotangente.
-- Añadir función altura (f(x,y,z) = z).
-	* Visualización función altura.
-	* Visualización puntos criticos (g = f o p = p(u,v)[2], 
+- DONE: Añadir función altura (f(x,y,z) = z).
+	* DONE: Visualización función altura.
+	* DONE: Visualización puntos criticos (g = f o p = p(u,v)[2], 
 				ver length(pPu[2], pPv[2]) == 0).
+- DONE: Mostrar tangente y cotangente.

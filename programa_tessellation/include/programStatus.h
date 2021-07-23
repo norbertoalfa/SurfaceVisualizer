@@ -20,7 +20,6 @@ class ProgramStatus
 		float lastMouseY;
 		
 		bool activePolMode;
-		bool showNormals;
 		bool autoRotation;
 		bool perDisplace;
 		bool perRotate;
@@ -38,9 +37,15 @@ class ProgramStatus
 		bool changeWinTitle;
 
 		bool invertNorm;
+		
+		bool showTangents;
+		bool showCotangents;
+		bool showNormals;
 
 		bool showDiffArea;
 		bool showK;
+		bool showHeight;
+		bool showCritic;
 
 		float umbralLength;
 		int ptsLimit;
@@ -48,6 +53,8 @@ class ProgramStatus
 		
 		float coeffArea;
 		float coeffK;
+		float coeffHeight;
+		float refHeight;
 
 		float ambientStrength;
 		float diffStrength;
@@ -91,21 +98,26 @@ class ProgramStatus
 
 			invertNorm = false;
 
-			showNormals = false;
+			showTangents = showCotangents = showNormals = false;
+
 			showDiffArea = false;
 			showK = false;
+			showHeight = false;
+			showCritic = false;
 
 			coeffArea = 20.0f;
-			coeffK = 1.0;
+			coeffK = 1.0f;
+			coeffHeight = 10.0f;
+			refHeight = 0.0f;
 
 			umbralLength = 0.01f;
 			ptsLimit = 20;
 			failsLimit = 5;
 
-			ambientStrength = 0.2;
-			diffStrength = 0.5;
-			specularStrength = 0.3;
-			phongExp = 8.0;
+			ambientStrength = 0.2f;
+			diffStrength = 0.5f;
+			specularStrength = 0.3f;
+			phongExp = 8.0f;
 
 			fontColor = glm::vec3(1.0f, 1.0f, 1.0f);
 			
@@ -155,8 +167,6 @@ class ProgramStatus
 		// Getters
 
 		bool getActivePolMode() { return activePolMode; }
-
-		bool getShowNormals() { return showNormals; }
 		
 		bool getAutoRotation() { return autoRotation; }
 
@@ -201,6 +211,22 @@ class ProgramStatus
 		
 		
 		// Methods
+
+		void updateShowK() {
+			showDiffArea = showHeight = showCritic = false;
+		}
+
+		void updateShowArea() {
+			showK = showHeight = showCritic = false;
+		}
+
+		void updateShowHeight() {
+			showDiffArea = showK = showCritic = false;
+		}
+
+		void updateShowCritic() {
+			showDiffArea = showK = showHeight = false;
+		}
 
 		int loadText(){
 			std::ifstream inFile;

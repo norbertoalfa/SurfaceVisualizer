@@ -2,9 +2,14 @@
 void genVertex(vec2 p) {
     gl_Position = vec4(functionParam(p), 1.0);
     geo.FragPos = functionParam(p);
+
+    geo.Tangent = normalize(tangentParam(p));
+    geo.Cotan = normalize(cotangentParam(p));
     geo.Normal = normalParam(p);
+
     geo.Area = areaParam(p);
     geo.K = curvatureParam(p);
+    geo.Critic = length(vec2(vec3(tangentParam(p))[1], vec3(cotangentParam(p))[1]));
 }
 
 void main() {

@@ -223,7 +223,7 @@ void setCallbacks()
 	glfwSetScrollCallback(window, scroll_callback);
 }
 
-void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
+void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
 {
     sh->setMat4("projection", projection);
     sh->setMat4("view", view);
@@ -231,12 +231,19 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
     sh->setMat4("tr_inv_model", glm::transpose(glm::inverse(model)));
     
     sh->setBool("showPol", showPol);
-    sh->setBool("showNormals", showNormals);
+    sh->setBool("showVectors", showVectors);
+    sh->setBool("showTangents", status.showTangents);
+    sh->setBool("showCotangents", status.showCotangents);
+    sh->setBool("showNormals", status.showNormals);
+
     sh->setBool("invertNorm", status.invertNorm);
     sh->setBool("showDiffArea", status.showDiffArea);
     sh->setBool("showK", status.showK);
+    sh->setBool("showHeight", status.showHeight);
+    sh->setBool("showCritic", status.showCritic);
+    
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
-    sh->setVec3("colorNormals", glm::vec3(1.0f, 0.3f, 0.3f));
+    sh->setVec3("colorVectors", glm::vec3(1.0f, 0.3f, 0.3f));
 
     sh->setVec3("objectColor", object.getColor());
     sh->setVec3("lightColor", light.getColor());
@@ -249,6 +256,8 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showNormals=false)
 
     sh->setFloat("coeffArea", status.coeffArea);
     sh->setFloat("coeffK", status.coeffK);
+    sh->setFloat("coeffHeight", status.coeffHeight);
+    sh->setFloat("refHeight", status.refHeight);
     
     sh->setFloat("ambientStrength", status.ambientStrength);
     sh->setFloat("diffStrength", status.diffStrength);
@@ -401,7 +410,7 @@ void render()
 		status.setLoadShader(false);
 	}
 	
-    if (status.getShowNormals()) {
+    if (status.showTangents || status.showCotangents || status.showNormals) {
         // activate shader
         shaderNormals -> use();
         updateUniforms(shaderNormals, false, true);

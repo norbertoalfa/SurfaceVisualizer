@@ -1,23 +1,27 @@
 #version 440 core
-in fData {vec3 FragPos; vec3 Normal; float Area; float K;} frag;
+in fData {vec3 FragPos; vec3 Normal; float Area; float K; float Critic;} frag;
 
 out vec4 FragColor;
 
 uniform bool showPol;
-uniform bool showNormals;
+uniform bool showVectors;
 uniform bool showDiffArea;
 uniform bool showK;
+uniform bool showHeight;
+uniform bool showCritic;
+
+uniform float coeffArea;
+uniform float coeffK;
+uniform float coeffHeight;
+uniform float refHeight;
+
+uniform vec3 colorPol;
+uniform vec3 colorVectors;
 
 uniform vec3 lightPos; 
 uniform vec3 viewPos; 
 uniform vec3 lightColor;
 uniform vec3 objectColor;
-
-uniform vec3 colorPol;
-uniform vec3 colorNormals;
-
-uniform float coeffArea;
-uniform float coeffK;
 
 uniform float ambientStrength;
 uniform float diffStrength;
@@ -31,16 +35,22 @@ void main()
 
     if (showDiffArea) {
         color = vec3(1.0 - frag.Area/coeffArea, 0.0, frag.Area/coeffArea);
-    }else if (showK) {
+    } else if (showK) {
         color = vec3(0.5 - frag.K/coeffK, 0.0, 0.5 + frag.K/coeffK);
+    } else if (showHeight) {
+        color = vec3(   0.5 + (frag.FragPos[1] - refHeight)/coeffHeight,
+                        0.0,
+                        0.5 - (frag.FragPos[1] - refHeight)/coeffHeight);
+    } else if (showCritic) {
+        color = vec3(1.0 - frag.Critic, 0.0, 0.0 + frag.Critic);
     } else if (showPol) {
         color = colorPol;
     }
 
     if (showPol) {
         FragColor = vec4(color, 0.0);
-    } else if (showNormals) {
-        FragColor = vec4(colorNormals, 0.0);
+    } else if (showVectors) {
+        FragColor = vec4(colorVectors, 0.0);
     } else {
         float totalStrength = ambientStrength + diffStrength + specularStrength + 0.01;
         // ambient

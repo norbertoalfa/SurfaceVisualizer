@@ -1,10 +1,10 @@
 #version 440
 layout (triangles) in;
-layout (line_strip, max_vertices = 2) out;
+layout (line_strip, max_vertices = 18) out;
 
-in gData {vec3 FragPos; vec3 Normal; float Area; float K;} geo[];
+in gData {vec3 FragPos; vec3 Tangent; vec3 Cotan; vec3 Normal; float Area; float K; float Critic;} geo[];
 
-out fData {vec3 FragPos; vec3 Normal; float Area; float K;} frag;
+out fData {vec3 FragPos; vec3 Normal; float Area; float K; float Critic;} frag;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -12,6 +12,70 @@ uniform mat4 projection;
 uniform mat4 tr_inv_model;
 
 uniform bool invertNorm;
+
+uniform bool showTangents;
+uniform bool showCotangents;
+uniform bool showNormals;
+
+void genTangent(int i, float normalSign) {
+    gl_Position = projection * view * model * gl_in[i].gl_Position;
+    frag.FragPos = geo[i].FragPos;
+    frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
+    frag.Area = geo[i].Area;
+    frag.K = geo[i].K;
+    frag.Critic = geo[i].Critic;
+    EmitVertex( );
+
+    gl_Position = projection * view * model *(gl_in[i].gl_Position + vec4(geo[i].Tangent*normalSign*0.1, 0.0));
+    frag.FragPos = geo[i].FragPos;
+    frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
+    frag.Area = geo[i].Area;
+    frag.K = geo[i].K;
+    frag.Critic = geo[i].Critic;
+    EmitVertex( );
+    
+    EndPrimitive( );
+}
+
+void genCotan(int i, float normalSign) {
+    gl_Position = projection * view * model * gl_in[i].gl_Position;
+    frag.FragPos = geo[i].FragPos;
+    frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
+    frag.Area = geo[i].Area;
+    frag.K = geo[i].K;
+    frag.Critic = geo[i].Critic;
+    EmitVertex( );
+
+    gl_Position = projection * view * model *(gl_in[i].gl_Position + vec4(geo[i].Cotan*normalSign*0.1, 0.0));
+    frag.FragPos = geo[i].FragPos;
+    frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
+    frag.Area = geo[i].Area;
+    frag.K = geo[i].K;
+    frag.Critic = geo[i].Critic;
+    EmitVertex( );
+    
+    EndPrimitive( );
+}
+
+void genNormal(int i, float normalSign) {
+    gl_Position = projection * view * model * gl_in[i].gl_Position;
+    frag.FragPos = geo[i].FragPos;
+    frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
+    frag.Area = geo[i].Area;
+    frag.K = geo[i].K;
+    frag.Critic = geo[i].Critic;
+    EmitVertex( );
+
+    gl_Position = projection * view * model *(gl_in[i].gl_Position + vec4(geo[i].Normal*normalSign*0.1, 0.0));
+    frag.FragPos = geo[i].FragPos;
+    frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
+    frag.Area = geo[i].Area;
+    frag.K = geo[i].K;
+    frag.Critic = geo[i].Critic;
+    EmitVertex( );
+    
+    EndPrimitive( );
+}
 
 void main() {
 
@@ -21,22 +85,22 @@ void main() {
         normalSign = -1.0;
     }
 
-    for(int i = 0; i < gl_in.length(); i++) {
-        gl_Position = projection * view * model * gl_in[i].gl_Position;
-        frag.FragPos = geo[i].FragPos;
-        frag.Normal = mat3(tr_inv_model) * geo[i].Normal;
-        frag.Area = geo[i].Area;
-        frag.K = geo[i].K;
-        EmitVertex( );
+    if (showTangents) {
+        for(int i = 0; i < gl_in.length(); i++) {
+            genTangent(i, normalSign);
+        }
+    }
 
-        gl_Position = projection * view * model *(gl_in[i].gl_Position + vec4(geo[i].Normal*normalSign*0.1, 0.0));
-        frag.FragPos = geo[i].FragPos;
-        frag.Normal = mat3(tr_inv_model) * geo[i].Normal * normalSign;
-        frag.Area = geo[i].Area;
-        frag.K = geo[i].K;
-        EmitVertex( );
-        
-        EndPrimitive( );
+    if (showCotangents) {
+        for(int i = 0; i < gl_in.length(); i++) {
+            genCotan(i, normalSign);
+        }
+    }
+
+    if (showNormals) {
+        for(int i = 0; i < gl_in.length(); i++) {
+            genNormal(i, normalSign);
+        }
     }
 
 }   
