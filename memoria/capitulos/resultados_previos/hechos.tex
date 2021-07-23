@@ -43,9 +43,21 @@ A continuación se enuncian los ``hechos'' utilizados para las demostraciones de
 	Para toda estructura diferenciable $E$ del toro punteado $T'_E$ existe un subconjunto compacto suyo cuyo complemento es difeomorfo a $S^1 \times \R$ con la estructura diferenciable usual.
 \end{hecho}
 
+\begin{proof}
+	Dividimos $T_S'$ tal y como lo hicimos en el $\textbf{Hecho 2.2}$, obteniendo así que está formado por piezas $P_j$ separadas por circunferencias $C_j$. Las piezas pueden ser discos, anillos o pantalones (cintas de Möbius no puesto que $T_S'$ es orientable y la orientabilidad es una propiedad topológica).\\
+	\\ La forma en la que se pegan esas piezas $P_j$, se asocia a un grafo $G$ donde los vértices representan a cada $P_j$ y las aristas indican adyacencia (existe un $C_j$ entre las piezas que representan los vértices). Existe una aplicación cociente $q: T_S' \rightarrow G$ que lleva cada punto del entorno de una circunferencia $C_j$ a la correspondiente proyección sobre el arco de $G$ que representa a $C_j$. Por consiguiente, los $C_j$ van a los vértices del grafo $G$.\\
+	\\ La aplicación $q_*:\Pi_1(T_S') \rightarrow \Pi_1(G)$ es un homomorfismo sobreyectivo con inversa a la izquierda, viendo $q$ como una homotopía. Por tanto, $\Pi_1(G)$ es un cociente de $\Pi_1(T_S')$, por lo que está finitamente generado. Esto implica que existe un subgrafo $G_0 \subset G$ tal que la clausura de $G - G_0$ consiste en un número finito de árboles ($G$ se puede retraer a $G_0$). Sólo uno de esos árboles puede no ser compacto puesto que a $T_S'$ le falta un único punto. Además, el no ser compacto implica que ese árbol está compuesto por un subárbol homeomorfo a $[0, \infty)$ junto con subárboles finitos pegados a él.\\
+	\\ Podemos eliminar estos árboles finitos quitando las circunferencias que corresponden a dichos segmentos, cuyos vértices están asociados a discos $P_j$. Estas simplificaciones en $G$ se pueden ver como simplificaciones en la función de Morse entendiendo los $C_j$ como curvas de nivel, cancelando ``sillines''  con extremos locales (si es un disco que se adhiere a unos ``pantalones'') y anillos (si un $C_j$ separa un anillo de un disco). \\
+	\\ Finalmente tenemos que $G$ tiene un subárbol no compacto $G_f$, homeomorfo a $[0, \infty)$ y la única posibilidad es que los segmentos correspondan a anillos, debido a que a $T_S'$ sólo le falta un punto, que se puede entender como el límite de dicha sucesión de $P_j$ y $C_j$. Tenemos que existe un compacto (la unión de los $P_j$ y $C_j$ correspondientes a $G - G_f$) cuyo complementario (los correspondientes a $G_f$) es una sucesión de anillos ``pegados'' de forma diferenciable en el sentido usual y por tanto es difeomorfo al cilindro con la estructura usual.
+\end{proof}
+
 \begin{hecho}
 	Toda estructura diferenciable $E$ del toro $(S^1 \times S^1)_E$ es difeomorfa a la estructura usual del toro $S^1 \times S^1$.
 \end{hecho}
+
+\begin{proof}
+	Partiendo de la demostración del hecho anterior, el grafo asociado $G$ ahora es finito con $\Pi_1(G)$ el cociente del grupo abeliano $\Pi_1(T_S)$, es decir, necesariamente $\Pi_1(G) = \Z$. Podemos reducir $G$ a una circunferencia, retrayendo los árboles finitos tal y como se hizo en la demostración anterior y haciendo los cambios necesarios en la función de $Morse$. La única posibilidad es que $T_S$ sea una sucesión de anillos pegados diferenciablemente, así que $T_S$ es difeomorfo a $T$ con la estructura usual o a una botella de Klein, pero no puede ser éste último por ser $\Pi_1(T_S)$ abeliano (ya que el grupo fundamental de la botella de Klein no es abeliano y no es posible siquiera un homeomorfismo entre ellos).
+\end{proof}
 
 \begin{hecho}
 	Sea $E$ una estructura diferenciable en $D^1 \times \R$ tal que es la usual en un entorno del borde. Entonces existe un difeomorfismo $g:(D^1 \times \R)_E \rightarrow (D^1 \times \R)_U$, con $U$ la estructura usual, que además es la identidad entorno a $\partial D^1 \times \R$.
