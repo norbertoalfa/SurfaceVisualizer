@@ -1,13 +1,4 @@
-- DONE: Cuadro de diálogo para coeficientes del modelo Phong
-- DONE: Simplificar vertex shader.
-- DONE: Añadir ejemplos de gráficas de funciones de R² en R (ejemplo, la normal de dimensión 2).
-- SOLVED: estudiar casos normal == 0.
-- SOLVED: Añadir una fuente de luz adicional.
-- SOLVED: Estudiar una medida mejor para decidir la subdivisión en el tess_control.
-	* DONE: Mejorar en el tess_control.
-	* FAILED: Mejorar en el tess_eval.
-- DONE: Añadir función altura (f(x,y,z) = z).
-	* DONE: Visualización función altura.
-	* DONE: Visualización puntos criticos (g = f o p = p(u,v)[2], 
-				ver length(pPu[2], pPv[2]) == 0).
-- DONE: Mostrar tangente y cotangente.
+- DONE: Cambiar tamaño malla desde interfaz.
+- DONE: Aplicar pow(Critic, 0. ...).
+- DONE: Añadir funciones pico.
+- DONE: Mostrar errores sintácticos en cuadro.

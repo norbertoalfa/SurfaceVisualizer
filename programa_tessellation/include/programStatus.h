@@ -12,6 +12,9 @@ class ProgramStatus
 		unsigned int SCR_HEIGHT;
 
 		std::string paramFile, dirPath, fileText;
+		std::string errorFile, errorText;
+
+		int sizeMap;
 
 		int totalFPlot;
 		int totalParam;
@@ -34,32 +37,23 @@ class ProgramStatus
 		float params[10];
 		bool autoParams[10];
 
+		bool hasError;
+
 		bool changeWinTitle;
+		bool changeSizeMap;
 
+		bool showDiffArea, showK, showHeight, showCritic;
+		bool showTangents, showCotangents, showNormals;
 		bool invertNorm;
-		
-		bool showTangents;
-		bool showCotangents;
-		bool showNormals;
-
-		bool showDiffArea;
-		bool showK;
-		bool showHeight;
-		bool showCritic;
 
 		float umbralLength;
 		int ptsLimit;
 		int failsLimit;
 		
-		float coeffArea;
-		float coeffK;
-		float coeffHeight;
+		float coeffArea, coeffK, coeffHeight;
 		float refHeight;
 
-		float ambientStrength;
-		float diffStrength;
-		float specularStrength;
-		float phongExp;
+		float ambientStrength, diffStrength, specularStrength, phongExp;
 
 		glm::vec3 fontColor;
 
@@ -69,9 +63,14 @@ class ProgramStatus
 			SCR_WIDTH = width;
 			SCR_HEIGHT = height;
 
+			sizeMap = 10;
+
 			dirPath = "variedades";
 			paramFile = "lastParam.in";
+			errorFile = "error.log";
 			changeWinTitle = true;
+			changeSizeMap = false;
+			hasError = false;
 
 			if (loadText() == -1) {
 				paramFile = "toro.in";
@@ -137,6 +136,8 @@ class ProgramStatus
 		void setFirstPress(char c, bool value){ firstTimePress[c] = value; }
 
 		void setSomeChange(bool change){ someChange = change; }
+
+		void setSizeMap(int n) { sizeMap = n; }
 		
 		void setWidth(unsigned int width) { SCR_WIDTH = width; someChange = true; }
 		
@@ -190,6 +191,8 @@ class ProgramStatus
 
 			return result;
 		}
+
+		int getSizeMap() { return sizeMap; }
 		
 		unsigned int getWidth() { return SCR_WIDTH; }
 		
@@ -200,6 +203,8 @@ class ProgramStatus
 		std::string getParamPath() { return dirPath; }
 		
 		std::string getFileText() { return fileText; }
+		
+		std::string getErrorText() { return errorText; }
 
 		int getTotalFPlot() { return totalFPlot; }
 
@@ -226,6 +231,33 @@ class ProgramStatus
 
 		void updateShowCritic() {
 			showDiffArea = showK = showHeight = false;
+		}
+
+		int checkErrorLog() {
+			std::ifstream inFile;
+			std::string data;
+			int retCode = 1;
+
+			hasError = false;
+
+			inFile.open(errorFile);
+
+			if (inFile) {
+				errorText = "";
+
+				while (std::getline(inFile, data)) {
+					hasError = true;
+					retCode = -1;
+					errorText += data + "\n";
+				}
+			} else {
+				retCode = -1;
+			}
+
+			inFile.close();
+			//remove(errorFile.c_str());
+
+			return retCode;
 		}
 
 		int loadText(){

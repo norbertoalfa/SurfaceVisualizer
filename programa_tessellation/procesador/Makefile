@@ -1,11 +1,11 @@
 .SUFFIXES:
 
-FILE?=../lastParam.in
+FILE?=../variedades/lastParam.in
 
 all: analizador
 
 read: $(FILE) analizador
-	./analizador < '$(FILE)'
+	script -q -c "./analizador < '$(FILE)'" > ../error.log
 
 analizador: y.tab.o semantico.o nodo.o elementos_predef.o
 	gcc -o analizador -lfl y.tab.o semantico.o nodo.o elementos_predef.o

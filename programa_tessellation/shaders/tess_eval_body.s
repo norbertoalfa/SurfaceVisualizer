@@ -9,7 +9,7 @@ void genVertex(vec2 p) {
 
     geo.Area = areaParam(p);
     geo.K = curvatureParam(p);
-    geo.Critic = length(vec2(vec3(tangentParam(p))[1], vec3(cotangentParam(p))[1]));
+    geo.Critic = 2.0*length(vec2(vec3(tangentParam(p))[1], vec3(cotangentParam(p))[1]));
 }
 
 void main() {

@@ -39,16 +39,16 @@ glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 pvm = projection * view * model;
 glm::mat4 pvm_inv = glm::inverse(pvm);
 
-const int SIZE = 10;
 const int SIZE_POINT = 2;
-float step = 1.0/((float) SIZE);
+int vertexSize, indicesSize;
+float step = 1.0/((float) status.getSizeMap());
 
 const int N_SAMPLES = 4; // Nº de muestras para el multi-sampling
 
 // Variables
 GLFWwindow* window;
-float vertex[2*(SIZE+1)*(SIZE+1) +2];
-unsigned int indices[6*SIZE*SIZE];
+float *vertex;
+unsigned int *indices;
 unsigned int VBO, VAO, EBO;
 
 
@@ -306,23 +306,29 @@ int initializeGLFW()
 
 void plainDeclar()
 {
-    for(int i = 0; i < SIZE + 1; i++){
-    	for(int j = 0; j < SIZE + 1; j++){
-    		vertex[2 * ((SIZE + 1) * i + j)] = step * ((float) i);
-    		vertex[2 * ((SIZE + 1) * i + j) + 1] = step * ((float) j);
-    		//std::cout << vertex[2*((SIZE-1)*i+j)] << " " << vertex[2*((SIZE-1)*i+j)+1] <<std::endl;
+    vertexSize = 2*(status.getSizeMap()+1)*(status.getSizeMap()+1) +2;
+    indicesSize = 6*status.getSizeMap()*status.getSizeMap();
+    step = 1.0/((float) status.getSizeMap());
+    
+    vertex = new float[vertexSize];
+    indices = new unsigned int[indicesSize];
+
+    for(int i = 0; i < status.getSizeMap() + 1; i++){
+    	for(int j = 0; j < status.getSizeMap() + 1; j++){
+    		vertex[2 * ((status.getSizeMap() + 1) * i + j)] = step * ((float) i);
+    		vertex[2 * ((status.getSizeMap() + 1) * i + j) + 1] = step * ((float) j);
     	}
     }
     
-    for(int i = 0; i < SIZE; i++){
-    	for(int j = 0; j < SIZE; j++){
-    		indices[6 * (SIZE * i + j)] = (SIZE + 1) * i + j;
-    		indices[6 * (SIZE * i + j) + 1] = (SIZE + 1) * i + j + 1;
-    		indices[6 * (SIZE * i + j) + 2] = (SIZE + 1) * (i + 1) + j;
+    for(int i = 0; i < status.getSizeMap(); i++){
+    	for(int j = 0; j < status.getSizeMap(); j++){
+    		indices[6 * (status.getSizeMap() * i + j)] = (status.getSizeMap() + 1) * i + j;
+    		indices[6 * (status.getSizeMap() * i + j) + 1] = (status.getSizeMap() + 1) * i + j + 1;
+    		indices[6 * (status.getSizeMap() * i + j) + 2] = (status.getSizeMap() + 1) * (i + 1) + j;
     		
-    		indices[6 * (SIZE * i + j) + 3] = (SIZE + 1) * (i + 1) + j;
-    		indices[6 * (SIZE * i + j) + 4] = (SIZE + 1) * i + j + 1;
-    		indices[6 * (SIZE * i + j) + 5] = (SIZE + 1) * (i + 1) + j + 1;
+    		indices[6 * (status.getSizeMap() * i + j) + 3] = (status.getSizeMap() + 1) * (i + 1) + j;
+    		indices[6 * (status.getSizeMap() * i + j) + 4] = (status.getSizeMap() + 1) * i + j + 1;
+    		indices[6 * (status.getSizeMap() * i + j) + 5] = (status.getSizeMap() + 1) * (i + 1) + j + 1;
     	}
     }
 }
@@ -336,10 +342,10 @@ void initializeBuffers()
     glBindVertexArray(VAO);
     
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), &vertex, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexSize*sizeof(float), vertex, GL_STATIC_DRAW);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize*sizeof(int), indices, GL_STATIC_DRAW);
     
     // position atribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, SIZE_POINT * sizeof(float), 0);
@@ -357,6 +363,13 @@ void render()
     if (status.changeWinTitle) {
         glfwSetWindowTitle(window, ("Surface VS - " + status.getParamFile()).c_str());
         status.changeWinTitle = false;
+    }
+
+    if (status.changeSizeMap) {
+        delete vertex, indices;
+        plainDeclar();
+        initializeBuffers();
+        status.changeSizeMap = false;
     }
 
 	glClearColor(status.fontColor.r, status.fontColor.g, status.fontColor.b, 0.7f);
@@ -389,23 +402,25 @@ void render()
     }
 	
 	if (status.getLoadShader()) {
-        std::string cmd = "cd procesador && make read FILE=../" + status.getParamPath() + "/'" + status.getParamFile() + "'";
+        std::string cmd = "cd procesador && make read FILE=../" + status.getParamPath() + "/'" + status.getParamFile() + "' ||:";
 
 		delete shaderNormals;
         delete shader;
 
 		system(cmd.c_str());
-		shader = new Shader();
-		shaderNormals = new Shader(true);
-        
-        int n;
+        if (status.checkErrorLog() != -1) {
+            shader = new Shader();
+            shaderNormals = new Shader(true);
+            
+            int n;
 
-        temp_file.open ("temp", std::fstream::in);
-        temp_file >> n;
-        status.setTotalFPlot(n);
-        temp_file >> n;
-        status.setTotalParam(n);
-        temp_file.close();
+            temp_file.open ("temp", std::fstream::in);
+            temp_file >> n;
+            status.setTotalFPlot(n);
+            temp_file >> n;
+            status.setTotalParam(n);
+            temp_file.close();
+        }
 
 		status.setLoadShader(false);
 	}
@@ -420,7 +435,7 @@ void render()
 
         for (int i = 0; i < status.getTotalFPlot(); i++) {
             shader->setInt("funPlot", i);
-            glDrawElements(GL_PATCHES, sizeof(indices), GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_PATCHES, indicesSize, GL_UNSIGNED_INT, 0);
         }
     }
 
@@ -433,7 +448,7 @@ void render()
 
 	for (int i = 0; i < status.getTotalFPlot(); i++) {
 		shader->setInt("funPlot", i);
-		glDrawElements(GL_PATCHES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_PATCHES, indicesSize, GL_UNSIGNED_INT, 0);
 	}
 }
 

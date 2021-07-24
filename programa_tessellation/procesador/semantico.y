@@ -102,6 +102,7 @@ lista_param : lista_param COMA lista_ident DOSPTOS IDENT	{ actualizaTipoDesc($5)
 
 lista_ident : lista_ident COMA IDENT	{ nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF($3); }	// Introducir como desconocido y llevar la cuenta.
             | IDENT						{ decParam=1; nParam++; parDesc++; setTipoDesc(); TS_InsertaPARAMF($1); }
+            | error
 ;
 
 constante : CONST_BOOL		{ $$.tipo = BOOLEANO; $$.dimension = 0; $$.tam = 0; }

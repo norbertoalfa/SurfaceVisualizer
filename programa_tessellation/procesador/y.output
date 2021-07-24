@@ -51,16 +51,17 @@ Gramática
 
    36 lista_ident: lista_ident COMA IDENT
    37            | IDENT
+   38            | error
 
-   38 constante: CONST_BOOL
-   39          | CONST_ENTERO
-   40          | CONST_REAL
+   39 constante: CONST_BOOL
+   40          | CONST_ENTERO
+   41          | CONST_REAL
 
 
 Terminales con las reglas donde aparecen
 
     $end (0) 0
-    error (256) 7 30
+    error (256) 7 30 38
     PAR_IZQ (258) 11 14 31
     PAR_DER (259) 11 14 31
     ASIGN (260) 8 11
@@ -72,9 +73,9 @@ Terminales con las reglas donde aparecen
     ELSE (266) 15
     PLOT (267) 13
     IDENT (268) 8 11 12 13 28 31 34 35 36 37
-    CONST_ENTERO (269) 39
-    CONST_BOOL (270) 38
-    CONST_REAL (271) 40
+    CONST_ENTERO (269) 40
+    CONST_BOOL (270) 39
+    CONST_REAL (271) 41
     OP_OR (272) 26
     OP_AND (273) 27
     OP_IGUAL (274) 24
@@ -129,10 +130,10 @@ No terminales con las reglas donde aparecen
         on left: 34 35
         on right: 11 34
     lista_ident (41)
-        on left: 36 37
+        on left: 36 37 38
         on right: 34 35 36
     constante (42)
-        on left: 38 39 40
+        on left: 39 40 41
         on right: 29
 
 
@@ -293,10 +294,11 @@ Estado 18
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ . lista_param PAR_DER DOSPTOS IDENT $@2 ASIGN expresion
 
-    IDENT  desplazar e ir al estado 22
+    error  desplazar e ir al estado 22
+    IDENT  desplazar e ir al estado 23
 
-    lista_param  ir al estado 23
-    lista_ident  ir al estado 24
+    lista_param  ir al estado 24
+    lista_ident  ir al estado 25
 
 
 Estado 19
@@ -317,161 +319,168 @@ Estado 21
 
     8 sentencia_declar_valor: IDENT DOSPTOS IDENT ASIGN . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
-    expresion        ir al estado 34
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    expresion        ir al estado 35
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 22
+
+   38 lista_ident: error .
+
+    $default  reduce usando la regla 38 (lista_ident)
+
+
+Estado 23
 
    37 lista_ident: IDENT .
 
     $default  reduce usando la regla 37 (lista_ident)
 
 
-Estado 23
+Estado 24
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param . PAR_DER DOSPTOS IDENT $@2 ASIGN expresion
    34 lista_param: lista_param . COMA lista_ident DOSPTOS IDENT
 
-    PAR_DER  desplazar e ir al estado 37
-    COMA     desplazar e ir al estado 38
+    PAR_DER  desplazar e ir al estado 38
+    COMA     desplazar e ir al estado 39
 
 
-Estado 24
+Estado 25
 
    35 lista_param: lista_ident . DOSPTOS IDENT
    36 lista_ident: lista_ident . COMA IDENT
 
-    COMA     desplazar e ir al estado 39
-    DOSPTOS  desplazar e ir al estado 40
+    COMA     desplazar e ir al estado 40
+    DOSPTOS  desplazar e ir al estado 41
 
 
-Estado 25
+Estado 26
 
    30 expresion: error .
 
     $default  reduce usando la regla 30 (expresion)
 
 
-Estado 26
+Estado 27
 
    14 expresion: PAR_IZQ . expresion PAR_DER
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
-
-    expresion        ir al estado 41
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
-
-
-Estado 27
-
-   15 expresion: IF . expresion THEN expresion ELSE expresion
-
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 42
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 28
 
-   28 expresion: IDENT .
-   31 llamada_funcion: IDENT . PAR_IZQ lista_expresiones PAR_DER
+   15 expresion: IF . expresion THEN expresion ELSE expresion
 
-    PAR_IZQ  desplazar e ir al estado 43
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
-    $default  reduce usando la regla 28 (expresion)
+    expresion        ir al estado 43
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 29
 
-   39 constante: CONST_ENTERO .
+   28 expresion: IDENT .
+   31 llamada_funcion: IDENT . PAR_IZQ lista_expresiones PAR_DER
 
-    $default  reduce usando la regla 39 (constante)
+    PAR_IZQ  desplazar e ir al estado 44
+
+    $default  reduce usando la regla 28 (expresion)
 
 
 Estado 30
 
-   38 constante: CONST_BOOL .
-
-    $default  reduce usando la regla 38 (constante)
-
-
-Estado 31
-
-   40 constante: CONST_REAL .
+   40 constante: CONST_ENTERO .
 
     $default  reduce usando la regla 40 (constante)
 
 
+Estado 31
+
+   39 constante: CONST_BOOL .
+
+    $default  reduce usando la regla 39 (constante)
+
+
 Estado 32
 
-   18 expresion: OP_MENOS . expresion
+   41 constante: CONST_REAL .
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
-
-    expresion        ir al estado 44
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    $default  reduce usando la regla 41 (constante)
 
 
 Estado 33
 
-   19 expresion: OP_NEG . expresion
+   18 expresion: OP_MENOS . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 45
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 34
+
+   19 expresion: OP_NEG . expresion
+
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
+
+    expresion        ir al estado 46
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
+
+
+Estado 35
 
     8 sentencia_declar_valor: IDENT DOSPTOS IDENT ASIGN expresion .
    16 expresion: expresion . COR_IZQ expresion COR_DER
@@ -484,64 +493,65 @@ Estado 34
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 8 (sentencia_declar_valor)
 
 
-Estado 35
+Estado 36
 
    17 expresion: llamada_funcion .
 
     $default  reduce usando la regla 17 (expresion)
 
 
-Estado 36
+Estado 37
 
    29 expresion: constante .
 
     $default  reduce usando la regla 29 (expresion)
 
 
-Estado 37
+Estado 38
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER . DOSPTOS IDENT $@2 ASIGN expresion
 
-    DOSPTOS  desplazar e ir al estado 55
-
-
-Estado 38
-
-   34 lista_param: lista_param COMA . lista_ident DOSPTOS IDENT
-
-    IDENT  desplazar e ir al estado 22
-
-    lista_ident  ir al estado 56
+    DOSPTOS  desplazar e ir al estado 56
 
 
 Estado 39
 
-   36 lista_ident: lista_ident COMA . IDENT
+   34 lista_param: lista_param COMA . lista_ident DOSPTOS IDENT
 
-    IDENT  desplazar e ir al estado 57
+    error  desplazar e ir al estado 22
+    IDENT  desplazar e ir al estado 23
+
+    lista_ident  ir al estado 57
 
 
 Estado 40
 
-   35 lista_param: lista_ident DOSPTOS . IDENT
+   36 lista_ident: lista_ident COMA . IDENT
 
     IDENT  desplazar e ir al estado 58
 
 
 Estado 41
+
+   35 lista_param: lista_ident DOSPTOS . IDENT
+
+    IDENT  desplazar e ir al estado 59
+
+
+Estado 42
 
    14 expresion: PAR_IZQ expresion . PAR_DER
    16          | expresion . COR_IZQ expresion COR_DER
@@ -554,19 +564,19 @@ Estado 41
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    PAR_DER    desplazar e ir al estado 59
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    PAR_DER    desplazar e ir al estado 60
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
 
-Estado 42
+Estado 43
 
    15 expresion: IF expresion . THEN expresion ELSE expresion
    16          | expresion . COR_IZQ expresion COR_DER
@@ -579,39 +589,39 @@ Estado 42
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    THEN       desplazar e ir al estado 60
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
-
-
-Estado 43
-
-   31 llamada_funcion: IDENT PAR_IZQ . lista_expresiones PAR_DER
-
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
-
-    expresion          ir al estado 61
-    llamada_funcion    ir al estado 35
-    lista_expresiones  ir al estado 62
-    constante          ir al estado 36
+    THEN       desplazar e ir al estado 61
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
 
 Estado 44
+
+   31 llamada_funcion: IDENT PAR_IZQ . lista_expresiones PAR_DER
+
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
+
+    expresion          ir al estado 62
+    llamada_funcion    ir al estado 36
+    lista_expresiones  ir al estado 63
+    constante          ir al estado 37
+
+
+Estado 45
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    18          | OP_MENOS expresion .
@@ -624,14 +634,14 @@ Estado 44
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 18 (expresion)
 
 
-Estado 45
+Estado 46
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    19          | OP_NEG expresion .
@@ -644,239 +654,239 @@ Estado 45
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    COR_IZQ  desplazar e ir al estado 54
+    COR_IZQ  desplazar e ir al estado 55
 
     $default  reduce usando la regla 19 (expresion)
 
 
-Estado 46
+Estado 47
 
    26 expresion: expresion OP_OR . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
-
-    expresion        ir al estado 63
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
-
-
-Estado 47
-
-   27 expresion: expresion OP_AND . expresion
-
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 64
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 48
 
-   24 expresion: expresion OP_IGUAL . expresion
+   27 expresion: expresion OP_AND . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 65
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 49
 
-   25 expresion: expresion OP_COMP . expresion
+   24 expresion: expresion OP_IGUAL . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 66
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 50
 
-   20 expresion: expresion OP_SUMA . expresion
+   25 expresion: expresion OP_COMP . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 67
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 51
 
-   21 expresion: expresion OP_MENOS . expresion
+   20 expresion: expresion OP_SUMA . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 68
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 52
 
-   22 expresion: expresion OP_MULTIP . expresion
+   21 expresion: expresion OP_MENOS . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 69
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 53
 
-   23 expresion: expresion OP_EXP . expresion
+   22 expresion: expresion OP_MULTIP . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 70
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 54
 
-   16 expresion: expresion COR_IZQ . expresion COR_DER
+   23 expresion: expresion OP_EXP . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
     expresion        ir al estado 71
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 55
 
-   11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER DOSPTOS . IDENT $@2 ASIGN expresion
+   16 expresion: expresion COR_IZQ . expresion COR_DER
 
-    IDENT  desplazar e ir al estado 72
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
+
+    expresion        ir al estado 72
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
 Estado 56
 
-   34 lista_param: lista_param COMA lista_ident . DOSPTOS IDENT
-   36 lista_ident: lista_ident . COMA IDENT
+   11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER DOSPTOS . IDENT $@2 ASIGN expresion
 
-    COMA     desplazar e ir al estado 39
-    DOSPTOS  desplazar e ir al estado 73
+    IDENT  desplazar e ir al estado 73
 
 
 Estado 57
+
+   34 lista_param: lista_param COMA lista_ident . DOSPTOS IDENT
+   36 lista_ident: lista_ident . COMA IDENT
+
+    COMA     desplazar e ir al estado 40
+    DOSPTOS  desplazar e ir al estado 74
+
+
+Estado 58
 
    36 lista_ident: lista_ident COMA IDENT .
 
     $default  reduce usando la regla 36 (lista_ident)
 
 
-Estado 58
+Estado 59
 
    35 lista_param: lista_ident DOSPTOS IDENT .
 
     $default  reduce usando la regla 35 (lista_param)
 
 
-Estado 59
+Estado 60
 
    14 expresion: PAR_IZQ expresion PAR_DER .
 
     $default  reduce usando la regla 14 (expresion)
 
 
-Estado 60
+Estado 61
 
    15 expresion: IF expresion THEN . expresion ELSE expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
-    expresion        ir al estado 74
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    expresion        ir al estado 75
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
-Estado 61
+Estado 62
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -889,51 +899,26 @@ Estado 61
    27          | expresion . OP_AND expresion
    33 lista_expresiones: expresion .
 
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 33 (lista_expresiones)
 
 
-Estado 62
+Estado 63
 
    31 llamada_funcion: IDENT PAR_IZQ lista_expresiones . PAR_DER
    32 lista_expresiones: lista_expresiones . COMA expresion
 
-    PAR_DER  desplazar e ir al estado 75
-    COMA     desplazar e ir al estado 76
-
-
-Estado 63
-
-   16 expresion: expresion . COR_IZQ expresion COR_DER
-   20          | expresion . OP_SUMA expresion
-   21          | expresion . OP_MENOS expresion
-   22          | expresion . OP_MULTIP expresion
-   23          | expresion . OP_EXP expresion
-   24          | expresion . OP_IGUAL expresion
-   25          | expresion . OP_COMP expresion
-   26          | expresion . OP_OR expresion
-   26          | expresion OP_OR expresion .
-   27          | expresion . OP_AND expresion
-
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
-
-    $default  reduce usando la regla 26 (expresion)
+    PAR_DER  desplazar e ir al estado 76
+    COMA     desplazar e ir al estado 77
 
 
 Estado 64
@@ -946,21 +931,46 @@ Estado 64
    24          | expresion . OP_IGUAL expresion
    25          | expresion . OP_COMP expresion
    26          | expresion . OP_OR expresion
+   26          | expresion OP_OR expresion .
+   27          | expresion . OP_AND expresion
+
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
+
+    $default  reduce usando la regla 26 (expresion)
+
+
+Estado 65
+
+   16 expresion: expresion . COR_IZQ expresion COR_DER
+   20          | expresion . OP_SUMA expresion
+   21          | expresion . OP_MENOS expresion
+   22          | expresion . OP_MULTIP expresion
+   23          | expresion . OP_EXP expresion
+   24          | expresion . OP_IGUAL expresion
+   25          | expresion . OP_COMP expresion
+   26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
    27          | expresion OP_AND expresion .
 
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 27 (expresion)
 
 
-Estado 65
+Estado 66
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -973,17 +983,17 @@ Estado 65
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 24 (expresion)
 
 
-Estado 66
+Estado 67
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -996,16 +1006,16 @@ Estado 66
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 25 (expresion)
 
 
-Estado 67
+Estado 68
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -1018,14 +1028,14 @@ Estado 67
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 20 (expresion)
 
 
-Estado 68
+Estado 69
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -1038,14 +1048,14 @@ Estado 68
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 21 (expresion)
 
 
-Estado 69
+Estado 70
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -1058,13 +1068,13 @@ Estado 69
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_EXP   desplazar e ir al estado 53
-    COR_IZQ  desplazar e ir al estado 54
+    OP_EXP   desplazar e ir al estado 54
+    COR_IZQ  desplazar e ir al estado 55
 
     $default  reduce usando la regla 22 (expresion)
 
 
-Estado 70
+Estado 71
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -1077,12 +1087,12 @@ Estado 70
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    COR_IZQ  desplazar e ir al estado 54
+    COR_IZQ  desplazar e ir al estado 55
 
     $default  reduce usando la regla 23 (expresion)
 
 
-Estado 71
+Estado 72
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    16          | expresion COR_IZQ expresion . COR_DER
@@ -1095,35 +1105,35 @@ Estado 71
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
-    COR_DER    desplazar e ir al estado 77
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
+    COR_DER    desplazar e ir al estado 78
 
 
-Estado 72
+Estado 73
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER DOSPTOS IDENT . $@2 ASIGN expresion
 
     $default  reduce usando la regla 10 ($@2)
 
-    $@2  ir al estado 78
-
-
-Estado 73
-
-   34 lista_param: lista_param COMA lista_ident DOSPTOS . IDENT
-
-    IDENT  desplazar e ir al estado 79
+    $@2  ir al estado 79
 
 
 Estado 74
+
+   34 lista_param: lista_param COMA lista_ident DOSPTOS . IDENT
+
+    IDENT  desplazar e ir al estado 80
+
+
+Estado 75
 
    15 expresion: IF expresion THEN expresion . ELSE expresion
    16          | expresion . COR_IZQ expresion COR_DER
@@ -1136,85 +1146,85 @@ Estado 74
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    ELSE       desplazar e ir al estado 80
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    ELSE       desplazar e ir al estado 81
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
 
-Estado 75
+Estado 76
 
    31 llamada_funcion: IDENT PAR_IZQ lista_expresiones PAR_DER .
 
     $default  reduce usando la regla 31 (llamada_funcion)
 
 
-Estado 76
+Estado 77
 
    32 lista_expresiones: lista_expresiones COMA . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
-    expresion        ir al estado 81
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    expresion        ir al estado 82
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
-Estado 77
+Estado 78
 
    16 expresion: expresion COR_IZQ expresion COR_DER .
 
     $default  reduce usando la regla 16 (expresion)
 
 
-Estado 78
+Estado 79
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER DOSPTOS IDENT $@2 . ASIGN expresion
 
-    ASIGN  desplazar e ir al estado 82
+    ASIGN  desplazar e ir al estado 83
 
 
-Estado 79
+Estado 80
 
    34 lista_param: lista_param COMA lista_ident DOSPTOS IDENT .
 
     $default  reduce usando la regla 34 (lista_param)
 
 
-Estado 80
+Estado 81
 
    15 expresion: IF expresion THEN expresion ELSE . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
-    expresion        ir al estado 83
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    expresion        ir al estado 84
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
-Estado 81
+Estado 82
 
    16 expresion: expresion . COR_IZQ expresion COR_DER
    20          | expresion . OP_SUMA expresion
@@ -1227,39 +1237,39 @@ Estado 81
    27          | expresion . OP_AND expresion
    32 lista_expresiones: lista_expresiones COMA expresion .
 
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 32 (lista_expresiones)
 
 
-Estado 82
+Estado 83
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER DOSPTOS IDENT $@2 ASIGN . expresion
 
-    error         desplazar e ir al estado 25
-    PAR_IZQ       desplazar e ir al estado 26
-    IF            desplazar e ir al estado 27
-    IDENT         desplazar e ir al estado 28
-    CONST_ENTERO  desplazar e ir al estado 29
-    CONST_BOOL    desplazar e ir al estado 30
-    CONST_REAL    desplazar e ir al estado 31
-    OP_MENOS      desplazar e ir al estado 32
-    OP_NEG        desplazar e ir al estado 33
+    error         desplazar e ir al estado 26
+    PAR_IZQ       desplazar e ir al estado 27
+    IF            desplazar e ir al estado 28
+    IDENT         desplazar e ir al estado 29
+    CONST_ENTERO  desplazar e ir al estado 30
+    CONST_BOOL    desplazar e ir al estado 31
+    CONST_REAL    desplazar e ir al estado 32
+    OP_MENOS      desplazar e ir al estado 33
+    OP_NEG        desplazar e ir al estado 34
 
-    expresion        ir al estado 84
-    llamada_funcion  ir al estado 35
-    constante        ir al estado 36
+    expresion        ir al estado 85
+    llamada_funcion  ir al estado 36
+    constante        ir al estado 37
 
 
-Estado 83
+Estado 84
 
    15 expresion: IF expresion THEN expresion ELSE expresion .
    16          | expresion . COR_IZQ expresion COR_DER
@@ -1272,20 +1282,20 @@ Estado 83
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 15 (expresion)
 
 
-Estado 84
+Estado 85
 
    11 sentencia_declar_fun: IDENT $@1 PAR_IZQ lista_param PAR_DER DOSPTOS IDENT $@2 ASIGN expresion .
    16 expresion: expresion . COR_IZQ expresion COR_DER
@@ -1298,14 +1308,14 @@ Estado 84
    26          | expresion . OP_OR expresion
    27          | expresion . OP_AND expresion
 
-    OP_OR      desplazar e ir al estado 46
-    OP_AND     desplazar e ir al estado 47
-    OP_IGUAL   desplazar e ir al estado 48
-    OP_COMP    desplazar e ir al estado 49
-    OP_SUMA    desplazar e ir al estado 50
-    OP_MENOS   desplazar e ir al estado 51
-    OP_MULTIP  desplazar e ir al estado 52
-    OP_EXP     desplazar e ir al estado 53
-    COR_IZQ    desplazar e ir al estado 54
+    OP_OR      desplazar e ir al estado 47
+    OP_AND     desplazar e ir al estado 48
+    OP_IGUAL   desplazar e ir al estado 49
+    OP_COMP    desplazar e ir al estado 50
+    OP_SUMA    desplazar e ir al estado 51
+    OP_MENOS   desplazar e ir al estado 52
+    OP_MULTIP  desplazar e ir al estado 53
+    OP_EXP     desplazar e ir al estado 54
+    COR_IZQ    desplazar e ir al estado 55
 
     $default  reduce usando la regla 11 (sentencia_declar_fun)
