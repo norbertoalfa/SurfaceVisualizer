@@ -1,4 +1,3 @@
-- DONE: Cambiar tamaño malla desde interfaz.
-- DONE: Aplicar pow(Critic, 0. ...).
-- DONE: Añadir funciones pico.
-- DONE: Mostrar errores sintácticos en cuadro.
+- Que al escribir el nombre del fichero .in no se vaya
+- Compilar lo que haya en el editor (lo que esté cargado en "status"):
+    * Cuando se compile sin guardar, se guarda en lastParam.in, como archivo temporal para recuperarlo más tarde (si se requiere).
