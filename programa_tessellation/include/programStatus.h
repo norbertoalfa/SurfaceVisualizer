@@ -12,6 +12,7 @@ class ProgramStatus
 		unsigned int SCR_HEIGHT;
 
 		std::string paramFile, dirPath, fileText;
+		std::string lastParamFile, lastParamPath;
 		std::string errorFile, errorText;
 
 		int sizeMap;
@@ -37,7 +38,7 @@ class ProgramStatus
 		float params[10];
 		bool autoParams[10];
 
-		bool hasError;
+		bool hasError, showError;
 
 		bool changeWinTitle;
 		bool changeSizeMap;
@@ -65,12 +66,15 @@ class ProgramStatus
 
 			sizeMap = 10;
 
+			lastParamPath = "variedades";
+			lastParamFile = "lastParam.in";
+
 			dirPath = "variedades";
 			paramFile = "lastParam.in";
 			errorFile = "error.log";
 			changeWinTitle = true;
 			changeSizeMap = false;
-			hasError = false;
+			hasError = showError = false;
 
 			if (loadText() == -1) {
 				paramFile = "toro.in";
@@ -145,7 +149,9 @@ class ProgramStatus
 		
 		void setParamFile(std::string file) { paramFile = file; changeWinTitle = true; someChange = true; }
 
-		void setFileText(std::string text) { fileText = text; }
+		void setParamPath(std::string path) { dirPath = path; }
+		
+		void setFileText(std::string text) { fileText = text; saveLastParam();}
 		
 		void setTotalFPlot(int nplot) { totalFPlot = nplot; }
 
@@ -202,6 +208,10 @@ class ProgramStatus
 		
 		std::string getParamPath() { return dirPath; }
 		
+		std::string getLastParamFile() { return lastParamFile; }
+		
+		std::string getLastParamPath() { return lastParamPath; }
+		
 		std::string getFileText() { return fileText; }
 		
 		std::string getErrorText() { return errorText; }
@@ -238,7 +248,7 @@ class ProgramStatus
 			std::string data;
 			int retCode = 1;
 
-			hasError = false;
+			hasError = showError = false;
 
 			inFile.open(errorFile);
 
@@ -246,7 +256,7 @@ class ProgramStatus
 				errorText = "";
 
 				while (std::getline(inFile, data)) {
-					hasError = true;
+					hasError = showError = true;
 					retCode = -1;
 					errorText += data + "\n";
 				}
@@ -267,7 +277,7 @@ class ProgramStatus
 			inFile.open(dirPath + "/" + paramFile);
 
 			if (!inFile) {
-				std::cerr << "No se ha podido abrir el archivo de parametrización para leer." << std::endl;
+				std::cerr << "No se ha podido abrir el archivo de parametrización para leer " << dirPath << "/" << paramFile <<std::endl;
 
 				return -1;
 			}
@@ -283,10 +293,18 @@ class ProgramStatus
 			return 1;
 		}
 
+		int saveLastParam(){
+			return saveText(lastParamPath, lastParamFile);
+		}
+
 		int saveText(){
+			return saveText(dirPath, paramFile);
+		}
+
+		int saveText(std::string path, std::string file){
 			std::ofstream offFile;
 
-			offFile.open(dirPath + "/" + paramFile);
+			offFile.open(path + "/" + file);
 
 			if (!offFile) {
 				std::cerr << "No se ha podido abrir el archivo de parametrización para escribir." << std::endl;

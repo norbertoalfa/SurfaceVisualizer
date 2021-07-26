@@ -29,4 +29,4 @@ lex.yy.c: especificacion.lex
 	lex -l especificacion.lex
 
 clean:
-	rm -f analizador y.tab.o y.tab.c lex.yy.c y.output semantico.o nodo.o
+	rm -f analizador y.tab.c lex.yy.c y.output *.o

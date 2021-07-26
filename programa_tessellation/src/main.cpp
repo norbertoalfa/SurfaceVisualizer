@@ -137,7 +137,7 @@ void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int 
 
 void processMouseKey(GLFWwindow* window, int button, int action, int mods)
 {
-    if (!ImGui::IsAnyWindowHovered()) {
+    if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
             status.setPerDisplace(true);
             status.setSomeChange(true);
@@ -208,7 +208,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if (!ImGui::IsAnyWindowHovered()) {
+    if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
         camera.processMouseScroll(yoffset);
         status.setSomeChange(true);
     }
@@ -402,13 +402,13 @@ void render()
     }
 	
 	if (status.getLoadShader()) {
-        std::string cmd = "cd procesador && make read FILE=../" + status.getParamPath() + "/'" + status.getParamFile() + "' ||:";
-
-		delete shaderNormals;
-        delete shader;
+        std::string cmd = "cd procesador && make read FILE=../" + status.getLastParamPath() + "/'" + status.getLastParamFile() + "' ||:";
 
 		system(cmd.c_str());
         if (status.checkErrorLog() != -1) {
+            delete shaderNormals;
+            delete shader;
+            
             shader = new Shader();
             shaderNormals = new Shader(true);
             

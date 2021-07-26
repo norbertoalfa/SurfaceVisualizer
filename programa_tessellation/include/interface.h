@@ -5,6 +5,7 @@
 #include "light.h"
 #include "object.h"
 #include "imGuIZMOquat.h"
+#include "ImGuiFileDialog.h"
 #include <iostream>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
@@ -12,21 +13,30 @@
 #endif
 
 
+
+ImGuiIO *io;
+ImVec4 titleColor = ImVec4(0.3, 0.3, 1.0, 1.0);
+glm::vec4 lightVector, lightDirGlm;
+glm::vec3 objectColor, fontColor;
+vec3 lightDir;
+
+std::string filePathName;
+std::string fileName;
+
+const char* glsl_version = "#version 130";
 char nameFile[100];
 char text[10000];
-const char* glsl_version = "#version 130";
 int sizeMap;
+
+bool autoRot = false;
+bool polMode = false;
 bool show_editor_window = false;
+bool show_dialog_error = false;
 bool show_params_window = false;
 bool show_render_info = true;
 bool show_light_vector = false;
 bool firstEditor = true;
 bool firstTime = true;
-
-ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-glm::vec3 objectColor, fontColor;
-vec3 lightDir;
-ImGuiIO *io;
 
 void initImGUI(GLFWwindow* window)
 {
@@ -47,11 +57,8 @@ void initImGUI(GLFWwindow* window)
 
 void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm::mat4 pvm, glm::mat4 pvm_inv)
 { 
-    bool autoRot = status.getAutoRotation();
-    bool polMode = status.getActivePolMode();
-    ImVec4 titleColor = ImVec4(0.3, 0.3, 1.0, 1.0);
-    glm::vec4 lightVector, lightDirGlm;
-    bool closeError = status.hasError;
+    autoRot = status.getAutoRotation();
+    polMode = status.getActivePolMode();
 
     if (show_light_vector) {
         lightVector = pvm * glm::vec4(light.getDir(), 0.0);
@@ -69,6 +76,12 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
         }
     }
 
+    if (status.showError) {
+        show_editor_window = true;
+        show_dialog_error = true;
+        status.showError = false;
+    }
+
     strcpy(nameFile, status.getParamFile().c_str());
 
 	ImGui_ImplOpenGL3_NewFrame();
@@ -76,16 +89,22 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
     ImGui::NewFrame();
 
     {
-        static float f = 0.0f;
-        static int counter = 0;
-
         ImGui::Begin("Menu", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
         ImGui::TextColored(titleColor, "Parametrización");
 
-        if(ImGui::InputText("", nameFile, sizeof(nameFile), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            status.setParamFile(nameFile);
-            status.setLoadShader(true);
+        if (ImGui::Button("Select file")) {
+            ImGui::SetNextWindowSize(ImVec2(500, 300));
+            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileIn", "Coose File", ".in", ".");
+        }
+        
+        if (ImGuiFileDialog::Instance()->Display("ChooseFileIn")) {
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                status.setParamPath(ImGuiFileDialog::Instance()->GetCurrentPath());
+                status.setParamFile(ImGuiFileDialog::Instance()->GetCurrentFileName());
+            }
+
+            ImGuiFileDialog::Instance()->Close();
         }
         ImGui::SameLine();
         if (ImGui::Button("Edit")) {
@@ -93,7 +112,7 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
         }
         ImGui::SameLine();
         if (ImGui::Button("Compile")){
-            status.saveText();
+            status.saveLastParam();
             status.setLoadShader(true);
         }
 
@@ -184,38 +203,41 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
     if (show_editor_window) {
         std::string textStr = std::string(text);
         int numLines = std::count(textStr.begin(), textStr.end(), '\n');
+        int editorHeight = status.getHeight()*0.75;
+
+        if (numLines*15 > editorHeight) {
+            editorHeight = numLines*15;
+        }
 
         ImGui::Begin("Editor", &show_editor_window);
         ImGui::SetWindowSize(ImVec2(status.getWidth()*0.85, status.getHeight()*0.85));
         
-        ImGui::Text("Fichero de edición");
-
-        ImGui::PushID(0);
-        if(ImGui::InputText("", nameFile, sizeof(nameFile), ImGuiInputTextFlags_EnterReturnsTrue)) {
-            status.setParamFile(nameFile);
-            status.loadText();
-            strcpy(text, status.getFileText().c_str());
-        }
-        ImGui::PopID();
-        
-        if (ImGui::Button("Load") || firstEditor){
+        if (ImGui::Button("Reload") || firstEditor){
             status.loadText();
             strcpy(text, status.getFileText().c_str());
             firstEditor = false;
         }
-
         ImGui::SameLine();
-
         if (ImGui::Button("Save")){
             status.setFileText(std::string(text));
             status.saveText();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Save & Compile")){
+        if (ImGui::Button("Compile")){
             status.setFileText(std::string(text));
-            status.saveText();
             status.setLoadShader(true);
         }
+
+        if (show_dialog_error) {
+            ImGui::SetNextTreeNodeOpen(true);
+            show_dialog_error = false;
+        }
+
+        if (ImGui::CollapsingHeader("Analizer output")) {
+            ImGui::Text((status.getErrorText()).c_str());
+        }
+
+        ImGui::Separator();
 
         if (ImGui::Button("Add '^'")){
             strcpy(text, (std::string(text) + "^").c_str());
@@ -227,16 +249,17 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
         
         std::string linesStr = "";
         char lines[1000];
-        for (int i=0; i<numLines; i++) {
+
+        for (int i=0; i<=numLines; i++) {
             linesStr += std::to_string(i+1) + "\n";
         }
         strcpy(lines, linesStr.c_str());
-        ImGui::InputTextMultiline("", lines, sizeof(lines), ImVec2(40, status.getHeight()*0.75), ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputTextMultiline("", lines, sizeof(lines), ImVec2(40, editorHeight), ImGuiInputTextFlags_ReadOnly);
 
         ImGui::NextColumn();
 
         ImGui::PushID("1");
-        ImGui::InputTextMultiline("", text, sizeof(text), ImVec2(status.getWidth()*0.75, status.getHeight()*0.75), ImGuiInputTextFlags_AllowTabInput);
+        ImGui::InputTextMultiline("", text, sizeof(text), ImVec2(status.getWidth()*0.75, editorHeight), ImGuiInputTextFlags_AllowTabInput);
         ImGui::PopID();
 
         ImGui::Columns(1);
@@ -267,14 +290,6 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
             light.setDir(glm::vec3(lightDirGlm.x, lightDirGlm.y, lightDirGlm.z));
         }
         
-        ImGui::End();
-    }
-
-    if (status.hasError) {
-        ImGui::Begin("Compilation error", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
-        
-        ImGui::Text((status.getErrorText()).c_str());
-
         ImGui::End();
     }
 
