@@ -265,7 +265,6 @@ class ProgramStatus
 			}
 
 			inFile.close();
-			//remove(errorFile.c_str());
 
 			return retCode;
 		}

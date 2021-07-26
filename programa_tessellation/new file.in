@@ -1,0 +1,3 @@
+f(u, v:real) : vec3 = vec3(u,u*v, v);
+
+plot f;
