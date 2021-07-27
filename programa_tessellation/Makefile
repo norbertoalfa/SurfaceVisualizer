@@ -45,7 +45,7 @@ $(BUILD_DIR)/%.c.o: src/%.c
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cpp.o: src/%.cpp
-	#mkdir -p $(dir $@)
+	mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@ -I./include
 
 shader: variedades/lastParam.in
@@ -53,6 +53,6 @@ shader: variedades/lastParam.in
 	cd ..
 
 clean:
-	rm -rf bin/* obj/*
+	rm -rf bin/* obj/* imgui.ini
 	cd ./procesador/ && $(MAKE) clean
 	cd ..

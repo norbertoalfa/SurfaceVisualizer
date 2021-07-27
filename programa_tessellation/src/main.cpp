@@ -420,6 +420,7 @@ void render()
             temp_file >> n;
             status.setTotalParam(n);
             temp_file.close();
+            remove("temp");
         }
 
 		status.setLoadShader(false);
