@@ -1,0 +1,37 @@
+% !TeX root = ../libro.tex
+% !TeX encoding = utf8
+
+\chapter{Análisis y diseño}
+
+En este capítulo se especificará toda aquella información referente a la estructura del programa y los requisitos del mismo, aunque está mayormente enfocado a la definición de los algoritmos desarrollados.
+
+\section{Especificación de requisitos}
+
+	\subsection{Requisitos funcionales}
+	\begin{enumerate}
+		\item El sistema debe permitir visualizar cualquier parametrización que se le indique.
+		\item Se podrán visualizar varias parametrizaciones a la vez, donde cada una podrá representar una carta de una superficie específica.
+		\item El usuario podrá indicar ciertos parámetros de la visualización de la superficie, como:
+			\begin{enumerate}
+				\item El tamaño de la malla inicial con la que se visualizará cada carta de la superficie.
+				\item El umbral de diferencia local de la longitud de la malla a generar con respecto a la superficie original.
+			\end{enumerate}
+		\item El programa no renderizará nuevos frames si no se requieren nuevos cálculos (no se detectan cambios en la entrada y la escena está estática).
+	\end{enumerate}
+
+	\subsection{Requisitos no funcionales}
+	\begin{enumerate}
+		\item El programa debe renderizar las superficies con un tiempo de respuesta bajo, pensando en dispositivos con GPU con características media, como por ejemplo gráficas integradas.
+		\item Si el programa adaptará su rendimiento según el estado del propio programa.
+	\end{enumerate}
+
+\section{Metodología}
+
+\section{Diagramas}
+
+\section{Principales desarrollos algorítmicos}
+
+\endinput
+%------------------------------------------------------------------------------------
+% FIN DEL CAPÍTULO. 
+%------------------------------------------------------------------------------------
