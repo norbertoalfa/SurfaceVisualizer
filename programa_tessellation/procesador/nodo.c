@@ -394,6 +394,26 @@ void escribeExpr(char *sent, nodo *nodoExpr){
 	
 }
 
+void escribeRet(char *sent, entradaTS e, nodo *expr) {
+
+	sprintf(sent,"%s) {\n\treturn ", sent);
+
+	if (e.tipo == ARRAY) {
+  		if (e.dimension == 1) {
+  			sprintf(sent,"%svec%d(", sent, e.tam);
+  		} else if (e.dimension == 2) {
+  			sprintf(sent,"%smat%d(", sent, e.tam);
+  		}
+  	}
+	
+    escribeExpr(sent, expr);
+
+	if (e.tipo == ARRAY) {
+    	sprintf(sent,"%s)", sent);
+	}
+    sprintf(sent,"%s;\n}\n\n", sent);
+}
+
 void escribeFun(char *fun, nodo *expr){
 	int indexFun, i;
 	char * sent;
@@ -429,9 +449,11 @@ void escribeFun(char *fun, nodo *expr){
   	sent = (char *) malloc(10000);
   	sent[0]=0;
 	
-	sprintf(sent,"%s) {\n\treturn ", sent);
+	escribeRet(sent, TS[indexFun], expr);
+
+	/*sprintf(sent,"%s) {\n\treturn ", sent);
     escribeExpr(sent, expr);
-    sprintf(sent,"%s;\n}\n\n", sent);
+    sprintf(sent,"%s;\n}\n\n", sent);*/
     
   	fputs(sent,file);
   	free(sent);
