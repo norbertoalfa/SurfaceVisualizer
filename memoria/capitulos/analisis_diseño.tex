@@ -18,25 +18,31 @@ En este capítulo se especificará toda aquella información referente a la estr
 		\end{enumerate}
 		
 		\item El usuario podrá indicar ciertos parámetros del cálculo de la malla de la superficie, como:
-			\begin{enumerate}
-				\item El tamaño de la malla inicial con la que se visualizará cada carta de la superficie.
-				\item El umbral de diferencia local de la longitud de la malla a generar con respecto a la superficie original.
-			\end{enumerate}
+		\begin{enumerate}
+			\item El tamaño de la malla inicial con la que se visualizará cada carta de la superficie.
+			\item El umbral de diferencia local de la longitud de la malla a generar con respecto a la superficie original.
+		\end{enumerate}
 			
 		\item El usuario podrá indicar si quiere visualizar ciertos atributos de la superficie, como:
-			\begin{enumerate}
-				\item La curvatura de Gauss, asignando un color para la curvatura negativa y otro para la positiva, dependiendo de un parámetro de escala para resaltar las zonas.
-				\item El área diferencial de la parametrización, junto con un umbral y un factor de escala que se podrán modificar.
-				\item Se podrán visualizar los vectores tangente, normal y binormal de cada vértice generado.
-			\end{enumerate}
+		\begin{enumerate}
+			\item La curvatura de Gauss, asignando un color para la curvatura negativa y otro para la positiva, dependiendo de un parámetro de escala para resaltar las zonas.
+			\item El área diferencial de la parametrización, junto con un umbral y un factor de escala que se podrán modificar.
+			\item Se podrán visualizar los vectores tangente, normal y binormal de cada vértice generado.
+		\end{enumerate}
+		
+		\item El usuario tendrá la posibilidad de modificar valores correspondientes a la iluminación.
+		\begin{enumerate}
+			\item Los coeficientes del modelo de iluminación Phong.
+			\item El color del fondo de la escena y el color base del objeto visualizado.
+		\end{enumerate}
 			
 		\item El programa no renderizará nuevos frames si no se requieren nuevos cálculos (no se detectan cambios en la entrada y la escena está estática).
 	\end{enumerate}
 
 	\subsection{Requisitos no funcionales}
 	\begin{enumerate}
-		\item El programa debe renderizar las superficies con un tiempo de respuesta bajo, pensando en dispositivos con GPU con características media, como por ejemplo gráficas integradas.
-		\item Si el programa adaptará su rendimiento según el estado del propio programa.
+		\item El programa debe renderizar las superficies con un tiempo de respuesta bajo, pensando en dispositivos con GPU comunes, como por ejemplo gráficas integradas.
+		\item El programa adaptará su rendimiento según el estado del propio programa.
 	\end{enumerate}
 
 \section{Metodología}
