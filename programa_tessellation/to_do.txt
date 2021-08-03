@@ -1,1 +1,1 @@
-- DONE: Permitir crear nuevo fichero
+- Permitir llamar a funciones parciales en el código
