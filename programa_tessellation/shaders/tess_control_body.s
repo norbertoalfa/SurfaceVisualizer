@@ -8,41 +8,23 @@ float tetraVol(vec3 p1, vec3 p2, vec3 p3, vec3 p_medio) {
     return abs(determinant(mat3(p1-p_medio, p2-p_medio, p3-p_medio)))/6.0;
 }
 
-float calculateLength(vec2 p1, vec2 p2, int nIniPts){
-    float longitud = 0;
-    vec2 coord_o, coord_d;
+float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
+    float maxK = 0;
+    vec2 coord;
 
-    for (int i = 0; i < nIniPts; i++) {
-        coord_o = ((nIniPts - i) * p1 + i * p2) / nIniPts;
-        coord_d = ((nIniPts - i-1) * p1 + (i+1) * p2) / nIniPts;
+    for (int i = 0; i <= nIniPts; i++) {
+        coord = ((nIniPts - i) * p1 + i * p2) / nIniPts;
 
-        longitud += length(functionParam(coord_d) - functionParam(coord_o));
+        maxK = max(maxK, abs(curvatureParam(coord)));
     }
 
-    return longitud;
+    return maxK;
 }
 
-float bestNPts(vec2 p1, vec2 p2) {
-    int fails = 0;
-    int m = 1;
-    float actualL = calculateLength(p1, p2, m);
-    float oldL;
+float bestNPtsK(vec2 p1, vec2 p2) {
+    float longitud = length(functionParam(p2) - functionParam(p1));
 
-    oldL = calculateLength(p1, p2, 1);
-
-    for (int i = 2; i < ptsLimit; i++) { //&& fails < failsLimit; i++) { // Para que haga menos cálculos
-        if ((actualL - oldL) >= umbralLength) {
-            oldL = actualL;
-            m = i;
-            fails++;
-        } else {
-            fails = 0;
-        }
-
-        actualL = calculateLength(p1, p2, i);
-    }
-
-    return m;
+    return floor((calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
 }
 
 void main(void) {
@@ -58,13 +40,13 @@ void main(void) {
     p_medio31 = (p3 + p1) / 2.0;
 
     if (gl_InvocationID == 0) {
-        nPts12 = bestNPts(p1, p2);
-        nPts23 = bestNPts(p2, p3);
-        nPts31 = bestNPts(p3, p1);
+        nPts12 = bestNPtsK(p1, p2);
+        nPts23 = bestNPtsK(p2, p3);
+        nPts31 = bestNPtsK(p3, p1);
 
-        nPtsInt = bestNPts(p1, p_medio23);
-        nPtsInt = max(nPtsInt, bestNPts(p2, p_medio31));
-        nPtsInt = max(nPtsInt, bestNPts(p3, p_medio12));
+        nPtsInt = bestNPtsK(p1, p_medio23);
+        nPtsInt = max(nPtsInt, bestNPtsK(p2, p_medio31));
+        nPtsInt = max(nPtsInt, bestNPtsK(p3, p_medio12));
 
         gl_TessLevelInner[0] = nPtsInt;
         gl_TessLevelOuter[0] = nPts23;
