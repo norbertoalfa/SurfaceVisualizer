@@ -1,0 +1,4 @@
+f(u,v :real) : vec3 = 40*vec3(cos(u), sin(v), 0);
+
+
+plot f;

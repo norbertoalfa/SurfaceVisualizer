@@ -18,4 +18,4 @@ oscPlane(u, v:real, t0,t1 :real) : vec3 = u*fPu(t0,t1) + v*fPv(t0,t1) + f(t0, t1
 
 oscPlaneMed(u, v:real, t0,t1 :real) : vec3 = oscPlane(u-0.5, v-0.5, t0, t1);
 
-plot f, oscPlaneMed;//f2;
+plot f;// oscPlaneMed;//f2;
