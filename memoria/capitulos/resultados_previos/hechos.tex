@@ -63,6 +63,12 @@ A continuación se enuncian los ``hechos'' utilizados para las demostraciones de
 	Sea $E$ una estructura diferenciable en $D^1 \times \R$ tal que es la usual en un entorno del borde. Entonces existe un difeomorfismo $g:(D^1 \times \R)_E \rightarrow (D^1 \times \R)_U$, con $U$ la estructura usual, que además es la identidad entorno a $\partial D^1 \times \R$.
 \end{hecho}
 
+\begin{proof}
+	Tomamos la proyección $\pi : (D^1 \times \R)_S \rightarrow \R$ que ya es diferenciable en un entorno del borde. Si vemos $(D^1 \times \R)_{S}$ como una variedad sabemos que existe una  función de Morse $f : (D^1 \times \R)_S \rightarrow \R$, a la que podemos obligar que coincida con $|\pi$ en un entorno del borde más pequeño que en el que es diferenciable $\pi$, donde no tendrá puntos críticos. \\
+	\\ La función $f$ es una función de Morse propia, con todos sus puntos críticos en distintos niveles. Los niveles de puntos no críticos están formados por un único arco y una o varias circunferencias. Al cortar por dichos niveles obtenemos discos, anillos, ``pantalones'', rectángulos y rectángulos con un ``agujero'' (un rectángulo menos un disco abierto). El grafo asociado $G$ es un árbol debido a que $\Pi_1(D^1 \times \R) = 0$, y procedemos como en la demostración del hecho $2.3$, alterando $f$ de forma que el $G$ asociado sea homeomorfo a $\R$. \\
+	\\ La nueva función $f$ no tiene puntos críticos, por lo que puede ser la segunda componente de un difeomorfismo $g:(D^1 \times \R)_S \rightarrow D^1 \times \R$, que coincidirá con la identidad en un entorno del borde. La primera componente se puede obtener a partir del campo de vectores gradientes de $f$, de forma similar a como se prosigue en la demostración del teorema $2.2$ de la teoría de Morse (citar Morse theory surface).
+\end{proof}
+
 \begin{hecho}
 	Sea $E$ una estructura diferenciable en $D^2$ tal que es la usual en un entorno del borde. Entonces existe un difeomorfismo $g:D^2_E \rightarrow D^2_U$, con $U$ la estructura usual, que además es la identidad entorno a $\partial D^2$.
 \end{hecho}
