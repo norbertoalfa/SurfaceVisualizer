@@ -1,0 +1,16 @@
+R : real = 0.2;
+r : real = 0.02;
+
+compx(u : real) : real = 3*cos(3*u) * (8*cos(2*u)-cos(u)) + 9*sin(3*u) * (4*sin(2*u)-sin(u));
+compy(u : real) : real = 31 + 4*(cos(u)*cos(2*u) - sin(u)*sin(2*u));
+compz(u : real) : real = 3*cos(3*u) * (8*sin(2*u)+sin(u)) + 9*sin(3*u) * (4*cos(2*u)-cos(u));
+
+
+alfa(u : real) : vec3 = vec3(sin(u) + 2*sin(2*u), - sin(3*u), cos(u) + 2*cos(2*u));
+nAlfa(u : real) : vec3 = vec3(sin(u) + 8*sin(2*u), 9*sin(3*u), -9*cos(u) - 8*cos(2*u));
+bAlfa(u : real) : vec3 = vec3(compx(u), compy(u), compz(u));
+
+f(u, v : real) : vec3 = alfa(u) + r*cos(v) * bAlfa(u) + r*sin(v) * nAlfa(u);
+g(u, v : real) : vec3 = f(2*PI*u, 2*PI*v);
+
+plot g;
