@@ -66,12 +66,18 @@ A continuación se enuncian los ``hechos'' utilizados para las demostraciones de
 \begin{proof}
 	Tomamos la proyección $\pi : (D^1 \times \R)_S \rightarrow \R$ que ya es diferenciable en un entorno del borde. Si vemos $(D^1 \times \R)_{S}$ como una variedad sabemos que existe una  función de Morse $f : (D^1 \times \R)_S \rightarrow \R$, a la que podemos obligar que coincida con $|\pi$ en un entorno del borde más pequeño que en el que es diferenciable $\pi$, donde no tendrá puntos críticos. \\
 	\\ La función $f$ es una función de Morse propia, con todos sus puntos críticos en distintos niveles. Los niveles de puntos no críticos están formados por un único arco y una o varias circunferencias. Al cortar por dichos niveles obtenemos discos, anillos, ``pantalones'', rectángulos y rectángulos con un ``agujero'' (un rectángulo menos un disco abierto). El grafo asociado $G$ es un árbol debido a que $\Pi_1(D^1 \times \R) = 0$, y procedemos como en la demostración del hecho $2.3$, alterando $f$ de forma que el $G$ asociado sea homeomorfo a $\R$. \\
-	\\ La nueva función $f$ no tiene puntos críticos, por lo que puede ser la segunda componente de un difeomorfismo $g:(D^1 \times \R)_S \rightarrow D^1 \times \R$, que coincidirá con la identidad en un entorno del borde. La primera componente se puede obtener a partir del campo de vectores gradientes de $f$, de forma similar a como se prosigue en la demostración del teorema $2.2$ de la teoría de Morse (citar Morse theory surface).
+	\\ La nueva función $f$ no tiene puntos críticos, por lo que puede ser la segunda componente de un difeomorfismo $g:(D^1 \times \R)_S \rightarrow D^1 \times \R$, que coincidirá con la identidad en un entorno del borde. La primera componente se puede obtener a partir del campo de vectores gradientes de $f$, de forma similar a como se prosigue en la demostración del teorema $2.2$ de la teoría de Morse.
 \end{proof}
 
 \begin{hecho}
 	Sea $E$ una estructura diferenciable en $D^2$ tal que es la usual en un entorno del borde. Entonces existe un difeomorfismo $g:D^2_E \rightarrow D^2_U$, con $U$ la estructura usual, que además es la identidad entorno a $\partial D^2$.
 \end{hecho}
+
+\begin{proof}
+	Tomamos la función que devuelve el radio (distancia al origen) en un entorno de $\partial D^2_S$ y como es diferenciable, la extendemos a una función de Morse propia $f:D^2_S \rightarrow (0,1]$, cuyos puntos críticos están en el interior y $f^{-1}(1) = \partial D^2_S$.\\
+	\\ El grafo asociado $G$ es un árbol por ser $\Pi_1(D^2) = 0$ y deformando $f$ como se hizo anteriormente, podemos simplificar $G$  a un único punto. Entonces, $f$ sólo tiene un punto crítico $p$, que necesariamente debe de ser de índice $0$ porque coincide con la función ``radio'' en el borde ($f$ decrece a medida que nos acercamos $p$, es decir, en $p$ la matriz Hessiana es definida positiva y por tanto el índice es $0$).\\
+	\\ Construimos $g:D^2_S \rightarrow D^2$ difeomorfismo a partir de $f$ de manera similar a como se hizo en el apartado anterior, reproduciendo parte de la demostración del teorema $2.2$ (siguiendo el flujo del campo de vectores gradientes de $f$). En particular, tenemos que $g$ es la identidad en un entorno de $\partial D^2_S$.
+\end{proof}
 
 
 
