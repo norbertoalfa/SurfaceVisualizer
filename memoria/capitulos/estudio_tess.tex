@@ -26,6 +26,10 @@ Cabe destacar antes que la idea inicial era desarrollar un algoritmo de divisió
 	\end{itemize}
 	
 \section{Tessellation shader}
+
+	Hablar de la primera aproximación, el volumen entre la superficie y el triángulo (en los lados es el área).
+	Hablar de la segunda aproximación, el área a aproximar de la superficie y la del triángulo (en los lados es la longitud de la curva).
+	Hablar de la medida final, curvatura de Gauss por unidad de área (en los lados es por unidad de longitud).
 	
 	Este shader tiene un pequeño problema y es que la subdivisión está predefinida (equal, fractional$\_$odd o fractional$\_$even spacing), por lo que los vértices generados en la fase de control del Tessellation shader tienen un esquema fijo, para un número de subdivisiones dado. No es un gran inconveniente puesto que en la fase de evaluación se pueden variar libremente dichos vértices, siempre que se haga con cuidado (en esta fase los vértices se generan mediante coordenadas baricéntricas).
 	
