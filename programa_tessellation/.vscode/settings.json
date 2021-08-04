@@ -61,6 +61,8 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "stdio.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "*.ipp": "c",
+        "nodo.h": "c"
     }
 }

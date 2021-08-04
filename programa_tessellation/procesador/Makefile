@@ -6,6 +6,7 @@ all: analizador
 
 read: $(FILE) analizador
 	script -q -c "./analizador < '$(FILE)'" > ../error.log
+	#./analizador < '$(FILE)'
 
 analizador: y.tab.o semantico.o nodo.o elementos_predef.o
 	gcc -o analizador -lfl y.tab.o semantico.o nodo.o elementos_predef.o

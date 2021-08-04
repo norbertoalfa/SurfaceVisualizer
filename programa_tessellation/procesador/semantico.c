@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "semantico.h"
+#include "nodo.h"
 
 entradaTS TS[MAX_IN];
 long int LIMIT = 0;
@@ -177,17 +178,42 @@ int TS_BorrarENTRADA(){
 
 }
 
+void subirEntrada(int posOld, int posNew) {
+	TS[posNew].entrada = TS[posOld].entrada;
+	TS[posNew].lex = strdup(TS[posOld].lex);
+	TS[posNew].tipo = TS[posOld].tipo;
+	TS[posNew].nParam = TS[posOld].nParam;
+	TS[posNew].dimension = TS[posOld].dimension;
+	TS[posNew].tam = TS[posOld].tam;
+	TS[posNew].nodoExpr = TS[posOld].nodoExpr;
+}
+
 // Elimina las entradas de la tabla de símbolos hasta la mark de tope
 void TS_VaciarENTRADAS(){
+	int nwLimit = LIMIT;
+	int nLocalVars = 0;
+	int i;
 
   // Quitar todo lo del bloque
-  while(TS[LIMIT-1].entrada != MARCA && LIMIT > 0){
-		LIMIT--;
+  while(TS[nwLimit-1].entrada != MARCA && nwLimit > 0){
+	  	if (TS[nwLimit-1].entrada == VAR) {
+			nLocalVars++;
+		}
+		nwLimit--;
 	}
   // Quitar la marca si es que la hubiese
-	if (TS[LIMIT-1].entrada == MARCA && LIMIT > 0) {
-		LIMIT--;
+	if (TS[nwLimit-1].entrada == MARCA && nwLimit > 0) {
+		nwLimit--;
 	}
+
+	if (nwLimit > 0) {
+		for (i=nwLimit; i<LIMIT - nLocalVars - 1; i++) {
+			subirEntrada(i + nLocalVars + 1, i);
+		}
+		nwLimit = LIMIT - nLocalVars - 1;
+	}
+
+	LIMIT = nwLimit;
 
 }
 
@@ -221,6 +247,69 @@ entradaTS getEntrada(char *nombre) {
 	return TS[j];
 }
 
+int checkPartialVar(int indFun, char *name) {
+	int i, found = 0;
+
+	for (i=0; i<TS[indFun].nParam && !found; i++) {
+		if (strcmp(TS[indFun + i + 1].lex, name) == 0){
+			found = 1;
+		}
+	}
+
+	return found;
+}
+
+int checkPartialCall(char *idFun){
+	int index, existsId;
+	char delim[] = "P";
+	char *str, *ptr;
+
+	str = (char *) malloc(100);
+	str[0] = 0;
+	strcpy(str, idFun);
+
+	ptr = strtok(str, delim);
+
+	index = TS_BuscarFUNModo(ptr, 0);
+	existsId = index != -1;
+	
+	if (ptr != NULL) {
+		ptr = strtok(NULL, delim);
+	}
+
+	while (ptr != NULL && existsId) {
+		existsId = checkPartialVar(index, ptr);
+		ptr = strtok(NULL, delim);
+	}
+
+	return existsId;
+}
+
+void splitPartial(char *idFun, char *prevFun, char *var) {
+	int index, existsId;
+	char delim[] = "P";
+	char *str, *ptr;
+
+	str = (char *) malloc(100);
+	str[0] = 0;
+	strcpy(str, idFun);
+
+	ptr = strtok(str, delim);
+
+	strcpy(prevFun, ptr);
+	
+	if (ptr != NULL) {
+		ptr = strtok(NULL, delim);
+	}
+
+	while (ptr != NULL) {
+		strcpy(var, ptr);
+		ptr = strtok(NULL, delim);
+		if (ptr != NULL)
+			sprintf(prevFun, "%sP%s", prevFun, var);
+	}
+}
+
 // Busca una entrada según el nombre
 int TS_BuscarFUN(char *nombre){
 	return TS_BuscarFUNModo(nombre, 1);
@@ -243,13 +332,37 @@ int TS_BuscarFUNModo(char *nombre, int modoAnalisis){
 
 	if(!found) {
 		if (modoAnalisis) {
-			printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, nombre);
-		}
-		return -1;
-	} else {
-		return i;
-	}
+			if (!checkPartialCall(nombre)) {
+				printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, nombre);
+				i = -1;
+			} else {
+				char *prevFun, *var;
 
+				prevFun = (char *) malloc(100);
+				var = (char *) malloc(100);
+				prevFun[0] = 0;
+				var[0] = 0;
+
+				splitPartial(nombre, prevFun, var);
+				createPartialF(prevFun, var);
+
+				i = LIMIT - 1;
+				found = 0;
+
+				while (i > 0 && !found) {
+					if (TS[i].entrada == FUNCION && strcmp(nombre, TS[i].lex) == 0) {
+						found = 1;
+					} else{
+						i--;
+					}
+				}
+			}
+		} else {
+			i = -1;
+		}		
+	}
+	
+	return i;
 }
 
 // Añade un id
@@ -515,7 +628,7 @@ void comprobarTipoCte(atributos idTipo){
 
 }
 
-// Realiza la comprobación de la operación +, - y !
+// Realiza la comprobación 
 void comprobarTipoFun(atributos idFun, atributos idTipo){
 	int index = TS_BuscarFUN(idFun.lex);
 	

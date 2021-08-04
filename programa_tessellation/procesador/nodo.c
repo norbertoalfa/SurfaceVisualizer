@@ -697,13 +697,11 @@ void simplifyPartial(nodo *nodoPar){
 	}
 }
 
-nodo* checkPartialF(nodo *nodoFun, char *nVar)
-{
+int createPartialF(char *idFun, char *nVar) {
 	char *nombreParFun;
-	nodo *nodoPar;
 	int i, iParFun;
 
-	nombreParFun = strdup(nodoFun->lex);
+	nombreParFun = strdup(idFun);
 	strcat(nombreParFun, "P");
 	strcat(nombreParFun, nVar);
 
@@ -713,12 +711,12 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		atributos attParFun;
 		int iFun;
 
-		iFun = TS_BuscarFUN(nodoFun->lex);
+		iFun = TS_BuscarFUN(idFun);
 
 		if (iFun == -1) {
-			printf("No existe la función: %s\n", nodoFun->lex);
+			printf("No existe la función: %s\n", idFun);
 
-			return NULL;
+			return -1;
 		}
 
 		nodo *nodoFunExpr = TS[iFun].nodoExpr;
@@ -741,7 +739,27 @@ nodo* checkPartialF(nodo *nodoFun, char *nVar)
 		nodo *nodoParExpr = partialExpr(nodoFunExpr, nVar);
 		simplifyPartial(nodoParExpr);
 
+		TS[iParFun].nodoExpr = nodoParExpr;
+		
 		escribeFun(nombreParFun, nodoParExpr);
+		
+	}
+
+	return iParFun;
+}
+
+nodo* checkPartialF(nodo *nodoFun, char *nVar)
+{
+	char *nombreParFun;
+	nodo *nodoPar;
+	int i;
+
+	nombreParFun = strdup(nodoFun->lex);
+	strcat(nombreParFun, "P");
+	strcat(nombreParFun, nVar);
+
+	if (createPartialF(nodoFun->lex, nVar) == -1) {
+		return NULL;
 	}
 
 	nodoPar = malloc(sizeof(nodo));
@@ -806,7 +824,8 @@ nodo* partialNodoFun(nodo *nodoFun, char *nVar)
 			int iFun;
 			nodo *nodoExprFun;
 
-			iFun = TS_BuscarFUN(nodoFun->lex);
+			iFun = TS_BuscarFUNModo(nodoFun->lex, 0);
+			//printTS();
 
 			if (iFun == -1) {
 				printf("No existe la función: %s", nodoFun->lex);

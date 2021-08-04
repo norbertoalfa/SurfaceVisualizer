@@ -1,1 +1,2 @@
-- Permitir llamar a funciones parciales en el código
+- Permitir que los nombres de los parámetros de las funciones a dibujar no sean fijos:
+    * otros distintos de u,v,ti...

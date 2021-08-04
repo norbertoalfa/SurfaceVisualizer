@@ -40,6 +40,8 @@ nodo* crearNodoNormal(nodo *parU, nodo *parV);
 
 // Comprueba si existe la parcial de una función respecto de una variable
 // y en caso de no existir la define e implementa
+int createPartialF(char *idFun, char *nVar);
+
 nodo* checkPartialF(nodo *nodoFun, char *nVar);
 
 // Calcula la parcial de un nodo de tipo FUNCION, teniendo en cuenta las expresiones
