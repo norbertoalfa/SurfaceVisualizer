@@ -222,16 +222,19 @@
 \input{capitulos/cap_res_previos}
 \input{capitulos/teoremas}
 
-% --------------------------------------------------------------------
-% BACKMATTER
-% --------------------------------------------------------------------
-\backmatter % desactiva la numeración de capítulos sin resetear la numeración de las páginas.
-
 \cleardoublepage
 \setpartpreamble[c][0.75\linewidth]{%
 	\bigskip % Deja un espacio vertical en la parte superior
   Si el trabajo se divide en diferentes partes es posible incluir al inicio de cada una de ellas un breve resumen que indique el contenido de la misma. Esto es opcional.
 }\part{Visualización de superficies}
+
+\input{capitulos/estudio_tess}
+
+
+% --------------------------------------------------------------------
+% BACKMATTER
+% --------------------------------------------------------------------
+\backmatter % desactiva la numeración de capítulos sin resetear la numeración de las páginas.
 
 \input{capitulos/planificacion_presupuesto}
 \input{capitulos/analisis_diseño}

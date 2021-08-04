@@ -1,0 +1,42 @@
+% !TeX root = ../libro.tex
+% !TeX encoding = utf8
+
+\chapter{Estudio de la teselación}
+
+En este capítulo se describe el estudio realizado para teselar de manera eficiente un triángulo. Esta técnica se implementará en shaders, para poder ejecutarlo directamente en la GPU, que ofrece mayor rendimiento que la CPU para dicho problema. En un principio se iba a realizar en un Geometry Shader pero más tarde se observó que era más acertado el uso de un Tessellation Shader. \\
+
+Cabe destacar antes que la idea inicial era desarrollar un algoritmo de división recursiva de los triángulos, el cuál se detiene en el nivel en el que se cree que representa correctamente a la porción de superficie. Sin embargo, el lenguaje Glsl no permite realizar llamadas recursivas, por lo que era necesario buscar alternativas.
+
+\section{Geometry shader}
+	La ventaja de este tipo de shader es que es muy flexible a la hora de generar nuevas primitivas, ya que permite añadir primitivas totalmente disconexas.\\
+	En primer lugar opté por describir de forma explícita un cierto número de niveles de la función recursiva deseada, 3 niveles concretamente. Los resultados eran aceptables pero se podía exceder el límite de vértices, quedando así una superficie incompleta. Además, el tiempo de compilación crecía de forma exponencial a medida que se añadían más niveles (para 2 niveles era de 10-15s y para 3 no concluía).\\
+	Puesto que este método era costoso temporalmente y tenía muchas limitaciones, decidí implementar un algoritmo similar pero en un bucle, cuyo esquema es el siguiente:
+	\begin{enumerate}
+		\item Dado un lado, dividirlo en tantos segmentos como sea necesario, atendiendo a una cierta medida. Dicha medida sólo depende de las características del lado, para que el pegado sea el correcto con los triángulos adyacentes.
+		\item Se realiza una división hacia el baricentro, de forma similar al punto anterior.
+		\item Con los vértices de los dos puntos anteriores se genera una malla, es decir, para cada lado, se genera otro lado paralelo para cada subdivisión hacia el baricentro, manteniendo proporcionalmente las subdivisiones del lado original.
+		\item Se genera una tira de triángulos cuyos vértices sean los de la malla anterior.
+	\end{enumerate}
+	
+	Con este método los problemas anteriores se solventan en gran medida, pero dicho algoritmo es semejante al del Tessellation shader, por lo que era natural estudiar el funcionamiento en tal shader.\\
+	Finalmente, los inconvenientes observados han sido los siguientes:
+	\begin{itemize}
+		\item El número de vértices de salida está limitado por una constante predefinida ($256$).
+		\item El shader tarda en compilarse de media entre $3$ y $5$ segundos.
+	\end{itemize}
+	
+\section{Tessellation shader}
+	
+	Este shader tiene un pequeño problema y es que la subdivisión está predefinida (equal, fractional$\_$odd o fractional$\_$even spacing), por lo que los vértices generados en la fase de control del Tessellation shader tienen un esquema fijo, para un número de subdivisiones dado. No es un gran inconveniente puesto que en la fase de evaluación se pueden variar libremente dichos vértices, siempre que se haga con cuidado (en esta fase los vértices se generan mediante coordenadas baricéntricas).
+	
+	Finalmente, las ventajas con respecto al Geometry shader son las siguientes:
+	\begin{itemize}
+		\item El shader tarda en compilarse de media menos de $1s$.
+		\item El número de vértices de salida no está tan limitado ($36478$ frente a $256$).
+		\item Está pensado para realizar directamente el algoritmo de teselación, por lo que no hay que implementarlo.
+	\end{itemize}
+
+\endinput
+%------------------------------------------------------------------------------------
+% FIN DEL CAPÍTULO. 
+%------------------------------------------------------------------------------------
