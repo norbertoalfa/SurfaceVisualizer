@@ -5,6 +5,6 @@ compy(u, v : real) : real = 2*A * cos(2*v) / (u^2);
 compz(u, v : real) : real = 4*A^2 * sin(3*v) / (3*u^3);
 
 f(u,v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v));
-g(u,v : real, t0 : real) : vec3 = f(2*u+0.5, 2*PI*v);
+g(u,v : real, t0 : real) : vec3 = f(t0*u+0.1, 2*PI*v);
 
 plot g;

@@ -63,10 +63,10 @@ void addPredefFunc() {
 	paramsSin[0] = createParam("x", REAL, 0, 0);
 	addFunc("sin", REAL, 1, 0, 0, paramsSin);
 	
-	// tg
+	// tan
 	entradaTS paramsTg[1];
 	paramsTg[0] = createParam("x", REAL, 0, 0);
-	addFunc("tg", REAL, 1, 0, 0, paramsTg);
+	addFunc("tan", REAL, 1, 0, 0, paramsTg);
 	
 	// log
 	entradaTS paramsLog[1];

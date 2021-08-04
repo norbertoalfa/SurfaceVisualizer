@@ -1,0 +1,11 @@
+denom(u,v : real) : real = 1 + u^2 * sin(v)^2;
+
+compx(u,v : real) : real = 2*(cos(u) + u*sin(u)) * sin(v) / denom(u,v);
+compy(u,v : real) : real = log(tan(v / 2.0)) + 2 * cos(v) / denom(u,v);
+compz(u,v : real) : real = 2*(sin(u) - u*cos(u)) * sin(v) / denom(u,v);
+
+
+f(u,v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v));
+g(u,v : real, t0, t1 : real) : vec3 = f(t0*2.86*PI*(u-0.5), t1*PI*(0.999*v + 0.001));
+
+plot g;

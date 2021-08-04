@@ -1,0 +1,9 @@
+compx(u, v : real, r : real) : real = (r^2.0) * cos(u) * cos(v) * sin(v);
+compy(u, v : real, r : real) : real = (r^2.0) * cos(u) * sin(u) * (cos(v)^2.0);
+compz(u, v : real, r : real) : real = (r^2.0) * sin(u) * cos(v) * sin(v);
+
+f(u, v : real, t0 : real) : vec3 = vec3(compx(u,v, t0), compy(u,v, t0), compz(u,v, t0));
+
+g(u, v : real, t0, t1, t2 : real) : vec3 = 4.0*f(PI*u * t1, PI*v * t2, t0);
+
+plot g;

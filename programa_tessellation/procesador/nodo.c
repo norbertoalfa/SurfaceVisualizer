@@ -770,7 +770,7 @@ nodo* partialNodoFun(nodo *nodoFun, char *nVar)
 	int esPredef = 	strcmp(nodoFun->lex, "log") == 0 ||
 					strcmp(nodoFun->lex, "sin") == 0 ||
 					strcmp(nodoFun->lex, "cos") == 0 ||
-					strcmp(nodoFun->lex, "tg") == 0 ||
+					strcmp(nodoFun->lex, "tan") == 0 ||
 					strcmp(nodoFun->lex, "atan") == 0;
 	
 	if (esArray) {
@@ -794,7 +794,7 @@ nodo* partialNodoFun(nodo *nodoFun, char *nVar)
 				nodoIzq = derivSin(nodoFun);
 			} else if (strcmp(nodoFun->lex, "cos") == 0) {
 				nodoIzq = derivCos(nodoFun);
-			} else if (strcmp(nodoFun->lex, "tg") == 0) {
+			} else if (strcmp(nodoFun->lex, "tan") == 0) {
 				nodoIzq = derivTg(nodoFun);
 			} else if (strcmp(nodoFun->lex, "atan") == 0) {
 				nodoIzq = derivAtan(nodoFun);
