@@ -1,3 +1,8 @@
-Script iniciado en 2021-08-04 21:09:51+0200
+Script iniciado en 2021-08-05 16:06:23+0200
+(Error semántico, línea 3) Función no declarada: gPuv
+(Error semántico, línea 3) Función no declarada: gPuv
+(Error semántico, línea 3) Función no declarada: gPuv
+(Error semántico, línea 3) Función: Identificador no encontrado gPuv.
+bash: línea 1:  4049 Violación de segmento  (`core' generado) ./analizador < '../variedades/lastParam.in'
 
-Script terminado en 2021-08-04 21:09:51+0200
+Script terminado en 2021-08-05 16:06:24+0200

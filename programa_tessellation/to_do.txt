@@ -1,2 +1,3 @@
 - Permitir que los nombres de los parámetros de las funciones a dibujar no sean fijos:
     * otros distintos de u,v,ti...
+- Salida de error en caso de que en gPu "u" no sea un parámetro de "g". Igual si no está definida "g".

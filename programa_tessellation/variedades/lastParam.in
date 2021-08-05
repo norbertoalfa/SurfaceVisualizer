@@ -1,6 +1,6 @@
-g(u, v :real) : real = u*v;
+g(u, v :real) : real = u^3;
 
-f(u,x, v :real) : vec3 = 40*vec3(cos(u), sin(x), 0) * gPuPv(u,x);
+f(u,v :real) : vec3 = 40*vec3(cos(u), sin(v), 0) * gPuv(u,v);
 
 
 plot f;
