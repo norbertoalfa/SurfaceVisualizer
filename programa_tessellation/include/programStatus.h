@@ -46,13 +46,15 @@ class ProgramStatus
 		bool showDiffArea, showK, showHeight, showCritic;
 		bool showTangents, showCotangents, showNormals;
 		bool invertNorm;
+		bool tessGlobal, tessEdge;
 
-		float umbralLength;
+		float umbralLength, umbralEdge;
 		int ptsLimit;
 		int failsLimit;
 		
 		float coeffArea, coeffK, coeffHeight;
 		float refHeight;
+		int nLayers;
 
 		float ambientStrength, diffStrength, specularStrength, phongExp;
 
@@ -107,13 +109,17 @@ class ProgramStatus
 			showK = false;
 			showHeight = false;
 			showCritic = false;
+			tessGlobal = true;
+			tessEdge = false;
 
 			coeffArea = 20.0f;
 			coeffK = 1.0f;
 			coeffHeight = 10.0f;
 			refHeight = 0.0f;
+			nLayers = 10;
 
 			umbralLength = 0.01f;
+			umbralEdge = 1.0f;
 			ptsLimit = 20;
 			failsLimit = 5;
 

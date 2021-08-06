@@ -147,7 +147,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
 
     ImGui::Checkbox("Show tangent", &status.showTangents);
     ImGui::SameLine();
-    ImGui::Checkbox("Show cotan", &status.showCotangents);
+    ImGui::Checkbox("Show bitg", &status.showCotangents);
     ImGui::SameLine();
     ImGui::Checkbox("Show normal", &status.showNormals);
 
@@ -166,16 +166,22 @@ void mainWindow(ProgramStatus &status, Object &object) {
     }
 
     if (ImGui::CollapsingHeader("Advanced visualization")) {
+        ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.1f, "%.8f");
+        ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.01f, 10.0f, "%.2f");
+        if (ImGui::Checkbox("Tess global", &status.tessGlobal)) status.tessEdge = false;
+        ImGui::SameLine();
+        if (ImGui::Checkbox("Tess edge", &status.tessEdge)) status.tessGlobal = false;
+
         ImGui::Columns(2, "", false);
         ImGui::SetColumnWidth(0, 280);
         ImGui::SetColumnWidth(1, 100);
 
-        ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.1f, "%.8f");
 
         ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
         ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
         ImGui::SliderFloat("Coeff Height\t", &(status.coeffHeight), 0.01f, 20.0f);
         ImGui::SliderFloat("Ref Height\t", &(status.refHeight), -10.0f, 10.0f);
+        ImGui::SliderInt("Nº layers\t", &(status.nLayers), 1, 40);
 
         ImGui::NextColumn();
         ImGui::NewLine();

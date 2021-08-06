@@ -272,6 +272,10 @@ int checkPartialCall(char *idFun){
 
 	index = TS_BuscarFUNModo(ptr, 0);
 	existsId = index != -1;
+
+	if (!existsId) {
+		printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, ptr);
+	}
 	
 	if (ptr != NULL) {
 		ptr = strtok(NULL, delim);
@@ -279,6 +283,9 @@ int checkPartialCall(char *idFun){
 
 	while (ptr != NULL && existsId) {
 		existsId = checkPartialVar(index, ptr);
+		if (!existsId) {
+			printf("(Error semántico, línea %d) La función '%s' no tiene ningún parámetro '%s'.\n", linea, TS[index].lex, ptr);
+		}
 		ptr = strtok(NULL, delim);
 	}
 
@@ -333,7 +340,6 @@ int TS_BuscarFUNModo(char *nombre, int modoAnalisis){
 	if(!found) {
 		if (modoAnalisis) {
 			if (!checkPartialCall(nombre)) {
-				printf("(Error semántico, línea %d) Función no declarada: %s\n", linea, nombre);
 				i = -1;
 			} else {
 				char *prevFun, *var;

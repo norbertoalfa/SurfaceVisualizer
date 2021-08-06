@@ -241,6 +241,9 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setBool("showK", status.showK);
     sh->setBool("showHeight", status.showHeight);
     sh->setBool("showCritic", status.showCritic);
+
+    sh->setBool("tessGlobal", status.tessGlobal);
+    sh->setBool("tessEdge", status.tessEdge);
     
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorVectors", glm::vec3(1.0f, 0.3f, 0.3f));
@@ -251,6 +254,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setVec3("viewPos", camera.cameraLocation);
 
     sh->setFloat("umbralLength", status.umbralLength);
+    sh->setFloat("umbralEdge", status.umbralEdge);
     sh->setInt("ptsLimit", status.ptsLimit);
     sh->setInt("failsLimit", status.failsLimit);
 
@@ -258,6 +262,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setFloat("coeffK", status.coeffK);
     sh->setFloat("coeffHeight", status.coeffHeight);
     sh->setFloat("refHeight", status.refHeight);
+    sh->setInt("nLayers", status.nLayers);
     
     sh->setFloat("ambientStrength", status.ambientStrength);
     sh->setFloat("diffStrength", status.diffStrength);

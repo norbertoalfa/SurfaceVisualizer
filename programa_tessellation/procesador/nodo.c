@@ -176,7 +176,7 @@ nodo* crearNodoArea(nodo *parU, nodo *parV)
 	return nodoArea;
 }
 
-nodo* crearNodoK(nodo *parU, nodo *parV)
+nodo* crearNodoK(nodo *parU, nodo *parV, char *nVarU, char *nVarV)
 {
 	nodo *nodoK, *nodoNum, *nodoDen;
 
@@ -188,7 +188,7 @@ nodo* crearNodoK(nodo *parU, nodo *parV)
 
 	nodo *nodoMatIzq1 = crearNodoTipo(strdup("mat3"), NODO_FUN, NODO_MAT3);
 	nodoMatIzq1->nChild = 3;
-	nodoMatIzq1->children[0] = checkPartialF(parU, "u");
+	nodoMatIzq1->children[0] = checkPartialF(parU, nVarU);
 	nodoMatIzq1->children[1] = parU;
 	nodoMatIzq1->children[2] = parV;
 
@@ -196,7 +196,7 @@ nodo* crearNodoK(nodo *parU, nodo *parV)
 
 	nodo *nodoMatIzq2 = crearNodoTipo(strdup("mat3"), NODO_FUN, NODO_MAT3);
 	nodoMatIzq2->nChild = 3;
-	nodoMatIzq2->children[0] = checkPartialF(parV, "v");
+	nodoMatIzq2->children[0] = checkPartialF(parV, nVarV);
 	nodoMatIzq2->children[1] = parU;
 	nodoMatIzq2->children[2] = parV;
 
@@ -204,7 +204,7 @@ nodo* crearNodoK(nodo *parU, nodo *parV)
 
 	nodo *nodoMatUV = crearNodoTipo(strdup("mat3"), NODO_FUN, NODO_MAT3);
 	nodoMatUV->nChild = 3;
-	nodoMatUV->children[0] = checkPartialF(parU, "v");
+	nodoMatUV->children[0] = checkPartialF(parU, nVarV);
 	nodoMatUV->children[1] = parU;
 	nodoMatUV->children[2] = parV;
 
@@ -926,14 +926,16 @@ void escribeNorm(atributos fun, atributos e1){
 				
 	if (e1.dimension == 1 && e1.tam == 3) {
 		int indexFun, indexNorm, i;
-		char *nVarU = "u";
-		char *nVarV = "v";
+		char *nVarU, *nVarV;
 
 		indexFun = TS_BuscarFUN(fun.lex);
 
 		if (indexFun == -1) {
 			return;
 		}
+
+		nVarU = strdup(TS[indexFun + 1].lex);
+		nVarV = strdup(TS[indexFun + 2].lex);
 
 		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN, 0);
 		
@@ -973,14 +975,16 @@ void escribeArea(atributos fun, atributos e1){
 				
 	if (e1.dimension == 1 && e1.tam == 3) {
 		int indexFun, indexArea, i;
-		char *nVarU = "u";
-		char *nVarV = "v";
+		char *nVarU, *nVarV;
 
 		indexFun = TS_BuscarFUN(fun.lex);
 
 		if (indexFun == -1) {
 			return;
 		}
+
+		nVarU = strdup(TS[indexFun + 1].lex);
+		nVarV = strdup(TS[indexFun + 2].lex);
 
 		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN, 0);
 		
@@ -1020,14 +1024,16 @@ void escribeK(atributos fun, atributos e1){
 				
 	if (e1.dimension == 1 && e1.tam == 3) {
 		int indexFun, indexArea, i;
-		char *nVarU = "u";
-		char *nVarV = "v";
+		char *nVarU, *nVarV;
 
 		indexFun = TS_BuscarFUN(fun.lex);
 
 		if (indexFun == -1) {
 			return;
 		}
+
+		nVarU = strdup(TS[indexFun + 1].lex);
+		nVarV = strdup(TS[indexFun + 2].lex);
 
 		nodo *nodoFun = crearNodoTipo(fun.lex, NODO_FUN, 0);
 		
@@ -1059,7 +1065,7 @@ void escribeK(atributos fun, atributos e1){
 			TS_InsertaEntrada(TS[indexFun + i + 1]);
 		}
 
-		escribeFun(attArea.lex, crearNodoK(nodoParU, nodoParV));
+		escribeFun(attArea.lex, crearNodoK(nodoParU, nodoParV, nVarU, nVarV));
 	}		
 }
 
@@ -1112,16 +1118,17 @@ void escribeIniPlot(char *fun){
 	char *sent, *normal, *tangente, *cotan;
 	char *area, *curvature;
 	
+  	indexFun = TS_BuscarFUN(fun);
+
 	normal = strcat(strdup(fun), "Normal");
-	tangente = strcat(strdup(fun), "Pu");
-	cotan = strcat(strdup(fun), "Pv");
+	tangente = strcat(strcat(strdup(fun), "P"), strdup(TS[indexFun+1].lex));
+	cotan = strcat(strcat(strdup(fun), "P"), strdup(TS[indexFun+2].lex));
 	area = strcat(strdup(fun), "Area");
 	curvature = strcat(strdup(fun), "K");
 
   	sent = (char *) malloc(1000);
   	sent[0]=0;
   	
-  	indexFun = TS_BuscarFUN(fun);
   	indexNormal = TS_BuscarFUN(normal);
   	indexTan = TS_BuscarFUN(tangente);
   	indexCoTan = TS_BuscarFUN(cotan);
@@ -1209,16 +1216,17 @@ void escribeContPlot(char *fun){
 	char *sent, *normal, *tangente, *cotan;
 	char *area, *curvature;
 	
+  	indexFun = TS_BuscarFUN(fun);
+	
 	normal = strcat(strdup(fun), "Normal");
-	tangente = strcat(strdup(fun), "Pu");
-	cotan = strcat(strdup(fun), "Pv");
+	tangente = strcat(strcat(strdup(fun), "P"), strdup(TS[indexFun+1].lex));
+	cotan = strcat(strcat(strdup(fun), "P"), strdup(TS[indexFun+2].lex));
 	area = strcat(strdup(fun), "Area");
 	curvature = strcat(strdup(fun), "K");
 
   	sent = (char *) malloc(1000);
   	sent[0]=0;
 
-  	indexFun = TS_BuscarFUN(fun);
   	indexNormal = TS_BuscarFUN(normal);
   	indexTan = TS_BuscarFUN(tangente);
   	indexCoTan = TS_BuscarFUN(cotan);

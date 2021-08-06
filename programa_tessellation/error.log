@@ -1,5 +1,0 @@
-(Error semántico, línea 3) Función no declarada: gPuv
-(Error semántico, línea 3) Función no declarada: gPuv
-(Error semántico, línea 3) Función no declarada: gPuv
-(Error semántico, línea 3) Función: Identificador no encontrado gPuv.
-bash: línea 1:  4049 Violación de segmento  (`core' generado) ./analizador < '../variedades/lastParam.in'
