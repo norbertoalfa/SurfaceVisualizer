@@ -1,2 +1,4 @@
 - Separar codigo procesador.
 - Organizar procesador en carpetas.
+- No teselar fuera del view frustum.
+- Quitar controles teclado inutiles.
