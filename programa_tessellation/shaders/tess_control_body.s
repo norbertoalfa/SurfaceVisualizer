@@ -34,8 +34,8 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     float bestN = 1;
 
     if (tessEdge) {
-        vec3 vision1 = viewPos - imageP1;
-        vec3 vision2 = viewPos - imageP2;
+        vec3 vision1 = normalize(viewPos - imageP1);
+        vec3 vision2 = normalize(viewPos - imageP2);
         vec3 n1 = normalParam(p1);
         vec3 n2 = normalParam(p2);
 

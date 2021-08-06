@@ -119,7 +119,7 @@ class ProgramStatus
 			nLayers = 10;
 
 			umbralLength = 0.01f;
-			umbralEdge = 1.0f;
+			umbralEdge = 0.1f;
 			ptsLimit = 20;
 			failsLimit = 5;
 
