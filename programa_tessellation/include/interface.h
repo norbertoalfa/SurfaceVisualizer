@@ -27,6 +27,7 @@ const char* glsl_version = "#version 130";
 char nameFile[100];
 char text[10000];
 int sizeMap;
+int currItemShow = 0;
 
 bool autoRot = false;
 bool polMode = false;
@@ -38,6 +39,7 @@ bool show_render_info = true;
 bool show_light_vector = false;
 bool firstEditor = true;
 bool firstTime = true;
+bool hideListShow = true;
 
 
 void initImGUI(GLFWwindow* window) {
@@ -87,7 +89,7 @@ void updateVariables(ProgramStatus &status, Light &light, Object &object, glm::m
 void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::Begin("Menu", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
-    ImGui::TextColored(titleColor, "Parametrización");
+    ImGui::TextColored(titleColor, "Parametrization");
 
     if (ImGui::Button("Select file")) {
         ImGui::SetNextWindowSize(ImVec2(500, 300));
@@ -119,19 +121,21 @@ void mainWindow(ProgramStatus &status, Object &object) {
         status.setLoadShader(true);
     }
 
+    ImGui::SliderInt("Map size", &sizeMap, 4, 80);
+    ImGui::SameLine();
+    if (ImGui::Button("Update")) {
+        status.setSizeMap(sizeMap);
+        status.changeSizeMap = true;
+    }
+
     if (status.getTotalParam() > 0) {
         ImGui::Checkbox("Params", &show_params_window);
     } else {
         bool alwaysFalse = false;
+        show_params_window = false;
         ImGui::Checkbox("", &alwaysFalse);
         ImGui::SameLine();
         ImGui::TextColored(disabledColor, "Params");
-    }
-
-    ImGui::SliderInt("Map size", &sizeMap, 4, 80);
-    if (ImGui::Button("Update")) {
-        status.setSizeMap(sizeMap);
-        status.changeSizeMap = true;
     }
 
     ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t");
@@ -143,27 +147,20 @@ void mainWindow(ProgramStatus &status, Object &object) {
         status.switchPolMode();
     }
     ImGui::SameLine();
-    ImGui::Checkbox("Invert normal", &status.invertNorm);
-
-    ImGui::Checkbox("Show tangent", &status.showTangents);
-    ImGui::SameLine();
-    ImGui::Checkbox("Show bitg", &status.showCotangents);
-    ImGui::SameLine();
-    ImGui::Checkbox("Show normal", &status.showNormals);
-
     ImGui::Checkbox("AutoRotate", &autoRot);
     if (autoRot != status.getAutoRotation()) {
         status.switchAutoRot();
     }
 
-    if (ImGui::ColorEdit3("Font color", (float*)&fontColor)) {
-        status.fontColor = glm::vec3(fontColor);
-    }
+    ImGui::Checkbox("Show tangent", &status.showTangents);
+    
+    ImGui::Checkbox("Show bitg", &status.showCotangents);
+    
+    ImGui::Checkbox("Show normal", &status.showNormals);
+    ImGui::SameLine();
+    ImGui::Checkbox("Invert normal", &status.invertNorm);
 
-    if (ImGui::ColorEdit3("Object color", (float*)&objectColor)) {
-        object.setColor(glm::vec3(objectColor));
-        object.setColorChange(true);
-    }
+    
 
     if (ImGui::CollapsingHeader("Advanced visualization")) {
         ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.1f, "%.8f");
@@ -172,24 +169,51 @@ void mainWindow(ProgramStatus &status, Object &object) {
         ImGui::SameLine();
         if (ImGui::Checkbox("Tess edge", &status.tessEdge)) status.tessGlobal = false;
 
+        const char *items[] = {"-None-", "Area", "K", "Height", "Critic"};
+
+        if (hideListShow) {
+            ImGui::SetNextTreeNodeOpen(false);
+        }
+
+        if(ImGui::CollapsingHeader(("Show " + std::string(items[currItemShow])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
+            hideListShow = false;
+            if (ImGui::ListBox("", &currItemShow, items, 4)) {
+                hideListShow = true;
+            }
+        }
+
         ImGui::Columns(2, "", false);
         ImGui::SetColumnWidth(0, 280);
-        ImGui::SetColumnWidth(1, 100);
+        ImGui::SetColumnWidth(1, 10);
 
-
-        ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
-        ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
-        ImGui::SliderFloat("Coeff Height\t", &(status.coeffHeight), 0.01f, 20.0f);
-        ImGui::SliderFloat("Ref Height\t", &(status.refHeight), -10.0f, 10.0f);
-        ImGui::SliderInt("Nº layers\t", &(status.nLayers), 1, 40);
+        switch(currItemShow) {
+            case 0:
+                status.resetShow();
+                break;
+            case 1:
+                status.showDiffArea = true;
+                status.updateShowArea();
+                ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
+                break;
+            case 2:
+                status.showK = true;
+                status.updateShowK();
+                ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
+                break;
+            case 3:
+                status.showHeight = true;
+                status.updateShowHeight();
+                ImGui::SliderFloat("Coeff Height\t", &(status.coeffHeight), 0.01f, 20.0f);
+                ImGui::SliderFloat("Ref Height\t", &(status.refHeight), -10.0f, 10.0f);
+                ImGui::SliderInt("Nº layers\t", &(status.nLayers), 1, 40);
+                break;
+            case 4:
+                status.showCritic = true;
+                status.updateShowCritic();
+                break; 
+        }
 
         ImGui::NextColumn();
-        ImGui::NewLine();
-
-        if (ImGui::Checkbox("Show area", &status.showDiffArea)) status.updateShowArea();
-        if (ImGui::Checkbox("Show K", &status.showK)) status.updateShowK();
-        if (ImGui::Checkbox("Show height", &status.showHeight)) status.updateShowHeight();
-        if (ImGui::Checkbox("Show critic", &status.showCritic)) status.updateShowCritic();
 
         ImGui::Columns(1);
     }
@@ -198,12 +222,21 @@ void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::TextColored(titleColor, "Lighting");
     ImGui::Separator();
 
+    if (ImGui::ColorEdit3("Font color", (float*)&fontColor, ImGuiColorEditFlags_NoInputs)) {
+        status.fontColor = glm::vec3(fontColor);
+    }
+    ImGui::SameLine();
+    if (ImGui::ColorEdit3("Object color", (float*)&objectColor, ImGuiColorEditFlags_NoInputs)) {
+        object.setColor(glm::vec3(objectColor));
+        object.setColorChange(true);
+    }
+    ImGui::SameLine();
     ImGui::Checkbox("Light vector", &show_light_vector);
 
     if (ImGui::CollapsingHeader("Advanced lighting")) {
-        ImGui::SliderFloat("Ambient Strength", &(status.ambientStrength), 0.0f, 1.0f);
-        ImGui::SliderFloat("Diffuse Strength", &(status.diffStrength), 0.0f, 1.0f);
-        ImGui::SliderFloat("Specular Strength", &(status.specularStrength), 0.0f, 1.0f);
+        if (ImGui::SliderFloat("Ambient Strength", &(status.ambientStrength), 0.0f, 1.0f)) status.updateLightCoeff();
+        if (ImGui::SliderFloat("Diffuse Strength", &(status.diffStrength), 0.0f, 1.0f)) status.updateLightCoeff();
+        if (ImGui::SliderFloat("Specular Strength", &(status.specularStrength), 0.0f, 1.0f)) status.updateLightCoeff();
         ImGui::SliderFloat("Phong Exponent", &(status.phongExp), 1.0f, 30.0f);
     }
 

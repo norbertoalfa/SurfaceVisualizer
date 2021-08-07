@@ -233,6 +233,18 @@ class ProgramStatus
 		
 		// Methods
 
+		void updateLightCoeff() {
+			float totalStrength = ambientStrength + diffStrength + specularStrength + 0.01;
+
+			ambientStrength = ambientStrength / totalStrength;
+			diffStrength = diffStrength / totalStrength;
+			specularStrength = specularStrength / totalStrength;
+		}
+
+		void resetShow() {
+			showDiffArea = showHeight = showCritic = showK = false;
+		}
+
 		void updateShowK() {
 			showDiffArea = showHeight = showCritic = false;
 		}

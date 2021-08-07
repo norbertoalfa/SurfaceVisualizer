@@ -33,7 +33,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Uniforms to pass
-glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
+glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 10000.0f);
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 pvm = projection * view * model;
@@ -62,31 +62,7 @@ static void glfw_error_callback(int error, const char* description)
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    /*if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    }*/
-        
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    	camera.processKeyboard(FORWARD, deltaTime);
-    	status.setSomeChange(true);
-	}
-	
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    	camera.processKeyboard(BACKWARD, deltaTime);
-    	status.setSomeChange(true);
-	}
-	
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-    	camera.processKeyboard(LEFT, deltaTime);
-    	status.setSomeChange(true);
-    }
-    
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-    	camera.processKeyboard(RIGHT, deltaTime);
-    	status.setSomeChange(true);
-    }
-    
+{    
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS &&
         glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
     	status.setFirstPress('R', true);
@@ -163,8 +139,6 @@ void processMouseKey(GLFWwindow* window, int button, int action, int mods)
         status.setPerRotate(false);
         status.setFirstMouse(true);
     }
-
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -252,6 +226,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setVec3("lightColor", light.getColor());
     sh->setVec3("lightPos", light.getPos());
     sh->setVec3("viewPos", camera.cameraLocation);
+    sh->setVec3("Front", camera.Front);
 
     sh->setFloat("umbralLength", status.umbralLength);
     sh->setFloat("umbralEdge", status.umbralEdge);

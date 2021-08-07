@@ -61,22 +61,21 @@ void main()
     } else if (showVectors) {
         FragColor = vec4(colorVectors, 0.0);
     } else {
-        float totalStrength = ambientStrength + diffStrength + specularStrength + 0.01;
         // ambient
-        vec3 ambient = (ambientStrength / totalStrength) * lightColor;
+        vec3 ambient = ambientStrength * lightColor;
         
         // diffuse 
         vec3 norm = normalize(frag.Normal);
         float distance = length(lightPos - frag.FragPos);
         vec3 lightDir = normalize(lightPos - frag.FragPos);
         float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = (diffStrength / totalStrength) * diff * lightColor;
+        vec3 diffuse = diffStrength * diff * lightColor;
         
         // specular
         vec3 viewDir = normalize(viewPos - frag.FragPos);
         vec3 reflectDir = reflect(-lightDir, norm);
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), phongExp);
-        vec3 specular = (specularStrength / totalStrength) * spec * lightColor;  
+        vec3 specular = specularStrength * spec * lightColor;  
             
         vec3 result = (ambient + diffuse) * color + specular;
         FragColor = vec4(result, 0.0);

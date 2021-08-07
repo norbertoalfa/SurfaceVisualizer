@@ -1,4 +1,4 @@
 - Separar codigo procesador.
 - Organizar procesador en carpetas.
-- No teselar fuera del view frustum.
-- Quitar controles teclado inutiles.
+- Repasar teselado en base a la distancia a la camara:
+    * Generar tesselado mixto (con todo lo posible, aplicar suavizado de bordes).

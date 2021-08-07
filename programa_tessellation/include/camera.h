@@ -54,7 +54,6 @@ public:
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
-        cameraLocation = Position + Zoom*Front;
         posChange = false;
     }
     // constructor with scalar values
@@ -65,7 +64,6 @@ public:
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
-        cameraLocation = Position + Zoom*Front;
         posChange = false;
     }
     
@@ -115,8 +113,6 @@ public:
 
         // update Front, Right and Up Vectors using the updated Euler angles
         updateCameraVectors();
-
-        cameraLocation = Position + Zoom*Front;
     }
     
     
@@ -140,8 +136,6 @@ public:
 
         // update Front, Right and Up Vectors using the updated Euler angles
         updateCameraVectors();
-
-        cameraLocation = Position + Zoom*Front;
     }
 
     // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
@@ -179,6 +173,7 @@ private:
         // also re-calculate the Right and Up vector
         Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
         Up    = glm::normalize(glm::cross(Right, Front));
+        cameraLocation = Position + Zoom*Front;
     }
 };
 #endif
