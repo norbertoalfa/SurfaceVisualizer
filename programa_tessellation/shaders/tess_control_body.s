@@ -28,34 +28,52 @@ float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
 }
 
 float bestNPtsK(vec2 p1, vec2 p2) {
-    vec3 imageP1 = functionParam(p1);
-    vec3 imageP2 = functionParam(p2);
-    vec3 vision1 = normalize(imageP1 - viewPos);
-    vec3 vision2 = normalize(imageP2 - viewPos);
+    vec3 imageP1, imageP2;
+    vec3 vision1, vision2;
+    vec3 n1, n2;
+    vec3 lightDir1, lightDir2;
+    float signNormal, dotP1, dotP2;
+    float longitud, bestN = 1;
+    bool hidden, wthLight, outVF, isEdge;
 
-    float signNormal = invertNorm? -1.0 : 1.0;
+    signNormal = invertNorm? -1.0 : 1.0;
+    
+    imageP1 = functionParam(p1);
+    vision1 = normalize(imageP1 - viewPos);
+    n1 = signNormal*normalParam(p1);
+    dotP1 = dot(vision1, n1);
+    lightDir1 = normalize(lightPos - imageP1);
 
-    vec3 n1 = signNormal*normalParam(p1);
-    vec3 n2 = signNormal*normalParam(p2);
-    float dotP1 = dot(vision1, n1);
-    float dotP2 = dot(vision2, n2);
-    float longitud = 2*length(imageP2 - imageP1) / (length(imageP1-viewPos) + length(imageP2-viewPos));
-    float bestN = 1;
-    bool hidden = dotP1 > 0.5 && dotP2 > 0.5;
-    bool outVF = (dot(Front, vision1) > -0.85) && (dot(Front, vision2) > -0.85);
+    imageP2 = functionParam(p2);
+    vision2 = normalize(imageP2 - viewPos);
+    n2 = signNormal*normalParam(p2);
+    dotP2 = dot(vision2, n2);
+    lightDir2 = normalize(lightPos - imageP2);
+    
+    longitud = 0.2*length(imageP2 - imageP1) / (length(imageP1-viewPos) + length(imageP2-viewPos));
+
+    if (improvePerf) {
+        hidden = dotP1 > 0.5 && dotP2 > 0.5;
+        wthLight = dot(n1, lightDir1) <= 0 && dot(n2, lightDir2) <= 0;
+    } else {
+        hidden = wthLight = false;
+    }
+    outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
+    isEdge = false;
 
     if (tessEdge) {
-        bool isEdge =   p1.x*p1.y*p2.x*p2.y == 0 ||
-                        (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
+        isEdge = p1.x*p1.y*p2.x*p2.y == 0 || (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
         
         if (!isEdge) {
             isEdge = containsZero(dotP1, dotP2, umbralEdge);
         }
 
         if (isEdge) {
-            bestN = floor((calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
-        } 
-    } else if (!hidden && !outVF){
+            bestN = floor(1.5*(calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
+        }
+    }
+
+    if (tessGlobal && !hidden && !wthLight && !outVF && !isEdge) {
         bestN = floor((calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
     }
 

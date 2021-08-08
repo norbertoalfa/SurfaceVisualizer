@@ -33,7 +33,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Uniforms to pass
-glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 10000.0f);
+glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 pvm = projection * view * model;
@@ -218,6 +218,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
 
     sh->setBool("tessGlobal", status.tessGlobal);
     sh->setBool("tessEdge", status.tessEdge);
+    sh->setBool("improvePerf", status.improvePerf);
     
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorVectors", glm::vec3(1.0f, 0.3f, 0.3f));

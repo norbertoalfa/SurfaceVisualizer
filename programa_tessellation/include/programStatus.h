@@ -46,7 +46,7 @@ class ProgramStatus
 		bool showDiffArea, showK, showHeight, showCritic;
 		bool showTangents, showCotangents, showNormals;
 		bool invertNorm;
-		bool tessGlobal, tessEdge;
+		bool tessGlobal, tessEdge, improvePerf;
 
 		float umbralLength, umbralEdge;
 		int ptsLimit;
@@ -111,6 +111,7 @@ class ProgramStatus
 			showCritic = false;
 			tessGlobal = true;
 			tessEdge = false;
+			improvePerf = false;
 
 			coeffArea = 20.0f;
 			coeffK = 1.0f;

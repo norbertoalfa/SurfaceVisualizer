@@ -163,11 +163,12 @@ void mainWindow(ProgramStatus &status, Object &object) {
     
 
     if (ImGui::CollapsingHeader("Advanced visualization")) {
-        ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.1f, "%.8f");
-        ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
-        if (ImGui::Checkbox("Tess global", &status.tessGlobal)) status.tessEdge = false;
+        ImGui::Checkbox("Tess global", &status.tessGlobal);
         ImGui::SameLine();
-        if (ImGui::Checkbox("Tess edge", &status.tessEdge)) status.tessGlobal = false;
+        ImGui::Checkbox("Improve performance", &status.improvePerf);
+        ImGui::Checkbox("Tess edge", &status.tessEdge);
+        ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.005f, "%.8f");
+        ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
 
         const char *items[] = {"-None-", "Area", "K", "Height", "Critic"};
 

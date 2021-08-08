@@ -1,6 +1,16 @@
-compz(u, v :real, t0, t1 :real) : real = 0.1*cos(u*u + v*v + 2*PI*t0 + 2*PI*t1); 
-f(u, v :real, t0, t1, t2 : real) : vec3 = 4*vec3(u, t2 * compz(4*u, 4*v, t0, t1) / (u*u + v*v + 1.0), v);
+//Ejemplo
 
-h(u, v :real, t0, t1, t2 : real) : vec3 = f(4*(u-0.5), 4*(v-0.5), t0, t1, t2);
+r : real = 0.5;
+R : real = 2.0; 
 
-plot h; 
+compx(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*cos(u*2*PI);
+
+compy(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*sin(u*2*PI);
+
+compz(u, v : real, t1, t2 : real) : real = t2*sin(v*2*PI);
+
+g(u, v, t0 : real, t1, t2 : real) : vec3 = vec3(compx(u*cos(t0),v, t1, t2), compy(u,v, t1, t2), compz(u,v, t1, t2));
+
+f(u, v, t0 : real, t1, t2 : real) : vec3 = 2*g((u-0.5), (v-0.5), t0, t1 + R, t2 + r);
+
+plot f;

@@ -5,7 +5,7 @@ void genVertex(vec2 p) {
 
     geo.Tangent = normalize(tangentParam(p));
     geo.Cotan = normalize(cotangentParam(p));
-    geo.Normal = normalize(normalParam(p));
+    geo.Normal = normalParam(p);
 
     geo.Area = areaParam(p);
     geo.K = curvatureParam(p);
