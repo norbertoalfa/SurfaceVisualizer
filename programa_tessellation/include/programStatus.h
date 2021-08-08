@@ -44,7 +44,7 @@ class ProgramStatus
 		bool changeSizeMap;
 
 		bool showDiffArea, showK, showHeight, showCritic;
-		bool showTangents, showCotangents, showNormals;
+		bool showTangents, showCotangents, showNormals, showVectorsPerV;
 		bool invertNorm;
 		bool tessGlobal, tessEdge, improvePerf;
 
@@ -104,6 +104,7 @@ class ProgramStatus
 			invertNorm = false;
 
 			showTangents = showCotangents = showNormals = false;
+			showVectorsPerV = false;
 
 			showDiffArea = false;
 			showK = false;

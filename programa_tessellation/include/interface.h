@@ -146,19 +146,20 @@ void mainWindow(ProgramStatus &status, Object &object) {
     if (polMode != status.getActivePolMode()) {
         status.switchPolMode();
     }
-    ImGui::SameLine();
     ImGui::Checkbox("AutoRotate", &autoRot);
     if (autoRot != status.getAutoRotation()) {
         status.switchAutoRot();
     }
 
-    ImGui::Checkbox("Show tangent", &status.showTangents);
-    
-    ImGui::Checkbox("Show bitg", &status.showCotangents);
-    
-    ImGui::Checkbox("Show normal", &status.showNormals);
+    ImGui::Checkbox("Vector per vertex", &status.showVectorsPerV);
     ImGui::SameLine();
     ImGui::Checkbox("Invert normal", &status.invertNorm);
+
+    ImGui::Checkbox("tangent", &status.showTangents);
+    ImGui::SameLine();
+    ImGui::Checkbox("bitangent", &status.showCotangents);
+    ImGui::SameLine();
+    ImGui::Checkbox("normal", &status.showNormals);
 
     
 
@@ -170,7 +171,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
         ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.005f, "%.8f");
         ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
 
-        const char *items[] = {"-None-", "Area", "K", "Height", "Critic"};
+        const char *items[] = {"Color", "Area", "K", "Height", "Critic"};
 
         if (hideListShow) {
             ImGui::SetNextTreeNodeOpen(false);
@@ -178,7 +179,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
 
         if(ImGui::CollapsingHeader(("Show " + std::string(items[currItemShow])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
             hideListShow = false;
-            if (ImGui::ListBox("", &currItemShow, items, 4)) {
+            if (ImGui::ListBox("", &currItemShow, items, 5)) {
                 hideListShow = true;
             }
         }

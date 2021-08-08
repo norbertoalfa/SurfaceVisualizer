@@ -21,3 +21,6 @@ uniform bool tessGlobal;
 uniform bool tessEdge;
 uniform bool improvePerf;
 
+uniform bool showVectors;
+uniform bool showVectorsPerV;
+

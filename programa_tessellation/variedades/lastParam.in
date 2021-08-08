@@ -1,7 +1,14 @@
 //Ejemplo
 
+PI2 : real = 3.1415926;
 r : real = 0.5;
 R : real = 2.0; 
+
+g(u, v : real) : vec3 = 2*vec3(cos(v*PI2)*cos(u*2*PI2), cos(v*PI2)*sin(u*2*PI2), sin(v*PI2));
+
+h(u, v :real) : vec3 = 2*vec3(u, v, cos(10*u) + cos(10*v));
+
+f(u,v :real) : vec3 = g(u-0.5, v-0.5);
 
 compx(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*cos(u*2*PI);
 
@@ -9,8 +16,10 @@ compy(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*sin(u*2*PI);
 
 compz(u, v : real, t1, t2 : real) : real = t2*sin(v*2*PI);
 
-g(u, v, t0 : real, t1, t2 : real) : vec3 = vec3(compx(u*cos(t0),v, t1, t2), compy(u,v, t1, t2), compz(u,v, t1, t2));
+g2(u, v, t0 : real, t1, t2 : real) : vec3 = vec3(compx(u*cos(t0),v, t1, t2), compy(u,v, t1, t2), compz(u,v, t1, t2));
 
-f(u, v, t0 : real, t1, t2 : real) : vec3 = 2*g((u-0.5), (v-0.5), t0, t1 + R, t2 + r);
+f2(u, v :real) : vec3 = 2*g2(u-0.5, v-0.5, 0, R, r);
 
-plot f;
+fAmbas(u,v : real, t0 :real) : vec3 = t0*f(u, v) + (1-t0)*f2(u, v);
+
+plot fAmbas;//f2;

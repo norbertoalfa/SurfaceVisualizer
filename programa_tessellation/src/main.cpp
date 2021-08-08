@@ -206,6 +206,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     
     sh->setBool("showPol", showPol);
     sh->setBool("showVectors", showVectors);
+    sh->setBool("showVectorsPerV", status.showVectorsPerV);
     sh->setBool("showTangents", status.showTangents);
     sh->setBool("showCotangents", status.showCotangents);
     sh->setBool("showNormals", status.showNormals);

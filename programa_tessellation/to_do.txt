@@ -1,2 +1,1 @@
 - Separar codigo procesador.
-- Organizar procesador en carpetas.

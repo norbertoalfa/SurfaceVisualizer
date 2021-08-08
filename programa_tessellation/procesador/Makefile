@@ -1,33 +1,41 @@
 .SUFFIXES:
 
 FILE?=../variedades/lastParam.in
+EXE=bin/analizador
+SRC=src
+OBJ=obj
+FLAGS=-I./include
 
-all: analizador
+all: $(EXE)
 
-read: $(FILE) analizador
-	script -q -c "./analizador < '$(FILE)'" > ../error.log
-	#./analizador < '$(FILE)'
+read: $(FILE) $(EXE)
+	script -q -c "./$(EXE) < '$(FILE)'" > ../error.log
+	#./$(EXE) < '$(FILE)'
 
-analizador: y.tab.o semantico.o nodo.o elementos_predef.o
-	gcc -o analizador -lfl y.tab.o semantico.o nodo.o elementos_predef.o
+$(EXE): $(OBJ)/y.tab.o $(OBJ)/semantico.o $(OBJ)/nodo.o $(OBJ)/elementos_predef.o
+	gcc -o $@ -lfl $^ $(FLAGS)
 
-y.tab.o: y.tab.c lex.yy.c
-	gcc -c y.tab.c
+$(OBJ)/y.tab.o: $(SRC)/y.tab.c include/lex.yy.c 
+	mkdir -p obj
+	gcc -o $@ -c $< $(FLAGS)
 
-y.tab.c: semantico.y lex.yy.c
-	bison -v -d -o y.tab.c semantico.y
+$(SRC)/y.tab.c: $(SRC)/semantico.y include/lex.yy.c
+	bison -v -d -o $@ $<
 	
-elementos_predef.o: elementos_predef.c
-	gcc -c elementos_predef.c
+$(OBJ)/elementos_predef.o: $(SRC)/elementos_predef.c
+	mkdir -p obj
+	gcc -o $@ -c $< $(FLAGS)
 
-semantico.o: semantico.c
-	gcc -c semantico.c
+$(OBJ)/semantico.o: $(SRC)/semantico.c
+	mkdir -p obj
+	gcc -o $@ -c $< $(FLAGS)
 	
-nodo.o: nodo.c
-	gcc -c nodo.c
+$(OBJ)/nodo.o: $(SRC)/nodo.c
+	mkdir -p obj
+	gcc -o $@ -c $< $(FLAGS)
 
-lex.yy.c: especificacion.lex
-	lex -l especificacion.lex
+include/lex.yy.c: $(SRC)/especificacion.lex
+	lex -o $@ -l $<
 
 clean:
-	rm -f analizador y.tab.c lex.yy.c y.output *.o
+	rm -rf bin/* obj/* $(SRC)/y.tab.c include/lex.yy.c $(SRC)/y.output

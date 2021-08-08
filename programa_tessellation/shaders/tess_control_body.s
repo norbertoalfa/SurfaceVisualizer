@@ -84,7 +84,7 @@ void main(void) {
     vec2 p1, p2, p3, p_medio12,  p_medio23,  p_medio31;
     float nPts12, nPts23, nPts31, nPtsInt;
 
-    if (tessGlobal || tessEdge) {
+    if ((tessGlobal || tessEdge) && (!showVectors || showVectorsPerV)) {
         p1 = vertex[0].Coord;
         p2 = vertex[1].Coord;
         p3 = vertex[2].Coord;
