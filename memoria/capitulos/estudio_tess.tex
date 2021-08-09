@@ -51,7 +51,6 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\end{figure}
 	\\ Sin embargo, para las superficies no compactas esta definición puede no permitir la existencia de un $P$ que la aproxime con una precisión finita.\\
 	\\ Además, aparece el problema de la no detección de picos, debido a que al estudiar el volumen, si la altura es grande y la base lo suficientemente pequeña se puede dar el caso de que el volumen quede por debajo de la precisión $\epsilon$ y no tesele, aun existiendo dicho pico.
-	\newpage
 	\begin{figure}[h]
   		\centering
   		\includegraphics[width=0.6\textwidth]{pico_volumen}
@@ -67,7 +66,17 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\end{definicion}
 	
 	La medida equivalente para los lados es $r=\frac{L(\alpha)} {L(l)}$ donde $L$ es la longitud, $l$ el lado del triángulo y $\alpha$ la curva a estimar.\\
-	\\Es una buena alternativa para poder detectar dichos picos, ya que cuando hay uno o varios picos mal aproximados el área original entorno al pico es mucho mayor que la de la superficie generada (el ratio es grande). Además, de esta forma estamos evitando la aparición del problema del farolillo de Schwarz (--CITAR--) debido a que buscamos estimar con una cierta precisión el área original.
+	\\Es una buena alternativa para poder detectar dichos picos, ya que cuando hay uno o varios picos mal aproximados el área original entorno al pico es mucho mayor que la de la superficie generada (el ratio es grande). Además, de esta forma estamos evitando la aparición del problema del farolillo de Schwarz (--CITAR--) debido a que buscamos estimar con una cierta precisión el área original.\\
+	\\Sin embargo, al usar esta medida asumimos que la parametrización a nivel local funciona como una gráfica, como por ejemplo $p(u,v)=(p_x(u,v),p_y(u,v),p_z(u,v)) = (u,v,p_z(u,v))$. Esto no es cierto en la gran mayoría de casos y se puede ver fácilmente con la siguiente parametrización del plano $[0,1]x[0,1]$, embebido en $\R^3$:
+	$$p(u,v)=(cos(\frac{\pi}{2} u), sin(\frac{\pi}{2} v), 0 )$$
+	\\Al ser un plano no debería de teselar, pero como detecta que la curva a estimar en el lado del triángulo no está bien aproximada, entonces subdivide:
+	\begin{figure}[h]
+  		\centering
+  		\includegraphics[width=0.2\textwidth]{tess_plano_k}
+  		\includegraphics[width=0.2\textwidth]{tess_plano_long}
+  		\caption{Teselación innecesaria del plano}
+  		\label{fig:plano_tess}
+	\end{figure}
 	
 	\subsection{Medida basada en la curvatura}
 	Consiste en estimar la curvatura de Gauss por área. Esta medida está asociada al tercer concepto de superficie bien representada:
@@ -76,18 +85,31 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\end{definicion}
 	
 	La medida equivalente para los lados es $K_l L$ donde $L$ es la longitud y $l$ el lado del triángulo.\\
-	\\Si utilizamos como medida sólo la curvatura, que no depende de la parametrización de la superficie, teselaríamos de igual forma en un triángulo grande $T_1$ y en uno pequeño $T_2$ si $K_{T_1}=K_{T_2}$, obteniendo resultados distintos. Esto se debe a que la parametrización elegida deforma la malla inicial cambiando la densidad de triángulos. Un claro ejemplo es la reducción del tamaño de los triángulos a medida que nos acercamos a los polos en una esfera con la parametrización usual.\\
+	\\Si utilizamos como medida sólo la curvatura, que no depende de la parametrización de la superficie, teselaríamos de igual forma en un triángulo grande $T_1$ y en uno pequeño $T_2$ si $K_{T_1}=K_{T_2}$, obteniendo subtriángulos distintos. Esto se debe a que la parametrización elegida deforma la malla inicial cambiando de forma irregular el tamaño de los triángulos. Un claro ejemplo es la reducción de la base de los triángulos a medida que nos acercamos a los polos en una esfera con la parametrización usual.\\
+	\\INCLUIR IMAGEN DE LOS POLOS EN MODO MALLA Y  EN COLOR (DENSIDAD)\\
 	\\Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
-	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie, la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.
+	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie, la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.\\
+	\\La curvatura de Gauss se ha calculado de la siguiente forma (CITAR WOLFRAM):
+		$$K(x(u,v)) = \frac{det(x_{uu}, x_u, x_v) det(x_{vv}, x_u, x_v) - [det(x_{uv}, x_u, x_v)]^2} {[|x_u|^2|x_v|^2 - <x_u, x_v>^2]^2} (u, v)$$
+	que es la curvatura de Gauss en el punto $x(u, v)$, con $x$ carta de la superficie $S$.
 	
 	
 \section{Mejora del teselado}
 	En esta sección vamos a estudiar cómo mejorar el proceso de teselado para mostrar buenos resultados sin tener un gran impacto en el rendimiento.
-	\subsection{Teselado de bordes}
-	\subsection{Mejora de rendimiento general}
-		Hablar del no teselado fuera del view-frustum
-	\subsection{Mejora de rendimiento específica}
-		Hablar del no teselado en zonas ocultas y sin iluminación
+	
+	En general, nuestro cerebro reconstruye el objeto visualizado atendiendo a los bordes detectados y a las texturas, además de obviar los elementos que están fuera del campo de visión y aquellos ocultos. Para el caso de la visualización de superficies tenemos que:
+	\begin{enumerate}
+		\item Los únicos $\textbf{bordes}$ posibles son aquellas zonas donde el vector de visualización del punto (con origen la cámara y destino el punto a comprobar, normalizado) es perpendicular a la normal en el punto. Aplicando sólo este punto, si multiplicamos por una constante el factor de teselado calculado, obtendríamos un teselado de bordes (en la práctica el factor usado es $1.5$).
+		\item Ver la $\textbf{textura}$ de una superficie equivale a ver cómo afecta la iluminación a la misma, por lo que en nuestro caso una zona con textura visible es aquella donde el factor de iluminación difusa y especular es mayor que $0$.
+		\item Un elemento está $\textbf{fuera del campo de visión}$ si el vector frontal de la cámara y el vector de visualización del punto cumplen ciertas restricciones, cuya complejidad dependerá de la definición de campo de visión escogida. Simplificando el problema, podemos decir que esto sucede si su producto escalar es cercano al $0$, bajo un cierto umbral $\delta>0$ que definirá el campo de visión con forma de cono. Dado un ángulo de visión $\alpha$, el umbral se puede calcular como $cos(\frac{\alpha}{2})$, obtenido a partir de la expresión del producto escalar:
+		$$<p,q>=|p||q|cos(\angle(p,q))$$
+		Para tener una visión de $75$º sería necesario un umbral de $0.793$ aproximadamente.
+		\item Si la superficie es orientable y su complemento tiene 2 componentes conexas, entonces el punto $p$ está $\textbf{oculto por superposición}$ si el producto escalar del vector de visualización de $p$ con la normal en $p$ es mayor que $0$. Para evitar el solapamiento con la definición de borde, se puede proporcionar un umbral $\epsilon>0$, comprobando si dicho producto es mayor que $\epsilon$ en vez del $0$.
+	\end{enumerate}
+	
+	Aplicando los apartados $(2)$ y $(3)$ podemos mejorar el rendimiento del programa para cualquier superficie, independientemente de sus características topológicas y geométricas.\\
+	\\Si además aplicamos el apartado $(1)$ obtenemos una mejora visual, que aunque ofrezca un impacto negativo de rendimiento puede compensarse subiendo el umbral para el teselado global, de forma que el teselado en el borde sea similar al original (habría que multiplicar el umbral por el factor comentado en el apartado $(1)$).\\
+	\\En cuanto al último apartado, el aumento de rendimiento es comparable al de las zonas no iluminadas (sin textura) pero se trata de una situación más específica y no siempre se va a poder utilizar. Es por ello que en el programa se da a elegir al usuario si quiere activar o no esta funcionalidad.
 	
 
 \endinput
