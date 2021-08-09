@@ -40,7 +40,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	
 	Consiste en estimar el volumen de la diferencia entre el poliedro generado y la superficie original a nivel local. Esta medida está asociada al primer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 1]
-		Dada una superficie $S$ y un poliedro $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el volumen contenido entre ambos es menor que $\epsilon$.
+		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el volumen contenido entre ambos es menor que $\epsilon$.
 	\end{definicion}
 	La medida equivalente para los lados es el área de la sección cuya base es el lado del triángulo y el borde restante es la curva original a aproximar con dicho lado.\\ 
 	\begin{figure}[h]
@@ -63,14 +63,31 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	
 	Consiste en estimar el área de la superficie original localmente. Esta medida está asociada al segundo concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 2]
-		Dada una superficie $S$ y un poliedro $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el ratio de área $r=\frac{A(S)} {A(P)}$ cumple que $r-1 < \epsilon$ (siempre se tiene que $r\geq 1$).
+		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el ratio de área $r=\frac{A(S)} {A(P)}$ cumple que $r-1 < \epsilon$ (siempre se tiene que $r\geq 1$).
 	\end{definicion}
 	
 	La medida equivalente para los lados es $r=\frac{L(\alpha)} {L(l)}$ donde $L$ es la longitud, $l$ el lado del triángulo y $\alpha$ la curva a estimar.\\
 	\\Es una buena alternativa para poder detectar dichos picos, ya que cuando hay uno o varios picos mal aproximados el área original entorno al pico es mucho mayor que la de la superficie generada (el ratio es grande). Además, de esta forma estamos evitando la aparición del problema del farolillo de Schwarz (--CITAR--) debido a que buscamos estimar con una cierta precisión el área original.
 	
 	\subsection{Medida basada en la curvatura}
-	Hablar de la medida final, curvatura de Gauss por unidad de área (en los lados es por unidad de longitud).\\
+	Consiste en estimar la curvatura de Gauss por área. Esta medida está asociada al tercer concepto de superficie bien representada:
+	\begin{definicion}[Superficie bien representada 3]
+		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si para todo triángulo $T$ del politopo se cumple que $K_T A(T) < \epsilon$, donde $K_T$ es el máximo valor de la curvatura de Gauss en valor absoluto en $T$.
+	\end{definicion}
+	
+	La medida equivalente para los lados es $K_l L$ donde $L$ es la longitud y $l$ el lado del triángulo.\\
+	\\Si utilizamos como medida sólo la curvatura, que no depende de la parametrización de la superficie, teselaríamos de igual forma en un triángulo grande $T_1$ y en uno pequeño $T_2$ si $K_{T_1}=K_{T_2}$, obteniendo resultados distintos. Esto se debe a que la parametrización elegida deforma la malla inicial cambiando la densidad de triángulos. Un claro ejemplo es la reducción del tamaño de los triángulos a medida que nos acercamos a los polos en una esfera con la parametrización usual.\\
+	\\Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
+	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie, la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.
+	
+	
+\section{Mejora del teselado}
+	En esta sección vamos a estudiar cómo mejorar el proceso de teselado para mostrar buenos resultados sin tener un gran impacto en el rendimiento.
+	\subsection{Teselado de bordes}
+	\subsection{Mejora de rendimiento general}
+		Hablar del no teselado fuera del view-frustum
+	\subsection{Mejora de rendimiento específica}
+		Hablar del no teselado en zonas ocultas y sin iluminación
 	
 
 \endinput
