@@ -1,6 +1,6 @@
 g(u, v :real) : real = u;
 
-f(u,v :real) : vec3 = 40*vec3(cos(u), sin(v), 0) * gPu(u,v);
+f(u,v, t0 :real) : vec3 = 10*vec3(cos(t0*0.5*PI*u), sin(t0*0.5*PI*v), 0) * gPu(u,v);
 
 
 plot f;

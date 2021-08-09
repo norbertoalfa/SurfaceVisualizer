@@ -260,7 +260,7 @@ void nwfileWindow(ProgramStatus &status) {
     {
         strcpy(text, "");
         status.setParamFile(std::string(nameFile));
-        status.setFileText("");
+        status.setFileTextDefault();
         status.saveText();
         show_editor_window = true;
         firstEditor = true;

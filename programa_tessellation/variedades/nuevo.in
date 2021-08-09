@@ -1,0 +1,18 @@
+//-- Structure example with sphere parametrization --//
+
+// Define constants 
+PI2 : real = 2*PI;
+
+// Define aditional functions 
+compx(u, v : real) : real = cos(v*PI)*cos(u*PI2);
+compy(u, v : real) : real = cos(v*PI)*sin(u*PI2);
+compz(u, v : real) : real = sin(v*PI);
+
+// Define de main function.
+f(u, v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v));
+
+// You can use another function to redefine the domain instead of [0,1]x[0,1].
+g(u, v : real, t0, t1 : real) : vec3 = f(t0 * (u-0.5), t1 * (v-0.5));
+
+// To plot 'g', it must return a 'vec3' type and the first two arguments must be reals.
+plot g;

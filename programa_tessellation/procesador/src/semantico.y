@@ -47,7 +47,7 @@
 %start programa
 
 %%
-programa : lista_sentencias { closeInter(); }
+programa : lista_sentencias sentencia_plot { escribeFinPlot(); closeInter(); } PTOCOMA
 ;
 
 lista_sentencias : lista_sentencias sentencia PTOCOMA
@@ -56,7 +56,6 @@ lista_sentencias : lista_sentencias sentencia PTOCOMA
 
 sentencia : sentencia_declar_valor
           | sentencia_declar_fun
-          | sentencia_plot { escribeFinPlot(); }
           | error
 ;
 

@@ -11,7 +11,7 @@ class ProgramStatus
 		unsigned int SCR_WIDTH;
 		unsigned int SCR_HEIGHT;
 
-		std::string paramFile, dirPath, fileText;
+		std::string paramFile, dirPath, fileText, defaultText;
 		std::string lastParamFile, lastParamPath;
 		std::string errorFile, errorText;
 
@@ -133,6 +133,20 @@ class ProgramStatus
 			fontColor = glm::vec3(1.0f, 1.0f, 1.0f);
 			
 			someChange = true;
+
+			defaultText = 	std::string("//-- Structure example with sphere parametrization --//\n\n") + 
+							std::string("// Define constants \n") + 
+							std::string("PI2 : real = 2*PI;\n\n") + 
+							std::string("// Define aditional functions \n") + 
+							std::string("compx(u, v : real) : real = cos(v*PI)*cos(u*PI2);\n") + 
+							std::string("compy(u, v : real) : real = cos(v*PI)*sin(u*PI2);\n") +
+							std::string("compz(u, v : real) : real = sin(v*PI);\n\n") +
+							std::string("// Define de main function.\n") + 
+							std::string("f(u, v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v));\n\n") +
+							std::string("// You can use another function to redefine the domain instead of [0,1]x[0,1].\n") +
+							std::string("g(u, v : real, t0, t1 : real) : vec3 = f(t0 * (u-0.5), t1 * (v-0.5));\n\n") +
+							std::string("// To plot 'g', it must return a 'vec3' type and the first two arguments must be reals.\n") +
+							std::string("plot g;");
 		}
 		
 		// Seters
@@ -160,6 +174,8 @@ class ProgramStatus
 		void setParamPath(std::string path) { dirPath = path; }
 		
 		void setFileText(std::string text) { fileText = text; saveLastParam();}
+
+		void setFileTextDefault() { fileText = defaultText; saveLastParam();}
 		
 		void setTotalFPlot(int nplot) { totalFPlot = nplot; }
 
