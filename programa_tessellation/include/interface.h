@@ -164,10 +164,9 @@ void mainWindow(ProgramStatus &status, Object &object) {
     
 
     if (ImGui::CollapsingHeader("Advanced visualization")) {
-        ImGui::Checkbox("Tess global", &status.tessGlobal);
+        ImGui::Checkbox("Tessellation", &status.tessGlobal);
         ImGui::SameLine();
         ImGui::Checkbox("Improve performance", &status.improvePerf);
-        ImGui::Checkbox("Tess edge", &status.tessEdge);
         ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.005f, "%.8f");
         ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
 
