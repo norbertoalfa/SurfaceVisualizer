@@ -246,7 +246,34 @@ void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::TextColored(titleColor, "Statistics");
     ImGui::Separator();
 
-    ImGui::Checkbox("Render info", &show_render_info);
+    if (show_render_info) {
+        ImGui::SetNextTreeNodeOpen(true);
+    }
+
+    if (ImGui::CollapsingHeader("Render info")) {
+        show_render_info = true;
+        
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 3000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate / 3.0);
+        if(status.recordInfo) {
+            status.saveFrRateInfo(ImGui::GetIO().Framerate / 3.0);
+        }
+
+        if (!status.recordInfo) {
+            if (ImGui::Button("Record")) {
+                status.recordInfo = true;
+            }
+        } else {
+            if (ImGui::Button("Stop")) {
+                status.recordInfo = false;
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Save info")) {
+            status.saveFrRateInfo();
+        }
+    } else {
+        show_render_info = false;
+    }
 
     ImGui::End();
 }
@@ -363,12 +390,6 @@ void lightVectorInterface(Light &light, glm::mat4 pvm_inv) {
     ImGui::End();
 }
 
-void renderInfo() {
-    ImGui::Begin("Render info", &show_render_info, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 3000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate / 3.0);
-    ImGui::End();
-}
-
 void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm::mat4 pvm, glm::mat4 pvm_inv) { 
    	ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -385,8 +406,6 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
     if (show_params_window) { paramsWindow(status); }
 
     if (show_light_vector) { lightVectorInterface(light, pvm_inv); }
-
-    if (show_render_info) { renderInfo(); }
 
     // Rendering
     ImGui::Render();

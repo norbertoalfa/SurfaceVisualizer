@@ -14,6 +14,7 @@ class ProgramStatus
 		std::string paramFile, dirPath, fileText, defaultText;
 		std::string lastParamFile, lastParamPath;
 		std::string errorFile, errorText;
+		std::string frRateFile, frRateInfo;
 
 		int sizeMap;
 
@@ -47,6 +48,7 @@ class ProgramStatus
 		bool showTangents, showCotangents, showNormals, showVectorsPerV;
 		bool invertNorm;
 		bool tessGlobal, tessEdge, improvePerf;
+		bool recordInfo;
 
 		float umbralLength, umbralEdge;
 		int ptsLimit;
@@ -74,6 +76,9 @@ class ProgramStatus
 			dirPath = "variedades";
 			paramFile = "lastParam.in";
 			errorFile = "error.log";
+			frRateFile = "frameRateInfo.txt";
+			frRateInfo = "";
+
 			changeWinTitle = true;
 			changeSizeMap = false;
 			hasError = showError = false;
@@ -97,6 +102,7 @@ class ProgramStatus
 			perDisplace = false;
 			perRotate = false;
 			loadShader = true;
+			recordInfo = false;
 
 			totalFPlot = 1;
 			totalParam = 0;
@@ -326,6 +332,27 @@ class ProgramStatus
 			inFile.close();
 
 			return 1;
+		}
+
+		void saveFrRateInfo(float frRate) {
+			frRateInfo = frRateInfo + std::to_string(frRate) + "\n";
+		}
+
+		void saveFrRateInfo() {
+			std::ofstream offFile;
+
+			offFile.open(frRateFile);
+
+			if (!offFile) {
+				std::cerr << "No se ha podido abrir el archivo de parametrización para escribir." << std::endl;
+
+				return;
+			}
+			
+			offFile << frRateInfo;
+			offFile.close();
+
+			frRateInfo = "";
 		}
 
 		int saveLastParam(){

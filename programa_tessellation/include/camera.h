@@ -43,6 +43,8 @@ public:
     float MovementSpeed;
     float MouseSensitivity;
     float Zoom;
+
+    float lastTime;
     
     bool posChange;
 
@@ -55,6 +57,7 @@ public:
         Pitch = pitch;
         updateCameraVectors();
         posChange = false;
+        lastTime = -1;
     }
     // constructor with scalar values
     Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
@@ -79,9 +82,17 @@ public:
     }
     
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 getAutoRotViewMatrix()
+    glm::mat4 getAutoRotViewMatrix(float nwTime)
     {
-	    processMouseRotate(10.0f, 0.0f);
+        float varTime = nwTime - lastTime;
+
+        if (lastTime == -1) {
+            lastTime = nwTime;
+        }
+
+        varTime = nwTime - lastTime;
+        lastTime = nwTime;
+	    processMouseRotate(500.0f*varTime, 0.0f);
 	    
         return getViewMatrix();
     }

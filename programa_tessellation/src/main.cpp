@@ -280,7 +280,7 @@ int initializeGLFW()
         return -1;
     }
     
-    glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(0); // Enable vsync
     
     // configure global opengl state
     glEnable(GL_DEPTH_TEST);
@@ -364,9 +364,9 @@ void render()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	// camera/view transformation 
+	// camera/view transformation
 	if (status.getAutoRotation()) {
-		view = camera.getAutoRotViewMatrix();
+		view = camera.getAutoRotViewMatrix(glfwGetTime());
 	} else {
 		view = camera.getViewMatrix();
 	}

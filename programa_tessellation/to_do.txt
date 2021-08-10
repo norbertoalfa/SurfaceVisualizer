@@ -1,3 +1,2 @@
 - Separar codigo procesador.
 - Generar imagen de ejemplo para el grafo asociado.
-- Excluir wthLight de "improve performance"
