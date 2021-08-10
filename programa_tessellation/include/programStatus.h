@@ -334,7 +334,7 @@ class ProgramStatus
 			return 1;
 		}
 
-		void saveFrRateInfo(float frRate) {
+		void saveFrRateInfo(int frRate) {
 			frRateInfo = frRateInfo + std::to_string(frRate) + "\n";
 		}
 

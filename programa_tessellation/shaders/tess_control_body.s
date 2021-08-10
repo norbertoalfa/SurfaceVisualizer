@@ -81,6 +81,8 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     }
 
     return bestN;
+    
+    //return floor((calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
 }
 
 void main(void) {

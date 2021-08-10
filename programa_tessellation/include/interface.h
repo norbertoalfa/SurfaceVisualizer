@@ -26,8 +26,10 @@ std::string fileName;
 const char* glsl_version = "#version 130";
 char nameFile[100];
 char text[10000];
+float totalTime = 0.0;
 int sizeMap;
 int currItemShow = 0;
+int framesCount = 1;
 
 bool autoRot = false;
 bool polMode = false;
@@ -254,7 +256,16 @@ void mainWindow(ProgramStatus &status, Object &object) {
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 3000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate / 3.0);
         if(status.recordInfo) {
-            status.saveFrRateInfo(ImGui::GetIO().Framerate / 3.0);
+            totalTime += ImGui::GetIO().DeltaTime * 3.0;
+
+            if (totalTime < 1.0) {
+                framesCount++;
+            } else {
+                status.saveFrRateInfo(framesCount);
+                totalTime -= 1.0;
+                framesCount = 1;
+            }
+            
         }
 
         if (!status.recordInfo) {

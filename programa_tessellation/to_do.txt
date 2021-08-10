@@ -1,2 +1,3 @@
 - Separar codigo procesador.
 - Generar imagen de ejemplo para el grafo asociado.
+- Medir framerate.
