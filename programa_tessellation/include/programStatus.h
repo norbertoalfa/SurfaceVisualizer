@@ -54,7 +54,7 @@ class ProgramStatus
 
 		float umbralLength, umbralEdge;
 		int ptsLimit;
-		int failsLimit;
+		int nPrimitives;
 		
 		float coeffArea, coeffK, coeffHeight;
 		float refHeight;
@@ -131,7 +131,7 @@ class ProgramStatus
 			umbralLength = 0.01f;
 			umbralEdge = 0.1f;
 			ptsLimit = 7;
-			failsLimit = 5;
+			nPrimitives = 200;
 
 			ambientStrength = 0.2f;
 			diffStrength = 0.5f;

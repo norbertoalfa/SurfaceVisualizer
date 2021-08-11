@@ -1,15 +1,16 @@
-compzWaves(u, v :real, t0 :real) : real = 0.1*cos(u*u + v*v - 2*PI*t0);
+//Ejemplo
 
-f(u, v :real, t0, t1 : real) : vec3 = 4*vec3(u, t1 * compzWaves(4*u, 4*v, t0) / (u*u + v*v + 1.0), v);
-h(u, v :real, t0, t1 : real) : vec3 = f(4*(u-0.5), 4*(v-0.5), t0, t1);
+r : real = 0.5;
+R : real = 2.0; 
 
-r : real = 0.75;
+compx(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*cos(u*2*PI);
 
-compx(u, v : real) : real = r*cos(v*PI)*cos(u*2*PI);
-compy(u, v : real) : real = r*cos(v*PI)*sin(u*2*PI);
-compz(u, v : real) : real = r*sin(v*PI);
+compy(u, v : real, t1, t2 : real) : real = (t1 + t2*cos(v*2*PI))*sin(u*2*PI);
 
-esfera(u, v : real, t0, t1 :real) : vec3 = vec3(compx(u,v), compy(u,v) + 4*t1*compzWaves(0,0,t0), compz(u,v));
-g(u, v : real, t0, t1 : real) : vec3 = esfera(u-0.5, -(v-0.5), t0, t1);
+compz(u, v : real, t1, t2 : real) : real = t2*sin(v*2*PI);
 
-plot h, g;
+g(u, v, t0 : real, t1, t2 : real) : vec3 = vec3(compx(u*cos(t0),v, t1, t2), compy(u,v, t1, t2), compz(u,v, t1, t2));
+
+f(u, v, t0 : real, t1, t2 : real) : vec3 = 2*g((u-0.5), (v-0.5), t0, t1 + R, t2 + r);
+
+plot f;

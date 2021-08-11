@@ -255,6 +255,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
         show_render_info = true;
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 3000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate / 3.0);
+        ImGui::Text("Application triangles %d", status.nPrimitives);
         if(status.recordInfo) {
             totalTime += ImGui::GetIO().DeltaTime * 3.0;
 

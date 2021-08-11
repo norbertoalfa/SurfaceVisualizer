@@ -233,7 +233,6 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setFloat("umbralLength", status.umbralLength);
     sh->setFloat("umbralEdge", status.umbralEdge);
     sh->setInt("ptsLimit", status.ptsLimit);
-    sh->setInt("failsLimit", status.failsLimit);
 
     sh->setFloat("coeffArea", status.coeffArea);
     sh->setFloat("coeffK", status.coeffK);
@@ -432,10 +431,32 @@ void render()
 	// render boxes
 	glBindVertexArray(VAO);
 
+    // Query to count generated primitives
+    GLuint tessQuery[1];
+    glGenQueries(1, tessQuery);
+    glBeginQuery(GL_PRIMITIVES_GENERATED, tessQuery[0]);
+
+    // Draw surface
 	for (int i = 0; i < status.getTotalFPlot(); i++) {
 		shader->setInt("funPlot", i);
 		glDrawElements(GL_PATCHES, indicesSize, GL_UNSIGNED_INT, 0);
 	}
+
+    // End query
+    glEndQuery(GL_PRIMITIVES_GENERATED);
+    GLuint numPrimitives = 0;
+
+    if(GL_TRUE == glIsQuery(tessQuery[0])) {
+        glGetQueryObjectuiv(tessQuery[0], GL_QUERY_RESULT, &numPrimitives);
+    }
+    
+    // check for errors
+    GLenum error = glGetError();
+    if(error != GL_NO_ERROR) {
+        std::cerr << "Error " << error << std::endl;
+    }
+    
+    status.nPrimitives = numPrimitives;
 }
 
 void cleanBuffers()

@@ -14,7 +14,6 @@ uniform vec3 viewPos;
 uniform vec3 Front;  
 
 uniform int ptsLimit;
-uniform int failsLimit;
 
 uniform bool invertNorm;
 uniform bool tessGlobal;

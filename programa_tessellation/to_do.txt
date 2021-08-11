@@ -1,4 +1,4 @@
 - Separar codigo procesador.
-- Generar imagen de ejemplo para el grafo asociado.
-- Medir framerate (el restante).
-- Medir triángulos (glQuery ...).
+- Medir:
+    * framerate.
+    * nº triángulos.
