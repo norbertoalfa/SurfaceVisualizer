@@ -376,10 +376,13 @@ void render()
     pvm_inv = glm::inverse(pvm);
 
     for (int i = 0; i < 10; i++) {
-        float newParam = (1.0 + sin(glfwGetTime() / 2.0))/2.0;
+        float newParamSin = (1.0 + sin(glfwGetTime() / 2.0))/2.0;
+        float newParamLineal = (((int)(glfwGetTime() * 500.0))%1000)/1000.0;
 
-        if (status.autoParams[i]) {
-            status.params[i] = newParam;
+        if (status.autoParams[i] == PARAM_SIN) {
+            status.params[i] = newParamSin;
+        } else if (status.autoParams[i] == PARAM_LINEAL) {
+            status.params[i] = newParamLineal;
         }
     }
 	

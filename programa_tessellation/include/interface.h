@@ -379,10 +379,29 @@ void paramsWindow(ProgramStatus &status) {
         
     for (int i = 0; i < status.getTotalParam(); i++) {
         std::string nameParam = "t" + std::to_string(i);
+        bool chBoxSin = status.autoParams[i] == PARAM_SIN;
+        bool chBoxLineal = status.autoParams[i] == PARAM_LINEAL;
+        
         ImGui::SliderFloat(nameParam.c_str(), &(status.params[i]), 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
         ImGui::SameLine();
-        ImGui::PushID(i);
-        ImGui::Checkbox("Auto", &status.autoParams[i]);
+        ImGui::PushID(2*i);
+        if (ImGui::Checkbox("Sin", &chBoxSin)) {
+            if (chBoxSin) {
+                status.autoParams[i] = PARAM_SIN;
+            } else {
+                status.autoParams[i] = PARAM_MANUAL;
+            }
+        }
+        ImGui::PopID();
+        ImGui::SameLine();
+        ImGui::PushID(2*i+1);
+        if (ImGui::Checkbox("Lineal", &chBoxLineal)) {
+            if (chBoxLineal) {
+                status.autoParams[i] = PARAM_LINEAL;
+            } else {
+                status.autoParams[i] = PARAM_MANUAL;
+            }
+        }
         ImGui::PopID();
     }
 

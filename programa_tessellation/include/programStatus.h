@@ -5,6 +5,8 @@
 #include <fstream>
 #include <glm/glm.hpp>
 
+enum AutoParamsType {PARAM_MANUAL, PARAM_SIN, PARAM_LINEAL};
+
 class ProgramStatus
 {
 	private:
@@ -37,7 +39,7 @@ class ProgramStatus
 		
 	public:
 		float params[10];
-		bool autoParams[10];
+		AutoParamsType autoParams[10];
 
 		bool hasError, showError;
 
@@ -128,7 +130,7 @@ class ProgramStatus
 
 			umbralLength = 0.01f;
 			umbralEdge = 0.1f;
-			ptsLimit = 20;
+			ptsLimit = 7;
 			failsLimit = 5;
 
 			ambientStrength = 0.2f;
@@ -223,7 +225,7 @@ class ProgramStatus
 			bool result = false;
 			
 			for(int i = 0; i < 10; i++) 
-				result = result || autoParams[i];
+				result = result || (autoParams[i] != PARAM_MANUAL);
 
 			return result;
 		}

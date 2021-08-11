@@ -9,9 +9,9 @@ bool containsZero(float a, float b, float umbral) {
         sup = a;
     }
 
-    return  (inf < -umbral && sup > -umbral) ||
-            (inf <  umbral && sup >  umbral) ||
-            (inf >  -umbral && sup <  umbral);
+    return  (inf <= -umbral && sup >= -umbral) ||
+            (inf <=  umbral && sup >=  umbral) ||
+            (inf >=  -umbral && sup <=  umbral);
 }
 
 float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
@@ -25,6 +25,21 @@ float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
     }
 
     return maxK;
+}
+
+float calculateMaxDot(vec2 p1, vec2 p2, int nIniPts, float signNormal){
+    float maxDot = -1.0;
+    vec3 lightDir_i;
+    vec2 coord;
+
+    for (int i = 0; i <= nIniPts; i++) {
+        coord = ((nIniPts - i) * p1 + i * p2) / nIniPts;
+        lightDir_i = normalize(lightPos - functionParam(coord));
+
+        maxDot = max(maxDot, dot(signNormal*normalParam(coord), lightDir_i));
+    }
+
+    return maxDot;
 }
 
 float bestNPtsK(vec2 p1, vec2 p2) {
@@ -63,7 +78,7 @@ float bestNPtsK(vec2 p1, vec2 p2) {
         hidden = dotP1 > 0.5 && dotP2 > 0.5;
     }
 
-    wthLight = dot(n1, lightDir1) < 0.0 && dot(n2, lightDir2) < 0.0;
+    wthLight = calculateMaxDot(p1, p2, ptsLimit, signNormal) < 0.0;
     outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
 
     isEdge = p1.x*p1.y*p2.x*p2.y == 0 || (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
