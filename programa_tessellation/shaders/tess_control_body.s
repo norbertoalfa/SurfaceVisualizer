@@ -1,4 +1,18 @@
 
+float calculateLength(vec2 p1, vec2 p2, int nIniPts){
+    float longitud = 0;
+    vec2 coord_o, coord_d;
+
+    for (int i = 0; i < nIniPts; i++) {
+        coord_o = ((nIniPts - i) * p1 + i * p2) / nIniPts;
+        coord_d = ((nIniPts - i-1) * p1 + (i+1) * p2) / nIniPts;
+
+        longitud += length(functionParam(coord_d) - functionParam(coord_o));
+    }
+
+    return longitud;
+}
+
 bool containsZero(float a, float b, float umbral) {
     float inf, sup;
     if (a < b) {
@@ -55,7 +69,7 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     vec3 lightDir1, lightDir2;
 
     float signNormal, dotP1, dotP2;
-    float longitud, bestN = 1;
+    float eyeDist, longitud, bestN = 1;
 
     bool hidden, wthLight, outVF, isEdge;
 
@@ -76,7 +90,8 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     lightDir2 = normalize(lightPos - imageP2);
     
     // Calculate tessellation level
-    longitud = 0.2*length(imageP2 - imageP1) / (length(imageP1-viewPos) + length(imageP2-viewPos));
+    eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
+    longitud = 0.1*length(imageP2 - imageP1) / eyeDist;
 
     isEdge = true;
     hidden = wthLight = outVF = false;
@@ -87,7 +102,7 @@ float bestNPtsK(vec2 p1, vec2 p2) {
             hidden = dotP1 > 0.5 && dotP2 > 0.5;
         }
 
-        wthLight = false; //calculateMaxDot(p1, p2, ptsLimit, signNormal) < 0.0;
+        wthLight = false; //calculateMaxDot(p1, p2, samplePts, signNormal) < 0.0;
         outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
 
         isEdge = p1.x*p1.y*p2.x*p2.y == 0 || (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
@@ -95,15 +110,30 @@ float bestNPtsK(vec2 p1, vec2 p2) {
         if (!isEdge) {
             isEdge = containsZero(dotP1, dotP2, umbralEdge);
         }
+    }
 
-        if (!isEdge && !hidden && !wthLight && !outVF) {
-            bestN = floor(0.667*(calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
+//////
+    if (calculateMaxK(p1, p2, ptsLimit) > 0.5 && !outVF && !hidden && !wthLight)) {
+        float actualL = calculateLength(p1, p2, bestN);
+        float oldL = calculateLength(p1, p2, bestN);
+
+        for (int i = 2; i < ptsLimit; i++) {
+            if ((actualL - oldL) >= umbralLength * 10 * eyeDist) {
+                oldL = actualL;
+                bestN = i;
+            }
+            actualL = calculateLength(p1, p2, i);
         }
     }
+////////
 
-    if (isEdge && !outVF) {
-        bestN = floor((calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
+    //bestN = floor((calculateMaxK(p1, p2, samplePts) * longitud) / umbralLength) + 1;
+
+    if (!isEdge) {
+        bestN = floor(0.667*bestN) + 1;
     }
+
+
 
     return bestN;
 }
