@@ -220,6 +220,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setBool("tessGlobal", status.tessGlobal);
     sh->setBool("tessEdge", status.tessEdge);
     sh->setBool("improvePerf", status.improvePerf);
+    sh->setBool("improvePerfEsp", status.improvePerfEsp); 
     
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorVectors", glm::vec3(1.0f, 0.3f, 0.3f));

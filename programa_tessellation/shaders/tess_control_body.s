@@ -28,15 +28,21 @@ float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
 }
 
 float calculateMaxDot(vec2 p1, vec2 p2, int nIniPts, float signNormal){
-    float maxDot = -1.0;
-    vec3 lightDir_i;
+    vec3 image, norm, lightDir;
     vec2 coord;
+    float maxDot = -1.0;
 
     for (int i = 0; i <= nIniPts; i++) {
         coord = ((nIniPts - i) * p1 + i * p2) / nIniPts;
-        lightDir_i = normalize(lightPos - functionParam(coord));
+        image = functionParam(coord);
+        norm = signNormal*normalParam(coord);
 
-        maxDot = max(maxDot, dot(signNormal*normalParam(coord), lightDir_i));
+        // Diffuse
+        lightDir = normalize(lightPos - image);
+        maxDot = max(maxDot, dot(norm, lightDir));
+
+        // Specular
+        maxDot = max(maxDot, dot(normalize(viewPos - image), reflect(-lightDir, norm)));
     }
 
     return maxDot;
@@ -72,23 +78,27 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     // Calculate tessellation level
     longitud = 0.2*length(imageP2 - imageP1) / (length(imageP1-viewPos) + length(imageP2-viewPos));
 
-    hidden = false;
+    isEdge = true;
+    hidden = wthLight = outVF = false;
 
     if (improvePerf) {
-        hidden = dotP1 > 0.5 && dotP2 > 0.5;
-    }
 
-    wthLight = calculateMaxDot(p1, p2, ptsLimit, signNormal) < 0.0;
-    outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
+        if (improvePerfEsp) {
+            hidden = dotP1 > 0.5 && dotP2 > 0.5;
+        }
 
-    isEdge = p1.x*p1.y*p2.x*p2.y == 0 || (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
-    
-    if (!isEdge) {
-        isEdge = containsZero(dotP1, dotP2, umbralEdge);
-    }
+        wthLight = false; //calculateMaxDot(p1, p2, ptsLimit, signNormal) < 0.0;
+        outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
 
-    if (!isEdge && !hidden && !wthLight && !outVF) {
-        bestN = floor(0.667*(calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
+        isEdge = p1.x*p1.y*p2.x*p2.y == 0 || (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
+        
+        if (!isEdge) {
+            isEdge = containsZero(dotP1, dotP2, umbralEdge);
+        }
+
+        if (!isEdge && !hidden && !wthLight && !outVF) {
+            bestN = floor(0.667*(calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
+        }
     }
 
     if (isEdge && !outVF) {
@@ -96,8 +106,6 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     }
 
     return bestN;
-    
-    //return floor((calculateMaxK(p1, p2, ptsLimit) * longitud) / umbralLength) + 1;
 }
 
 void main(void) {

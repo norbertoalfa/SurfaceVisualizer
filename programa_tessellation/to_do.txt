@@ -1,4 +1,4 @@
-- Separar codigo procesador.
 - Medir:
     * framerate.
     * nº triángulos.
+- Separar codigo procesador.

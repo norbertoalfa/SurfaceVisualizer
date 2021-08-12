@@ -19,6 +19,7 @@ uniform bool invertNorm;
 uniform bool tessGlobal;
 uniform bool tessEdge;
 uniform bool improvePerf;
+uniform bool improvePerfEsp;
 
 uniform bool showVectors;
 uniform bool showVectorsPerV;

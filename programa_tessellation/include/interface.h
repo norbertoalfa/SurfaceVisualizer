@@ -27,9 +27,13 @@ const char* glsl_version = "#version 130";
 char nameFile[100];
 char text[10000];
 float totalTime = 0.0;
+float totalPrimitives = 0.0;
+float minLength = 0.000001f;
+float maxLength = 0.005f;
 int sizeMap;
 int currItemShow = 0;
 int framesCount = 1;
+int nSamples = 0;
 
 bool autoRot = false;
 bool polMode = false;
@@ -123,7 +127,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
         status.setLoadShader(true);
     }
 
-    ImGui::SliderInt("Map size", &sizeMap, 4, 80);
+    ImGui::SliderInt("Map size", &sizeMap, 4, 380);
     ImGui::SameLine();
     if (ImGui::Button("Update")) {
         status.setSizeMap(sizeMap);
@@ -168,8 +172,14 @@ void mainWindow(ProgramStatus &status, Object &object) {
     if (ImGui::CollapsingHeader("Advanced visualization")) {
         ImGui::Checkbox("Tessellation", &status.tessGlobal);
         ImGui::SameLine();
-        ImGui::Checkbox("Improve performance", &status.improvePerf);
-        ImGui::SliderFloat("Umbral length", &(status.umbralLength), 0.000001f, 0.005f, "%.8f");
+        ImGui::Checkbox("Improve perf.", &status.improvePerf);
+        if (status.improvePerf) {
+            ImGui::SameLine();
+            ImGui::Checkbox("Improve perf. Esp.", &status.improvePerfEsp);
+        }
+        ImGui::InputFloat("Min", &minLength, 0.0f, 0.0f, "%.10f");
+        ImGui::InputFloat("Max", &maxLength, 0.0f, 0.0f, "%.10f");
+        ImGui::SliderFloat("Umbral length", &(status.umbralLength), minLength, maxLength, "%.10f");
         ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
 
         const char *items[] = {"Color", "Area", "K", "Height", "Critic"};
@@ -261,27 +271,42 @@ void mainWindow(ProgramStatus &status, Object &object) {
 
             if (totalTime < 1.0) {
                 framesCount++;
+                totalPrimitives += status.nPrimitives;
             } else {
-                status.saveFrRateInfo(framesCount);
+                nSamples++;
+                status.saveFrRateInfo(framesCount, (int) (totalPrimitives / framesCount));
                 totalTime -= 1.0;
                 framesCount = 1;
+                totalPrimitives = status.nPrimitives;
             }
             
         }
+
+        bool saveInfo = false;
 
         if (!status.recordInfo) {
             if (ImGui::Button("Record")) {
                 status.recordInfo = true;
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Save info")) {
+                status.recordInfo = false;
+                status.saveFrRateInfo();
+                nSamples = 0;
+            }
         } else {
             if (ImGui::Button("Stop")) {
                 status.recordInfo = false;
             }
+            ImGui::ProgressBar(nSamples / 23.0);
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Save info")) {
+
+        if (saveInfo || nSamples > 22) {
+            status.recordInfo = false;
             status.saveFrRateInfo();
+            nSamples = 0;
         }
+        
     } else {
         show_render_info = false;
     }

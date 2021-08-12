@@ -49,7 +49,7 @@ class ProgramStatus
 		bool showDiffArea, showK, showHeight, showCritic;
 		bool showTangents, showCotangents, showNormals, showVectorsPerV;
 		bool invertNorm;
-		bool tessGlobal, tessEdge, improvePerf;
+		bool tessGlobal, tessEdge, improvePerf, improvePerfEsp;
 		bool recordInfo;
 
 		float umbralLength, umbralEdge;
@@ -120,7 +120,8 @@ class ProgramStatus
 			showCritic = false;
 			tessGlobal = true;
 			tessEdge = false;
-			improvePerf = false;
+			improvePerf = true;
+			improvePerfEsp = false;
 
 			coeffArea = 20.0f;
 			coeffK = 1.0f;
@@ -336,14 +337,29 @@ class ProgramStatus
 			return 1;
 		}
 
-		void saveFrRateInfo(int frRate) {
-			frRateInfo = frRateInfo + std::to_string(frRate) + "\n";
+		void saveFrRateInfo(int frRate, int nTriangles) {
+			frRateInfo = frRateInfo + std::to_string(frRate) + "\t" + std::to_string(nTriangles) + "\n";
 		}
 
 		void saveFrRateInfo() {
 			std::ofstream offFile;
+			std::string name = "fr"  + std::to_string(sizeMap) + "_" + paramFile.substr(0, paramFile.size()-3) + "_";
 
-			offFile.open(frRateFile);
+			if (activePolMode) {
+				name += "pol_";
+			} else {
+				name += "filled_";
+			}
+
+			if (improvePerf){
+				name += "improve1.txt";
+			} else if (improvePerfEsp) {
+				name += "improve2.txt";
+			} else {
+				name += "bad.txt";
+			}
+
+			offFile.open(name);
 
 			if (!offFile) {
 				std::cerr << "No se ha podido abrir el archivo de parametrización para escribir." << std::endl;
