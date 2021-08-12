@@ -220,7 +220,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setBool("tessGlobal", status.tessGlobal);
     sh->setBool("tessEdge", status.tessEdge);
     sh->setBool("improvePerf", status.improvePerf);
-    sh->setBool("improvePerfEsp", status.improvePerfEsp); 
+    sh->setBool("improvePerfEsp", status.improvePerfEsp);
     
     sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
     sh->setVec3("colorVectors", glm::vec3(1.0f, 0.3f, 0.3f));
@@ -234,6 +234,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setFloat("umbralLength", status.umbralLength);
     sh->setFloat("umbralEdge", status.umbralEdge);
     sh->setInt("ptsLimit", status.ptsLimit);
+    sh->setInt("samplePts", status.samplePts);
 
     sh->setFloat("coeffArea", status.coeffArea);
     sh->setFloat("coeffK", status.coeffK);
@@ -513,6 +514,10 @@ int main()
     	glfwSwapBuffers(window);
     	
     	status.setSomeChange(false);
+
+        if (status.autoUmbral) {
+            status.improveUmbral();
+        }
         status.updateSomeChange();
         
         if (!status.getSomeChange())

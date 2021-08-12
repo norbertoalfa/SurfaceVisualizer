@@ -1,5 +1,5 @@
 
-float calculateLength(vec2 p1, vec2 p2, int nIniPts){
+float calculateLength(vec2 p1, vec2 p2, float nIniPts){
     float longitud = 0;
     vec2 coord_o, coord_d;
 
@@ -41,7 +41,7 @@ float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
     return maxK;
 }
 
-float calculateMaxDot(vec2 p1, vec2 p2, int nIniPts, float signNormal){
+float maxDotLight(vec2 p1, vec2 p2, int nIniPts, float signNormal){
     vec3 image, norm, lightDir;
     vec2 coord;
     float maxDot = -1.0;
@@ -66,74 +66,65 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     vec3 imageP1, imageP2;
     vec3 vision1, vision2;
     vec3 n1, n2;
-    vec3 lightDir1, lightDir2;
 
     float signNormal, dotP1, dotP2;
-    float eyeDist, longitud, bestN = 1;
+    float eyeDist, lengthReal, bestN = 1;
+    float actualL, alphaLen, umbralReal;
+    float maxK;
 
-    bool hidden, wthLight, outVF, isEdge;
+    bool hidden, outVF, isEdge;
 
-    signNormal = invertNorm? -1.0 : 1.0;
-    
-    // Vectors for p1
     imageP1 = functionParam(p1);
-    vision1 = normalize(imageP1 - viewPos);
-    n1 = signNormal * normalParam(p1);
-    dotP1 = dot(vision1, n1);
-    lightDir1 = normalize(lightPos - imageP1);
-
-    // Vectors for p2
     imageP2 = functionParam(p2);
-    vision2 = normalize(imageP2 - viewPos);
-    n2 = signNormal * normalParam(p2);
-    dotP2 = dot(vision2, n2);
-    lightDir2 = normalize(lightPos - imageP2);
-    
-    // Calculate tessellation level
-    eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
-    longitud = 0.1*length(imageP2 - imageP1) / eyeDist;
 
     isEdge = true;
-    hidden = wthLight = outVF = false;
+    hidden = outVF = false;
 
     if (improvePerf) {
+        vision1 = normalize(imageP1 - viewPos);
+        vision2 = normalize(imageP2 - viewPos);
+
+        // Indicates normal's direction
+        signNormal = invertNorm? -1.0 : 1.0;
+
+        n1 = signNormal * normalParam(p1);
+        n2 = signNormal * normalParam(p2);
+
+        dotP1 = dot(vision1, n1);
+        dotP2 = dot(vision2, n2);
 
         if (improvePerfEsp) {
             hidden = dotP1 > 0.5 && dotP2 > 0.5;
         }
 
-        wthLight = false; //calculateMaxDot(p1, p2, samplePts, signNormal) < 0.0;
         outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
 
-        isEdge = p1.x*p1.y*p2.x*p2.y == 0 || (p1.x-1)*(p1.y-1)*(p2.x-1)*(p2.y-1) == 0;  // Cuando es el borde de la parametrización
-        
-        if (!isEdge) {
-            isEdge = containsZero(dotP1, dotP2, umbralEdge);
-        }
+        // Calculates if it is a visual edge.
+        isEdge = containsZero(dotP1, dotP2, umbralEdge);
     }
 
-//////
-    if (calculateMaxK(p1, p2, ptsLimit) > 0.5 && !outVF && !hidden && !wthLight)) {
-        float actualL = calculateLength(p1, p2, bestN);
-        float oldL = calculateLength(p1, p2, bestN);
+    maxK = calculateMaxK(p1, p2, samplePts);
 
-        for (int i = 2; i < ptsLimit; i++) {
-            if ((actualL - oldL) >= umbralLength * 10 * eyeDist) {
-                oldL = actualL;
-                bestN = i;
-            }
-            actualL = calculateLength(p1, p2, i);
-        }
+    if (maxK > 0.001 && !outVF && !hidden) {
+        eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
+        lengthReal = 0.1*length(imageP2 - imageP1);
+        umbralReal = umbralLength * 0.1 * eyeDist;
+
+        actualL = calculateLength(p1, p2, 1);
+        alphaLen = calculateLength(p1, p2, samplePts);
+
+        // Calculate area (length)
+        bestN = floor(abs(alphaLen - actualL) / (umbralReal)) + 1.0f;
+
+        // Geometric mean, where the lowest value has more weight
+        bestN *= floor(100*(maxK * lengthReal) / umbralReal) + 1.0f;
+        bestN = min(floor(pow(bestN, 0.5)) + 1.0f, ptsLimit);           // Plus 1, to exclude 0 case  
     }
-////////
 
-    //bestN = floor((calculateMaxK(p1, p2, samplePts) * longitud) / umbralLength) + 1;
-
+    // If it's not a edge, reduce bestN
     if (!isEdge) {
-        bestN = floor(0.667*bestN) + 1;
+        bestN = floor(0.667*bestN) + 1.0f;
     }
-
-
 
     return bestN;
 }

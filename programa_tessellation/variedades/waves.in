@@ -1,7 +1,7 @@
 compzWaves(u, v :real, t0 :real) : real = 0.1*cos(u*u + v*v - 2*PI*t0);
 
 f(u, v :real, t0, t1 : real) : vec3 = 4*vec3(u, t1 * compzWaves(4*u, 4*v, t0) / (u*u + v*v + 1.0), v);
-h(u, v :real, t0, t1 : real) : vec3 = f(4*(u-0.5), 4*(v-0.5), t0, t1);
+h(u, v :real, t0, t1 : real) : vec3 = f(10*(u-0.5), 10*(v-0.5), t0, t1);
 
 r : real = 0.75;
 

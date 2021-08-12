@@ -2,6 +2,8 @@
 #define PROGRAM_STATUS_H
 
 #include <iostream>
+#include <math.h>
+#include <algorithm>
 #include <fstream>
 #include <glm/glm.hpp>
 
@@ -51,10 +53,11 @@ class ProgramStatus
 		bool invertNorm;
 		bool tessGlobal, tessEdge, improvePerf, improvePerfEsp;
 		bool recordInfo;
+		bool autoUmbral;
 
-		float umbralLength, umbralEdge;
-		int ptsLimit;
-		int nPrimitives;
+		float umbralLength, umbralEdge, lambda;
+		int ptsLimit, samplePts;
+		int nPrimitives, targetNP;
 		
 		float coeffArea, coeffK, coeffHeight;
 		float refHeight;
@@ -122,6 +125,7 @@ class ProgramStatus
 			tessEdge = false;
 			improvePerf = true;
 			improvePerfEsp = false;
+			autoUmbral = false;
 
 			coeffArea = 20.0f;
 			coeffK = 1.0f;
@@ -131,8 +135,11 @@ class ProgramStatus
 
 			umbralLength = 0.01f;
 			umbralEdge = 0.1f;
-			ptsLimit = 7;
+			lambda = 0.00005;
+			ptsLimit = 20;
+			samplePts = 10;
 			nPrimitives = 200;
+			targetNP = 300000;
 
 			ambientStrength = 0.2f;
 			diffStrength = 0.5f;
@@ -259,6 +266,16 @@ class ProgramStatus
 		
 		
 		// Methods
+
+		void improveUmbral() {
+			float diff = nPrimitives / ((float) targetNP) - 1.0;
+
+			umbralLength += lambda*diff;
+			umbralLength = std::max(umbralLength, 0.00000001f);
+			umbralLength = std::min(umbralLength, 0.05f);
+
+			setSomeChange(true);
+		}
 
 		void updateLightCoeff() {
 			float totalStrength = ambientStrength + diffStrength + specularStrength + 0.01;

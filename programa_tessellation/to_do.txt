@@ -1,4 +1,5 @@
 - Medir:
     * framerate.
     * nº triángulos.
+- Dejar el caso wthlight. Escribir: caso interesante teorico, en la practica es costoso (¿y varias fuentes de luz?).
 - Separar codigo procesador.

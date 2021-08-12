@@ -29,8 +29,9 @@ char text[10000];
 float totalTime = 0.0;
 float totalPrimitives = 0.0;
 float minLength = 0.000001f;
-float maxLength = 0.005f;
+float maxLength = 0.05f;
 int sizeMap;
+int nTarget;
 int currItemShow = 0;
 int framesCount = 1;
 int nSamples = 0;
@@ -78,6 +79,7 @@ void updateVariables(ProgramStatus &status, Light &light, Object &object, glm::m
         sizeMap = status.getSizeMap();
         objectColor =  object.getColor();
         fontColor = status.fontColor;
+        nTarget = status.targetNP;
         firstTime = false;
 
         if (status.getTotalParam() > 0) {
@@ -176,6 +178,13 @@ void mainWindow(ProgramStatus &status, Object &object) {
         if (status.improvePerf) {
             ImGui::SameLine();
             ImGui::Checkbox("Improve perf. Esp.", &status.improvePerfEsp);
+        }
+        ImGui::Checkbox("Auto umbral", &status.autoUmbral);
+        if (status.autoUmbral) {
+            ImGui::SameLine();
+            if (ImGui::InputInt("Target", &nTarget, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                status.targetNP = nTarget;
+            }
         }
         ImGui::InputFloat("Min", &minLength, 0.0f, 0.0f, "%.10f");
         ImGui::InputFloat("Max", &maxLength, 0.0f, 0.0f, "%.10f");
