@@ -42,21 +42,14 @@ float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
 }
 
 float maxDotLight(vec2 p1, vec2 p2, int nIniPts, float signNormal){
-    vec3 image, norm, lightDir;
     vec2 coord;
     float maxDot = -1.0;
 
     for (int i = 0; i <= nIniPts; i++) {
         coord = ((nIniPts - i) * p1 + i * p2) / nIniPts;
-        image = functionParam(coord);
-        norm = signNormal*normalParam(coord);
 
         // Diffuse
-        lightDir = normalize(lightPos - image);
-        maxDot = max(maxDot, dot(norm, lightDir));
-
-        // Specular
-        maxDot = max(maxDot, dot(normalize(viewPos - image), reflect(-lightDir, norm)));
+        maxDot = max(maxDot, dot(signNormal*normalParam(coord), normalize(lightPos - functionParam(coord))));
     }
 
     return maxDot;
@@ -97,6 +90,7 @@ float bestNPtsK(vec2 p1, vec2 p2) {
             hidden = dotP1 > 0.5 && dotP2 > 0.5;
         }
 
+        wthLight = false; //calculateMaxDot(p1, p2, samplePts, signNormal) < 0.0;
         outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
 
         // Calculates if it is a visual edge.
