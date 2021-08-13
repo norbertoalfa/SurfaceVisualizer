@@ -65,13 +65,15 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     float actualL, alphaLen, umbralReal;
     float maxK;
 
-    bool hidden, outVF, isEdge;
+    bool hidden, wthLight, outVF, isEdge;
 
     imageP1 = functionParam(p1);
     imageP2 = functionParam(p2);
 
     isEdge = true;
-    hidden = outVF = false;
+    hidden = wthLight = outVF = false;
+
+    float maxDot = 1.0;
 
     if (improvePerf) {
         vision1 = normalize(imageP1 - viewPos);
@@ -90,7 +92,9 @@ float bestNPtsK(vec2 p1, vec2 p2) {
             hidden = dotP1 > 0.5 && dotP2 > 0.5;
         }
 
-        wthLight = false; //calculateMaxDot(p1, p2, samplePts, signNormal) < 0.0;
+        maxDot = maxDotLight(p1, p2, samplePts, signNormal);
+
+        wthLight = maxDot < -0.1;
         outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
 
         // Calculates if it is a visual edge.
@@ -99,24 +103,24 @@ float bestNPtsK(vec2 p1, vec2 p2) {
 
     maxK = calculateMaxK(p1, p2, samplePts);
 
-    if (maxK > 0.001 && !outVF && !hidden) {
+    if (maxK > 0.0 && !outVF && !hidden && (!wthLight || isEdge )) {
         eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
-        lengthReal = 0.1*length(imageP2 - imageP1);
+        lengthReal = length(imageP2 - imageP1);
         umbralReal = umbralLength * 0.1 * eyeDist;
 
         actualL = calculateLength(p1, p2, 1);
         alphaLen = calculateLength(p1, p2, samplePts);
 
         // Calculate area (length)
-        bestN = floor(abs(alphaLen - actualL) / (umbralReal)) + 1.0f;
+        bestN = floor((alphaLen - actualL) / (umbralReal)) + 1.0f;
 
         // Geometric mean, where the lowest value has more weight
-        bestN *= floor(100*(maxK * lengthReal) / umbralReal) + 1.0f;
-        bestN = min(floor(pow(bestN, 0.5)) + 1.0f, ptsLimit);           // Plus 1, to exclude 0 case  
+        bestN += floor(0.05*(maxK * lengthReal) / umbralReal) + 1.0f;
+        bestN = floor(bestN / 2.0) + 1.0f;           // Plus 1, to exclude 0 case
     }
 
     // If it's not a edge, reduce bestN
-    if (!isEdge) {
+    if (!isEdge && maxDot < 0.5) {
         bestN = floor(0.667*bestN) + 1.0f;
     }
 
@@ -142,10 +146,10 @@ void main(void) {
             nPts31 = bestNPtsK(p3, p1);
 
             nPtsInt = bestNPtsK(p1, p_medio23);
-            nPtsInt = max(nPtsInt, bestNPtsK(p2, p_medio31));
-            nPtsInt = max(nPtsInt, bestNPtsK(p3, p_medio12));
+            nPtsInt += bestNPtsK(p2, p_medio31); //max(nPtsInt, bestNPtsK(p2, p_medio31));
+            nPtsInt += bestNPtsK(p3, p_medio12); // max(nPtsInt, bestNPtsK(p3, p_medio12));
 
-            gl_TessLevelInner[0] = nPtsInt;
+            gl_TessLevelInner[0] = floor(nPtsInt / 3.0);
             gl_TessLevelOuter[0] = nPts23;
             gl_TessLevelOuter[1] = nPts31;
             gl_TessLevelOuter[2] = nPts12;

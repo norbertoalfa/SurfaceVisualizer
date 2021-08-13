@@ -445,17 +445,17 @@ void render()
 	}
 
     // End query
-    glEndQuery(GL_PRIMITIVES_GENERATED);
+    glEndQuery(GL_PRIMITIVES_GENERATED); 
     GLuint numPrimitives = 0;
 
     if(GL_TRUE == glIsQuery(tessQuery[0])) {
         glGetQueryObjectuiv(tessQuery[0], GL_QUERY_RESULT, &numPrimitives);
-    }
+    } 
     
     // check for errors
     GLenum error = glGetError();
     if(error != GL_NO_ERROR) {
-        std::cerr << "Error " << error << std::endl;
+        //std::cerr << "Error " << error << std::endl;
     }
     
     status.nPrimitives = numPrimitives;

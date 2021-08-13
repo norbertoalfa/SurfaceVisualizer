@@ -23,13 +23,15 @@ vec3 lightDir;
 std::string filePathName;
 std::string fileName;
 
+std::string infoNormal = "To invert normal's direction";
+std::string infoPolMode = "Change visualization between filled and polygon mode";
+
 const char* glsl_version = "#version 130";
 char nameFile[100];
 char text[10000];
 float totalTime = 0.0;
 float totalPrimitives = 0.0;
-float minLength = 0.000001f;
-float maxLength = 0.05f;
+float lastHovTiem = 0.0;
 int sizeMap;
 int nTarget;
 int currItemShow = 0;
@@ -94,6 +96,24 @@ void updateVariables(ProgramStatus &status, Light &light, Object &object, glm::m
     }
 }
 
+void showInfo(std::string infoText, float width=100, float height=50) {
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly)) {
+        if (lastHovTiem == 0) {
+            lastHovTiem = ImGui::GetTime();
+        }
+        if (ImGui::GetTime() - lastHovTiem > 0.1) {
+            bool tempBool = true;
+            ImGui::SetNextWindowPos(ImGui::GetMousePos() + ImVec2(10.0, -10.0));
+            ImGui::SetNextWindowSize(ImVec2(width, height));
+            ImGui::Begin("Info", &tempBool, ImGuiWindowFlags_NoCollapse || ImGuiWindowFlags_NoFocusOnAppearing);
+            { ImGui::Text(infoText.c_str()); }
+            ImGui::End();
+        }
+    } else if(!ImGui::IsAnyItemHovered()){
+        lastHovTiem = 0;
+    }
+}
+
 void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::Begin("Menu", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -150,99 +170,75 @@ void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::TextColored(titleColor, "Visualization");
     ImGui::Separator();
 
+
+    ImGui::Checkbox("Invert normal", &status.invertNorm);
+    showInfo(infoNormal, 300);
+    ImGui::SameLine();
     ImGui::Checkbox("Polygon mode", &polMode);
+    showInfo(infoPolMode, 400);
     if (polMode != status.getActivePolMode()) {
         status.switchPolMode();
     }
+    ImGui::SameLine();
     ImGui::Checkbox("AutoRotate", &autoRot);
     if (autoRot != status.getAutoRotation()) {
         status.switchAutoRot();
     }
 
-    ImGui::Checkbox("Vector per vertex", &status.showVectorsPerV);
-    ImGui::SameLine();
-    ImGui::Checkbox("Invert normal", &status.invertNorm);
-
-    ImGui::Checkbox("tangent", &status.showTangents);
-    ImGui::SameLine();
-    ImGui::Checkbox("bitangent", &status.showCotangents);
-    ImGui::SameLine();
-    ImGui::Checkbox("normal", &status.showNormals);
-
-    
-
-    if (ImGui::CollapsingHeader("Advanced visualization")) {
-        ImGui::Checkbox("Tessellation", &status.tessGlobal);
+    if (ImGui::CollapsingHeader("Show vectors")) {
+        ImGui::Checkbox("Tangent", &status.showTangents);
         ImGui::SameLine();
-        ImGui::Checkbox("Improve perf.", &status.improvePerf);
-        if (status.improvePerf) {
-            ImGui::SameLine();
-            ImGui::Checkbox("Improve perf. Esp.", &status.improvePerfEsp);
-        }
-        ImGui::Checkbox("Auto umbral", &status.autoUmbral);
-        if (status.autoUmbral) {
-            ImGui::SameLine();
-            if (ImGui::InputInt("Target", &nTarget, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
-                status.targetNP = nTarget;
-            }
-        }
-        ImGui::InputFloat("Min", &minLength, 0.0f, 0.0f, "%.10f");
-        ImGui::InputFloat("Max", &maxLength, 0.0f, 0.0f, "%.10f");
-        ImGui::SliderFloat("Umbral length", &(status.umbralLength), minLength, maxLength, "%.10f");
-        ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
-
-        const char *items[] = {"Color", "Area", "K", "Height", "Critic"};
-
-        if (hideListShow) {
-            ImGui::SetNextTreeNodeOpen(false);
-        }
-
-        if(ImGui::CollapsingHeader(("Show " + std::string(items[currItemShow])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
-            hideListShow = false;
-            if (ImGui::ListBox("", &currItemShow, items, 5)) {
-                hideListShow = true;
-            }
-        }
-
-        ImGui::Columns(2, "", false);
-        ImGui::SetColumnWidth(0, 280);
-        ImGui::SetColumnWidth(1, 10);
-
-        switch(currItemShow) {
-            case 0:
-                status.resetShow();
-                break;
-            case 1:
-                status.showDiffArea = true;
-                status.updateShowArea();
-                ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
-                break;
-            case 2:
-                status.showK = true;
-                status.updateShowK();
-                ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
-                break;
-            case 3:
-                status.showHeight = true;
-                status.updateShowHeight();
-                ImGui::SliderFloat("Coeff Height\t", &(status.coeffHeight), 0.01f, 20.0f);
-                ImGui::SliderFloat("Ref Height\t", &(status.refHeight), -10.0f, 10.0f);
-                ImGui::SliderInt("Nº layers\t", &(status.nLayers), 1, 40);
-                break;
-            case 4:
-                status.showCritic = true;
-                status.updateShowCritic();
-                break; 
-        }
-
-        ImGui::NextColumn();
-
-        ImGui::Columns(1);
+        ImGui::Checkbox("Vector per vertex", &status.showVectorsPerV);
+        ImGui::Checkbox("Bitangent", &status.showCotangents);
+        ImGui::Checkbox("Normal", &status.showNormals);
     }
 
-    ImGui::NewLine();
-    ImGui::TextColored(titleColor, "Lighting");
-    ImGui::Separator();
+    const char *items[] = {"Color", "Area", "K", "Height", "Critic"};
+
+    if (hideListShow) {
+        ImGui::SetNextTreeNodeOpen(false);
+    }
+
+    if(ImGui::CollapsingHeader(("Show " + std::string(items[currItemShow])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
+        hideListShow = false;
+        if (ImGui::ListBox("", &currItemShow, items, 5)) {
+            hideListShow = true;
+        }
+    }
+
+    ImGui::Columns(2, "", false);
+    ImGui::SetColumnWidth(0, 280);
+    ImGui::SetColumnWidth(1, 10);
+
+    switch(currItemShow) {
+        case 0:
+            status.resetShow();
+            break;
+        case 1:
+            status.showDiffArea = true;
+            status.updateShowArea();
+            ImGui::SliderFloat("Coeff Area", &(status.coeffArea), 1.0f, 50.0f);
+            break;
+        case 2:
+            status.showK = true;
+            status.updateShowK();
+            ImGui::SliderFloat("Coeff K\t", &(status.coeffK), 0.2f, 5.0f);
+            break;
+        case 3:
+            status.showHeight = true;
+            status.updateShowHeight();
+            ImGui::SliderFloat("Coeff Height\t", &(status.coeffHeight), 0.01f, 20.0f);
+            ImGui::SliderFloat("Ref Height\t", &(status.refHeight), -10.0f, 10.0f);
+            ImGui::SliderInt("Nº layers\t", &(status.nLayers), 1, 40);
+            break;
+        case 4:
+            status.showCritic = true;
+            status.updateShowCritic();
+            break; 
+    }
+
+    ImGui::NextColumn();
+    ImGui::Columns(1);
 
     if (ImGui::ColorEdit3("Font color", (float*)&fontColor, ImGuiColorEditFlags_NoInputs)) {
         status.fontColor = glm::vec3(fontColor);
@@ -252,7 +248,39 @@ void mainWindow(ProgramStatus &status, Object &object) {
         object.setColor(glm::vec3(objectColor));
         object.setColorChange(true);
     }
-    ImGui::SameLine();
+
+    ImGui::NewLine();
+    ImGui::TextColored(titleColor, "Tessellation");
+    ImGui::Separator();
+
+    ImGui::Checkbox("Tessellate", &status.tessGlobal);
+    ImGui::SliderFloat("Umbral length", &(status.umbralLength), status.minLength, status.maxLength, "%.10f");
+
+    if (ImGui::CollapsingHeader("Advanced tesselation")) {
+        ImGui::InputFloat("Min length", &status.minLength, 0.0f, 0.0f, "%.10f");
+        ImGui::InputFloat("Max length", &status.maxLength, 0.0f, 0.0f, "%.10f");
+        ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
+
+        if (status.tessGlobal) {
+            ImGui::Checkbox("Improve perf.", &status.improvePerf);
+            if (status.improvePerf) {
+                ImGui::SameLine();
+                ImGui::Checkbox("Improve perf. Esp.", &status.improvePerfEsp);
+            }
+            ImGui::Checkbox("Auto umbral", &status.autoUmbral);
+            if (status.autoUmbral) {
+                ImGui::SameLine();
+                if (ImGui::InputInt("Target", &nTarget, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                    status.targetNP = nTarget;
+                }
+            }
+        }
+    }
+
+    ImGui::NewLine();
+    ImGui::TextColored(titleColor, "Lighting");
+    ImGui::Separator();
+
     ImGui::Checkbox("Light vector", &show_light_vector);
 
     if (ImGui::CollapsingHeader("Advanced lighting")) {
@@ -417,7 +445,7 @@ void paramsWindow(ProgramStatus &status) {
         bool chBoxSin = status.autoParams[i] == PARAM_SIN;
         bool chBoxLineal = status.autoParams[i] == PARAM_LINEAL;
         
-        ImGui::SliderFloat(nameParam.c_str(), &(status.params[i]), 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::SliderFloat(nameParam.c_str(), &(status.params[i]), 0.0f, 1.0f, "%.5f");            // Edit 1 float using a slider from 0.0f to 1.0f
         ImGui::SameLine();
         ImGui::PushID(2*i);
         if (ImGui::Checkbox("Sin", &chBoxSin)) {

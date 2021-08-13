@@ -56,6 +56,7 @@ class ProgramStatus
 		bool autoUmbral;
 
 		float umbralLength, umbralEdge, lambda;
+		float minLength, maxLength;
 		int ptsLimit, samplePts;
 		int nPrimitives, targetNP;
 		
@@ -135,7 +136,11 @@ class ProgramStatus
 
 			umbralLength = 0.01f;
 			umbralEdge = 0.1f;
-			lambda = 0.00005;
+			lambda = 0.00005f;
+
+			minLength = 0.000001f;
+			maxLength = 0.05f;
+
 			ptsLimit = 20;
 			samplePts = 10;
 			nPrimitives = 200;
@@ -271,8 +276,8 @@ class ProgramStatus
 			float diff = nPrimitives / ((float) targetNP) - 1.0;
 
 			umbralLength += lambda*diff;
-			umbralLength = std::max(umbralLength, 0.00000001f);
-			umbralLength = std::min(umbralLength, 0.05f);
+			umbralLength = std::max(umbralLength, minLength);
+			umbralLength = std::min(umbralLength, maxLength);
 
 			setSomeChange(true);
 		}
