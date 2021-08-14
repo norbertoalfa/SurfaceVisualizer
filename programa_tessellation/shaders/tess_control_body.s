@@ -1,18 +1,4 @@
 
-float calculateLength(vec2 p1, vec2 p2, float nIniPts){
-    float longitud = 0;
-    vec2 coord_o, coord_d;
-
-    for (int i = 0; i < nIniPts; i++) {
-        coord_o = ((nIniPts - i) * p1 + i * p2) / nIniPts;
-        coord_d = ((nIniPts - i-1) * p1 + (i+1) * p2) / nIniPts;
-
-        longitud += length(functionParam(coord_d) - functionParam(coord_o));
-    }
-
-    return longitud;
-}
-
 bool containsZero(float a, float b, float umbral) {
     float inf, sup;
     if (a < b) {
@@ -38,7 +24,7 @@ float calculateMaxK(vec2 p1, vec2 p2, int nIniPts){
         maxK = max(maxK, abs(curvatureParam(coord)));
     }
 
-    return maxK;
+    return pow(maxK, expK);
 }
 
 float maxDotLight(vec2 p1, vec2 p2, int nIniPts, float signNormal){
@@ -61,8 +47,8 @@ float bestNPtsK(vec2 p1, vec2 p2) {
     vec3 n1, n2;
 
     float signNormal, dotP1, dotP2;
-    float eyeDist, lengthReal, bestN = 1;
-    float actualL, alphaLen, umbralReal;
+    float eyeDist, lengthReal, umbralEye;
+    float bestN = 1;
     float maxK;
 
     bool hidden, wthLight, outVF, isEdge;
@@ -103,20 +89,13 @@ float bestNPtsK(vec2 p1, vec2 p2) {
 
     maxK = calculateMaxK(p1, p2, samplePts);
 
-    if (maxK > 0.0 && !outVF && !hidden && (!wthLight || isEdge )) {
+    if (!outVF && !hidden && (!wthLight || isEdge )) {
         eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
         lengthReal = length(imageP2 - imageP1);
-        umbralReal = umbralLength * 0.1 * eyeDist;
+        umbralEye = umbralLength * 0.1 * eyeDist;
 
-        actualL = calculateLength(p1, p2, 1);
-        alphaLen = calculateLength(p1, p2, samplePts);
-
-        // Calculate area (length)
-        bestN = floor((alphaLen - actualL) / (umbralReal)) + 1.0f;
-
-        // Geometric mean, where the lowest value has more weight
-        bestN += floor(0.05*(maxK * lengthReal) / umbralReal) + 1.0f;
-        bestN = floor(bestN / 2.0) + 1.0f;           // Plus 1, to exclude 0 case
+        // Calculate bestN with Gauss curvature and 
+        bestN = floor((maxK * lengthReal) / umbralEye) + 1.0f;
     }
 
     // If it's not a edge, reduce bestN

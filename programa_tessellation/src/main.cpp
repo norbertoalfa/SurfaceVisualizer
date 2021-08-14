@@ -233,6 +233,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
 
     sh->setFloat("umbralLength", status.umbralLength);
     sh->setFloat("umbralEdge", status.umbralEdge);
+    sh->setFloat("expK", status.expK);
     sh->setInt("ptsLimit", status.ptsLimit);
     sh->setInt("samplePts", status.samplePts);
 
@@ -450,7 +451,7 @@ void render()
 
     if(GL_TRUE == glIsQuery(tessQuery[0])) {
         glGetQueryObjectuiv(tessQuery[0], GL_QUERY_RESULT, &numPrimitives);
-    } 
+    }
     
     // check for errors
     GLenum error = glGetError();

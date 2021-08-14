@@ -259,6 +259,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
     if (ImGui::CollapsingHeader("Advanced tesselation")) {
         ImGui::InputFloat("Min length", &status.minLength, 0.0f, 0.0f, "%.10f");
         ImGui::InputFloat("Max length", &status.maxLength, 0.0f, 0.0f, "%.10f");
+        ImGui::SliderFloat("Exponent K", &(status.expK), 0.01f, 3.0f, "%.3f");
         ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
 
         if (status.tessGlobal) {

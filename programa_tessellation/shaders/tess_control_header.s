@@ -7,7 +7,7 @@ uniform float param_t[10];
 uniform int funPlot;
 uniform float umbralLength;
 uniform float umbralEdge;
-uniform float coeffK;
+uniform float expK;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;  

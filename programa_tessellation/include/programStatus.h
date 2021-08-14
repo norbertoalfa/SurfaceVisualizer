@@ -55,7 +55,7 @@ class ProgramStatus
 		bool recordInfo;
 		bool autoUmbral;
 
-		float umbralLength, umbralEdge, lambda;
+		float umbralLength, umbralEdge, expK, lambda;
 		float minLength, maxLength;
 		int ptsLimit, samplePts;
 		int nPrimitives, targetNP;
@@ -135,7 +135,8 @@ class ProgramStatus
 			nLayers = 10;
 
 			umbralLength = 0.01f;
-			umbralEdge = 0.1f;
+			umbralEdge = 0.5f;
+			expK = 0.5;
 			lambda = 0.00005f;
 
 			minLength = 0.000001f;
