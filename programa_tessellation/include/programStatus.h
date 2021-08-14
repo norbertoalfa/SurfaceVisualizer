@@ -136,7 +136,7 @@ class ProgramStatus
 
 			umbralLength = 0.01f;
 			umbralEdge = 0.5f;
-			expK = 0.5;
+			expK = 0.01;
 			lambda = 0.00005f;
 
 			minLength = 0.000001f;

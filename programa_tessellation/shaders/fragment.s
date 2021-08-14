@@ -56,7 +56,7 @@ void main()
         color = colorPol;
     }
 
-    if (showPol) {
+    if (showPol && !showDiffArea && !showK && !showHeight && !showCritic) {
         FragColor = vec4(color, 0.0);
     } else if (showVectors) {
         FragColor = vec4(colorVectors, 0.0);

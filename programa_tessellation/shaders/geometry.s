@@ -40,8 +40,7 @@ void main() {
 
         normal = geo[i].Normal;
         if (errorVal(length(normal))) {
-            normal = -normalize(cross(   geo[2].FragPos - geo[0].FragPos,
-                                        geo[1].FragPos - geo[0].FragPos));
+            normal = -normalize(cross(geo[2].FragPos - geo[0].FragPos, geo[1].FragPos - geo[0].FragPos));
         }
         frag.Normal = mat3(tr_inv_model) * normal * normalSign;
 

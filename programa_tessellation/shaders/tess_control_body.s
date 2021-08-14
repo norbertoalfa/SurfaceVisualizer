@@ -125,10 +125,11 @@ void main(void) {
             nPts31 = bestNPtsK(p3, p1);
 
             nPtsInt = bestNPtsK(p1, p_medio23);
-            nPtsInt += bestNPtsK(p2, p_medio31); //max(nPtsInt, bestNPtsK(p2, p_medio31));
-            nPtsInt += bestNPtsK(p3, p_medio12); // max(nPtsInt, bestNPtsK(p3, p_medio12));
+            nPtsInt += bestNPtsK(p2, p_medio31);
+            nPtsInt += bestNPtsK(p3, p_medio12);
+            nPtsInt = floor(nPtsInt / 3.0);
 
-            gl_TessLevelInner[0] = floor(nPtsInt / 3.0);
+            gl_TessLevelInner[0] = nPtsInt;
             gl_TessLevelOuter[0] = nPts23;
             gl_TessLevelOuter[1] = nPts31;
             gl_TessLevelOuter[2] = nPts12;
