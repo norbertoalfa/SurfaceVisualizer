@@ -55,6 +55,7 @@ float bestNPtsK(vec2 p1, vec2 p2) {
 
     imageP1 = functionParam(p1);
     imageP2 = functionParam(p2);
+    eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
 
     isEdge = true;
     hidden = wthLight = outVF = false;
@@ -77,20 +78,20 @@ float bestNPtsK(vec2 p1, vec2 p2) {
         if (improvePerfEsp) {
             hidden = dotP1 > 0.5 && dotP2 > 0.5;
         }
-
-        maxDot = maxDotLight(p1, p2, samplePts, signNormal);
-
-        wthLight = maxDot < -0.1;
         outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
+        outVF = outVF || eyeDist > tessDist;
 
         // Calculates if it is a visual edge.
-        isEdge = containsZero(dotP1, dotP2, umbralEdge);
+        if (!hidden && !outVF) {
+            isEdge = containsZero(dotP1, dotP2, umbralEdge);
+
+            maxDot = maxDotLight(p1, p2, samplePts, signNormal);
+            wthLight = maxDot < -0.1;
+        }
     }
 
-    maxK = calculateMaxK(p1, p2, samplePts);
-
     if (!outVF && !hidden && (!wthLight || isEdge )) {
-        eyeDist = (length(imageP1-viewPos) + length(imageP2-viewPos)) / 2;
+        maxK = calculateMaxK(p1, p2, samplePts);
         lengthReal = length(imageP2 - imageP1);
         umbralEye = umbralLength * 0.1 * eyeDist;
 

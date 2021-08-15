@@ -360,7 +360,13 @@ void escribeExpr(char *sent, nodo *nodoExpr){
 				escribeExpr(sent, nodoExpr->children[0]);
 			}
 			
-			sprintf(sent,"%s %s ", sent, nodoExpr->lex);
+			if (strcmp(nodoExpr->lex, "and") == 0) {
+				sprintf(sent,"%s && ", sent);
+			} else if (strcmp(nodoExpr->lex, "or") == 0) {
+				sprintf(sent,"%s || ", sent);
+			} else {
+				sprintf(sent,"%s %s ", sent, nodoExpr->lex);
+			}
 			escribeExpr(sent, nodoExpr->children[nodoExpr->nChild-1]);
 		}
 	} else if (nodoExpr->tipo == NODO_IF){

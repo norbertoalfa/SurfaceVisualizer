@@ -5,6 +5,7 @@ in vData {vec2 Coord;} vertex[];
 
 uniform float param_t[10];
 uniform int funPlot;
+uniform float tessDist;
 uniform float umbralLength;
 uniform float umbralEdge;
 uniform float expK;

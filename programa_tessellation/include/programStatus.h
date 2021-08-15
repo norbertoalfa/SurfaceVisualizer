@@ -55,6 +55,7 @@ class ProgramStatus
 		bool recordInfo;
 		bool autoUmbral;
 
+		float tessDist;
 		float umbralLength, umbralEdge, expK, lambda;
 		float minLength, maxLength;
 		int ptsLimit, samplePts;
@@ -134,6 +135,7 @@ class ProgramStatus
 			refHeight = 0.0f;
 			nLayers = 10;
 
+			tessDist = 25.0f;
 			umbralLength = 0.01f;
 			umbralEdge = 0.5f;
 			expK = 0.01;

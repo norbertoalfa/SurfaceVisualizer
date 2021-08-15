@@ -231,6 +231,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setVec3("viewPos", camera.cameraLocation);
     sh->setVec3("Front", camera.Front);
 
+    sh->setFloat("tessDist", status.tessDist);
     sh->setFloat("umbralLength", status.umbralLength);
     sh->setFloat("umbralEdge", status.umbralEdge);
     sh->setFloat("expK", status.expK);
