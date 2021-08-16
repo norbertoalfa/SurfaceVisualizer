@@ -199,33 +199,45 @@ void setCallbacks()
 
 void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
 {
+    glm::vec3 color = object.getColor();
+    bool showDataColors = status.showHeight || status.showDiffArea ||
+                            status.showK || status.showCritic;
+    bool useLight = true;
+
+    if (showVectors) {
+        color = glm::vec3(1.0f, 0.3f, 0.3f);
+        useLight = false;
+    } else if (showPol && !status.showDiffArea && !status.showK && 
+                !status.showHeight && !status.showCritic) {
+        color = glm::vec3(0.0f, 0.0f, 0.0f);
+        useLight = false;
+    }
+
     sh->setMat4("projection", projection);
     sh->setMat4("view", view);
     sh->setMat4("model", model);
     sh->setMat4("tr_inv_model", glm::transpose(glm::inverse(model)));
     
-    sh->setBool("showPol", showPol);
     sh->setBool("showVectors", showVectors);
     sh->setBool("showVectorsPerV", status.showVectorsPerV);
     sh->setBool("showTangents", status.showTangents);
     sh->setBool("showCotangents", status.showCotangents);
     sh->setBool("showNormals", status.showNormals);
 
-    sh->setBool("invertNorm", status.invertNorm);
-    sh->setBool("showDiffArea", status.showDiffArea);
-    sh->setBool("showK", status.showK);
+    sh->setFloat("signNormal", status.invertNorm? -1.0f : 1.0f);
+    sh->setBool("useLight", useLight);
     sh->setBool("showHeight", status.showHeight);
-    sh->setBool("showCritic", status.showCritic);
+    sh->setBool("showDataColors", showDataColors);
+    sh->setFloat("useDiff", status.showDiffArea ? 1.0 : 0.0);
+    sh->setFloat("useK", status.showK ? 1.0 : 0.0);
+    sh->setFloat("useCritic", status.showCritic ? 1.0 : 0.0);
 
     sh->setBool("tessGlobal", status.tessGlobal);
     sh->setBool("tessEdge", status.tessEdge);
     sh->setBool("improvePerf", status.improvePerf);
     sh->setBool("improvePerfEsp", status.improvePerfEsp);
-    
-    sh->setVec3("colorPol", glm::vec3(0.0f, 0.0f, 0.0f));
-    sh->setVec3("colorVectors", glm::vec3(1.0f, 0.3f, 0.3f));
 
-    sh->setVec3("objectColor", object.getColor());
+    sh->setVec3("objectColor", color);
     sh->setVec3("lightColor", light.getColor());
     sh->setVec3("lightPos", light.getPos());
     sh->setVec3("viewPos", camera.cameraLocation);
@@ -238,9 +250,9 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setInt("ptsLimit", status.ptsLimit);
     sh->setInt("samplePts", status.samplePts);
 
-    sh->setFloat("coeffArea", status.coeffArea);
-    sh->setFloat("coeffK", status.coeffK);
-    sh->setFloat("coeffHeight", status.coeffHeight);
+    sh->setFloat("invCoeffArea", 1.0 / status.coeffArea);
+    sh->setFloat("invCoeffK", 1.0 / status.coeffK);
+    sh->setFloat("invCoeffHeight", 1.0 / status.coeffHeight);
     sh->setFloat("refHeight", status.refHeight);
     sh->setInt("nLayers", status.nLayers);
     

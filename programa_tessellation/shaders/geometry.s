@@ -11,22 +11,16 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 tr_inv_model;
 
-uniform bool invertNorm;
+uniform float signNormal;
 
 bool errorVal(float x) {
     return isinf(x) || isnan(x);
 }
 
 void main() {
-
     vec3 normal;
-    float normalSign = 1.0;
     float curvatureGlobal = 0.0;
     float curvature;
-
-    if (invertNorm) {
-        normalSign = -1.0;
-    }
 
     if (errorVal(geo[0].K) || errorVal(geo[0].K) || errorVal(geo[0].K)) {
         if (!errorVal(geo[0].K))    curvatureGlobal = geo[0].K;
@@ -42,7 +36,7 @@ void main() {
         if (errorVal(length(normal))) {
             normal = -normalize(cross(geo[2].FragPos - geo[0].FragPos, geo[1].FragPos - geo[0].FragPos));
         }
-        frag.Normal = mat3(tr_inv_model) * normal * normalSign;
+        frag.Normal = mat3(tr_inv_model) * normal * signNormal;
 
         frag.Area = geo[i].Area;
 

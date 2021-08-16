@@ -3,16 +3,17 @@ in fData {vec3 FragPos; vec3 Normal; float Area; float K; float Critic;} frag;
 
 out vec4 FragColor;
 
-uniform bool showPol;
-uniform bool showVectors;
-uniform bool showDiffArea;
-uniform bool showK;
+uniform bool useLight;
 uniform bool showHeight;
-uniform bool showCritic;
+uniform bool showDataColors;
 
-uniform float coeffArea;
-uniform float coeffK;
-uniform float coeffHeight;
+uniform float useDiff;
+uniform float useK;
+uniform float useCritic;
+
+uniform float invCoeffArea;
+uniform float invCoeffK;
+uniform float invCoeffHeight;
 uniform float refHeight;
 
 uniform int nLayers;
@@ -33,34 +34,28 @@ uniform float phongExp;
 
 void main()
 {
-    //FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     vec3 color = objectColor;
 
-    if (showDiffArea) {
-        color = vec3(1.0 - frag.Area/coeffArea, 0.0, frag.Area/coeffArea);
-    } else if (showK) {
-        color = vec3(0.5 - frag.K/coeffK, 0.0, 0.5 + frag.K/coeffK);
-    } else if (showHeight) {
-        float hValue = max((frag.FragPos[1] - refHeight) / coeffHeight, 0.0);
+    if (showHeight) {
+        float hValue = max(frag.FragPos[1] * invCoeffHeight - refHeight * invCoeffHeight, 0.0);
         hValue = min(hValue, 1.0);
         hValue = floor(nLayers*hValue) / nLayers;
 
         if (hValue > 0.5) {
             color = vec3(2*hValue, 1.0, 0.0);
         } else {
-            color = vec3(1.0, 1.0-2*(hValue-0.5), 0.0);
+            color = vec3(1.0, 2.0-2*hValue, 0.0);
         }
-    } else if (showCritic) {
-        color = vec3(1.0 - frag.Critic, 0.0, 0.0 + frag.Critic);
-    } else if (showPol) {
-        color = colorPol;
+    } else if (showDataColors){        
+        float alpha = dot(vec3(useDiff, useK, useCritic), vec3(   frag.Area * invCoeffArea, 
+                                                            0.5 + useK * frag.K * invCoeffK,
+                                                            frag.Critic));
+        color = vec3(1.0 - alpha, 0.0, alpha);
     }
 
-    if (showPol && !showDiffArea && !showK && !showHeight && !showCritic) {
-        FragColor = vec4(color, 0.0);
-    } else if (showVectors) {
-        FragColor = vec4(colorVectors, 0.0);
-    } else {
+    vec3 result;
+
+    if (useLight) {
         // ambient
         vec3 ambient = ambientStrength * lightColor;
         
@@ -77,7 +72,10 @@ void main()
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), phongExp);
         vec3 specular = specularStrength * spec * lightColor;  
             
-        vec3 result = (ambient + diffuse) * color + specular;
-        FragColor = vec4(result, 0.0);
+        result = (ambient + diffuse) * color + specular;
+    } else {
+        result = objectColor;
     }
+
+    FragColor = vec4(result, 0.0);
 } 
