@@ -149,7 +149,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
         status.setLoadShader(true);
     }
 
-    ImGui::SliderInt("Map size", &sizeMap, 4, 380);
+    ImGui::InputInt("Map size", &sizeMap);
     ImGui::SameLine();
     if (ImGui::Button("Update")) {
         status.setSizeMap(sizeMap);

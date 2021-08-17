@@ -217,7 +217,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setMat4("view", view);
     sh->setMat4("model", model);
     sh->setMat4("tr_inv_model", glm::transpose(glm::inverse(model)));
-    
+
     sh->setBool("showVectors", showVectors);
     sh->setBool("showVectorsPerV", status.showVectorsPerV);
     sh->setBool("showTangents", status.showTangents);
@@ -356,7 +356,7 @@ void initializeBuffers()
 }
 
 void render()
-{ 
+{
     if (status.changeWinTitle) {
         glfwSetWindowTitle(window, ("Surface VS - " + status.getParamFile()).c_str());
         status.changeWinTitle = false;

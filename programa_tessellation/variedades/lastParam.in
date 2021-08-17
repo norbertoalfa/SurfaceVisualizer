@@ -1,13 +1,21 @@
-PI2 : real = 2*PI;
+//Ejemplo
 
-compx(u, v : real) : real = cos(v*PI)*cos(u*PI2);
-compy(u, v : real) : real = cos(v*PI)*sin(u*PI2);
-compz(u, v : real) : real = sin(v*PI);
+PI2 : real = 3.1415926;
 
-h(u, v : real, A, sigu, sigv :real) : real = A * E ^ (- (u^2 / (2 * sigu^2) + v^2 / (2 * sigv^2)));
+g(u, v : real) : vec3 = 2*vec3(cos(v*PI2)*cos(u*2*PI2), cos(v*PI2)*sin(u*2*PI2), sin(v*PI2));
 
-f(u, v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v));
-g(u, v : real, t0,t1,t2,t3,t4,t5,t6,t7 : real) : vec3 = 4*f(u-0.5, v-0.5) * (1 + h(u-0.5, v-0.5, t0, 0.1*t1, 0.2*t2) + 
-																  h(u-t3, v-t4, t5, 0.1*t6, 0.2*t7));
+h(u, v :real) : vec3 = 2*vec3(u, v, cos(10*u) + cos(10*v));
 
-plot g;
+f(u,v :real) : vec3 = g(u-0.5, v-0.5);
+
+//f(u,v, t0, t1 :real) : vec3 = if t0<0.5 then g(u-t0, v-t1) else g(u-0.5, v-0.5);
+
+//f2(u,v, t0 : real) : vec3 = (t0*t0)^2*f(u,v) + (1 - t0*t0)*vec3(f(u,v)[0], 0.0, f(u,v)[1]);
+
+//f2(u,v : real) : vec3 = if u<0.51 then f(2*u,v) else h(2*u,v);
+
+oscPlane(u, v:real, t0,t1 :real) : vec3 = u*fPu(t0,t1) + v*fPv(t0,t1) + f(t0, t1);
+
+oscPlaneMed(u, v:real, t0,t1 :real) : vec3 = oscPlane(u-0.5, v-0.5, t0, t1);
+
+plot f;// oscPlaneMed;//f2;

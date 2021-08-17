@@ -21,14 +21,13 @@ Ejemplo:
 
 ______________________________________________________________________________
 
-<Programa>                ::= <lista_sentecias>
+<Programa>                ::= <lista_sentecias> <sentencia_plot>;
 
 <lista_sentecias>         ::= <lista_sentecias> <sentencia>;
                            |  <sentencia>;
 
 <sentencia>               ::= <sentencia_declar_valor>
                            |  <sentencia_declar_fun>
-                           |  <sentencia_plot>
 
 <sentencia_declar_valor>  ::= <identificador> : <identificador> = <expresion>                # Declaración y asignación de una constante
 

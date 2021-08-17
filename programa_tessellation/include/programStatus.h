@@ -377,9 +377,11 @@ class ProgramStatus
 			}
 
 			if (improvePerf){
-				name += "improve1.txt";
-			} else if (improvePerfEsp) {
-				name += "improve2.txt";
+				if (improvePerfEsp) {
+					name += "improve2.txt";
+				} else {
+					name += "improve1.txt";
+				}
 			} else {
 				name += "bad.txt";
 			}
