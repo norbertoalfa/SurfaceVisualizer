@@ -8,6 +8,97 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 
 \section{Especificación BNF}
 
+
+\begin{tabular}{| p{3.5cm} c p{10cm} |}
+\hline
+
+<Programa>                &::=& <lista\_sentecias> <sentencia\_plot>; \\
+&&\\
+
+<lista\_sentecias>         &::=&  <lista\_sentecias> <sentencia>; \\
+                           &|&  <sentencia>; \\
+&&\\
+
+<sentencia>               &::=&  <sentencia\_declar\_valor> \\
+                           &|&  <sentencia\_declar\_fun> \\
+&&\\
+
+<sentencia\_declar\_valor>  &::=&  <identificador> : <identificador> = <expresion> \\
+&&\\
+
+<sentencia\_declar\_fun>    &::=&  <identificador>(<lista\_param>) : <identificador> = <expresion> \\
+&&\\
+
+<sentencia\_plot>          &::=&  plot <lista\_ident> \\
+&&\\
+
+<expresion>               &::=&  (<expresion>) \\
+                           &|&  if <expresion> then <expresion> else <expresion> \\
+                           &|&  <expresion> <op\_binario> <expresion> \\
+                           &|&  <op\_unario> <expresion> \\
+                           &|&  <identificador>(<lista\_expresiones>) \\
+                           &|&  <expresion>[<expresion>] \\
+                           &|&  <identificador> \\
+                           &|&  <constante> \\
+&&\\
+                         
+<op\_binario>              &::=& + |  - |  * |  / |  and |  or |  > |  < |  >= |  <= |  == |  != |  \^{} \\
+&&\\
+
+<op\_unario>               &::=&  - |  ! \\
+&&\\
+
+<lista\_expresiones>       &::=&  <lista\_expresiones>,<expresion> \\
+                           &|&  <expresion> \\
+&&\\
+
+<lista\_param>             &::=&  <lista\_param>, <lista\_ident> : <identificador>  \\
+                           &|&  <lista\_ident> : <identificador> \\
+&&\\
+
+<lista\_ident>             &::=&  <lista\_ident>, <identificador> \\
+                           &|&  <identificador> \\
+&&\\
+
+<identificador>           &::=&  <letra><cadena> \\
+                           &|&  <letra> \\
+&&\\
+                         
+<cadena>                  &::=&  <cadena><letra> \\
+                           &|&  <cadena><numero> \\
+                           &|&  <letra> \\
+                           &|&  <numero> \\
+&&\\
+\hline
+\end{tabular}
+\newpage
+\begin{tabular}{| p{3.5cm} c p{10cm} |}
+\hline
+<constante>               &::=&  <numero\_entero> \\
+                           &|&  <numero\_real> \\
+                           &|&  <bool> \\
+&&\\
+
+<numero\_real>             &::=&  <numero\_entero> \\
+                           &|&  <numero\_entero>.<numero\_entero> \\
+&&\\
+
+<numero\_entero>           &::=&  <numero\_entero><numero> \\
+                           &|&  <numero> \\
+&&\\
+
+<bool>                    &::=&  true | false \\
+&&\\
+
+<letra>                   &::=&  a | ... | z | A | ... | Z \\
+&&\\
+
+<numero>                  &::=&  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 \\
+&&\\
+\hline
+\end{tabular}
+
+
 \endinput
 %------------------------------------------------------------------------------------
 % FIN DEL CAPÍTULO. 
