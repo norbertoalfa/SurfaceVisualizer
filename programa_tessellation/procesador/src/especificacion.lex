@@ -54,7 +54,7 @@ cte 	{entero}|{real}|{bool}
 
 {ident}						{yylval.lex=strdup(yytext); return IDENT;}
 
-[ \t]						{;}
+[ \t\r]						{;}
 
 "/*"([^*]|\*+[^*/])*\*+"/"	{linea++;}
 \/\/.*\n					{linea++;}
