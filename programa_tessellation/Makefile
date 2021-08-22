@@ -23,6 +23,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 # The -MMD and -MP flags together generate Makefiles for us!
 # These files will have .d instead of .o as the output.
 CPPFLAGS := $(INC_FLAGS) -g
+CXXFLAGS := -std=c++11
 
 
 all: $(TARGET_EXEC) shader
@@ -36,6 +37,7 @@ $(TARGET_EXEC): bin/$(TARGET_EXEC)
 
 bin/$(TARGET_EXEC): $(OBJS)
 	echo $(SRCS)
+	mkdir -p bin
 	g++ $(OBJS) -o $@ -W -Wall -Werror -lglfw -lGL -ldl -I./include
 
 # Build step for C source

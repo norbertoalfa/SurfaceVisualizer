@@ -13,6 +13,7 @@ read: $(FILE) $(EXE)
 	#./$(EXE) < '$(FILE)'
 
 $(EXE): $(OBJ)/y.tab.o $(OBJ)/semantico.o $(OBJ)/nodo.o $(OBJ)/elementos_predef.o
+	mkdir -p bin
 	gcc -o $@ -lfl $^ $(FLAGS)
 
 $(OBJ)/y.tab.o: $(SRC)/y.tab.c include/lex.yy.c 
