@@ -3,7 +3,47 @@
 
 \chapter{Planificación y presupuesto}
 
+\begin{center}
+\begin{tabular}{ | p{0.5cm} | p{2.5cm} | p{5cm} | p{5cm} | }
+\hline
+\multicolumn{4}{ | c | } {Planificación temporal en fases}\\
+\hline
+\multicolumn{1}{ | c | } {Nº} & \multicolumn{1}{ | c | } {Nombre} & \multicolumn{2}{ | c | } {Tareas}\\
+\hline
+$1$ & Inicial & \multicolumn{2}{ | p{10cm} | } {- Estudio inicial del problema}\\
+\hline
+$2$ & Implementación básica & Procesador: & Visualizador:\\
+ & & - Definición del lenguaje (BNF) & - Toma de contacto con OpenGL, el lenguaje GLSL e ImGui.\\
+ & & - Implementar primera versión del procesador a partir del código de la asignatura Procesadores de Lenguajes, que sólo detecta errores. & - Construir un programa de visualización a partir de código base, haciendo uso de los shaders básicos. La normal será la del triángulo.\\
+ & & - Complementar el procesador para traducir a código GLSL (generación de árbol sintáctico), para usarlo en el vertex shader. & \\
+\hline
+$3$ & Primera conexión & \multicolumn{2}{ | p{10cm} | } {- Conectar apropiadamente los programas, para visualizar la superficie definida con la parametrización.} \\
+ & & \multicolumn{2}{ | p{10cm} | } {- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.} \\
+ & & \multicolumn{2}{ | p{10cm} | } {} \\
+\hline
+\end{tabular}
+\end{center}
 
+- Implementación media.
+9.- Implementar los algoritmos que calculan los árboles de las derivadas parciales de las expresiones. Añadir seguidamente la generación de funciones típicas, como la normal, el área diferencial y la curvatura de Gauss.
+10.- Utilizar la función normal en los puntos, en vez de las normales de los triángulos. Además, mostrar la normal como un segmento de color distinto al de la superficie.
+11.- Mostrar mediante colores el valor del área diferencial y de la curvatura de Gauss en cada punto.
+12.- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.
+
+- Implementación avanzada.
+13.- Implementar la teselación uniforme mediante el uso del geometry shader.
+14.- Completar con una gran variedad de ejemplos.
+15.- Estudiar el correcto funcionamiento del teselado.
+
+- Estudio de la mejor medida.
+16.- Elegir ciertas estadísticas del renderizado para comprobar si los resultados son buenos.
+17.- Estudiar varias medidas para controlar el nivel de teselado.
+
+- Estética
+18.- Completar la interfaz del usuario.
+
+- Revisión
+19.- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.
 
 \endinput
 %------------------------------------------------------------------------------------

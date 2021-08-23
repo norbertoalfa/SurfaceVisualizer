@@ -93,10 +93,11 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
   		\label{fig:esfera_pol}
 	\end{figure}
 	\\Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
-	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie, la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.\\
+	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.\\
 	\\La curvatura de Gauss se ha calculado de la siguiente forma (CITAR WOLFRAM):
 		$$K(x(u,v)) = \frac{det(x_{uu}, x_u, x_v) det(x_{vv}, x_u, x_v) - [det(x_{uv}, x_u, x_v)]^2} {[|x_u|^2|x_v|^2 - <x_u, x_v>^2]^2} (u, v)$$
-	que es la curvatura de Gauss en el punto $x(u, v)$, con $x$ carta de la superficie $S$.
+	que es la curvatura de Gauss en el punto $x(u, v)$, con $x$ carta de la superficie $S$.\\
+	\\También tiene un punto negativo, y es que genera una excesiva teselación en zonas con una cruvatura de Gauss muy elevada (en valor absoluto), por lo que puede crear efectos antinaturales si hay zonas con poca curvatura cerca, ya que hay un cambio brusco de teselado. Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un exponente $\alpha>0$, en el que si $\alpha<1$ la teselación será más uniforme, manteniendo sin teselar las zonas planas, y si $\alpha\geq1$ se le dará más inportancia a las zonas curvas. En la práctica se recomienda usar $0.1<\alpha<0.5$ para un buen equilibrio calidad/rendimiento.
 	
 \newpage
 \section{Mejora del teselado}

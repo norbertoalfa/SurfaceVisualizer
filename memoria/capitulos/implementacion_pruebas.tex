@@ -16,7 +16,12 @@
 	
 	Es cierto que el compilador ya realiza de manera automática algunas de estas optimizaciones, pero su puesta en práctica reduce ligeramente el tiempo de compilación.
 
-\newpage
+\section{Generación de informes}
+
+	Para medir el rendimiento de la aplicación se han medido los fotogramas generados por segundo y las primitivas que hay presentes en la escena, incluyendo las que son producto del teselado.\\
+\\La medición del nº de primitivas se ha realizado mediante el uso de la estructura "query" de OpenGL, la cual se actualiza cada vez que renderiza la escena. El nº de fotogramas por segundo se ha calculado manualmente, a partir de la latencia entre fotogramas (cuando se acumula más de $1$ segundo de latencia, devuelve el nº de fps en ese segundo).\\
+\\Además, para mayor comodidad se ha añadido una opción para realizar dichas mediciones de forma automática y escribir los resultados en un archivo cuyo nombre dependerá de la parametrización actual y el modo de visualización. Por defecto realiza $22$ medidas ($22$ segundos). Es ligeramente mayor que $20$ para después quitar la primera y/o última medida, ya que están influenciadas por la interacción del usuario con la interfaz.\\
+\\Estas medidas son suficientes para observar si la aplicación está aprovechando correctamente los recursos para obtener una buena visualización de la superficie, ya que el objetivo es que funcione en tiempo real ofreciendo la mínima carga posible al sistema.
 
 \section{Resultados}
 	En esta sección se mostrarán los datos medidos en la aplicación para comparar las técnicas usadas. Se han seleccionado 2 superficies de las disponibles como ejemplos, ``gauss.in'' y ``waves.in''. Los parámetros se han elegido de manera que la visualización sea similar entre los distintos modos de renderizado, minimizando el nº de triángulos de la escena para cada modo, que es el objetivo de estudio: ofrecer un nivel de aproximación específico, maximizando el rendimiento.
@@ -121,8 +126,8 @@
 	\end{figure}	
 	
 	\newpage
-	Seguidamente se muestran las imagenes correspondientes a la parametrización "waves.in". Sin embargo, debido a la complejidad de la superficie base (plano horizontal perturbado con un coseno), para el modo "sin teselado" es imposible llegar a una buena representación incluso utilizando una malla inicial de $1$ millón de triángulos, debido a la aparición de efectos óptimos, por la uniformidad de la malla inicial (parece haber más de un foco mientras que sólo hay uno).\\
-	\\También es posible observar que al pasar de "improve$1$" a "improve$2$" puede aparecer algún segmento sin teselar. Se debe a que detecta que es un segmento oculto, mediante un cálculo basado en los extremos del segmento, pero como ya se comentó anteriormente esta funcionalidad está pensada para superficies específicas.
+	Seguidamente se muestran las imagenes correspondientes a la parametrización ``waves.in''. Sin embargo, debido a la complejidad de la superficie base (plano horizontal perturbado con un coseno), para el modo ``sin teselado'' es imposible llegar a una buena representación incluso utilizando una malla inicial de $1$ millón de triángulos, debido a la aparición de efectos óptimos, por la uniformidad de la malla inicial (parece haber más de un foco mientras que sólo hay uno).\\
+	\\También es posible observar que al pasar de ``improve$1$'' a ``improve$2$'' puede aparecer algún segmento sin teselar. Se debe a que detecta que es un segmento oculto, mediante un cálculo basado en los extremos del segmento, pero como ya se comentó anteriormente esta funcionalidad está pensada para superficies específicas.
 	\begin{figure}[h]
   		\centering
   		\includegraphics[width=0.9\textwidth]{performance/waves_notess}

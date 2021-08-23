@@ -1,3 +1,4 @@
+- Obtener las 4 capturas de gauss.in en modo malla.
 - Separar programStatus en .h y .cpp, renombrar como "renderFrame" y mover aquellos métodos no apropiados para esa clase.
 - Calcular el "dot" para ver si está outVF mediante fov=max(fovy,fovx), en programStatus.
 - Caso wthlight. Escribir: caso interesante teorico, en la practica es costoso (¿y varias fuentes de luz?).
