@@ -3,12 +3,43 @@
 
 \chapter{Procesador}
 
-En este capítulo se describe el estudio realizado para teselar de manera eficiente un triángulo. Esta técnica se implementará en shaders, para poder ejecutarlo directamente en la GPU, que ofrece mayor rendimiento que la CPU para dicho problema. En un principio se iba a realizar en un Geometry Shader pero más tarde se observó que era más acertado el uso de un Tessellation Shader. \\
-\\ Cabe destacar antes que la idea inicial era desarrollar un algoritmo de división recursiva de los triángulos, el cuál se detiene en el nivel en el que se cree que representa correctamente a la porción de superficie. Sin embargo, el lenguaje Glsl no permite realizar llamadas recursivas, por lo que era necesario buscar alternativas.
+En este capítulo nos centramos en el diseño de un lenguaje sencillo para representar las cartas que definen a la superficie, que es un punto clave de la aplicación.\\
+\\El procesador del lenguje tendrá como salida lenguaje GLSL para compilarlo como un shader y así transformar la malla inicial (triangulación del conjunto $[0,1]\times[0,1] \subset \R^2$), dando forma a la superficie. Paralelamente construirá el árbol de expresión de cada parametrización, permitiendo el cálculo de las derivadas parciales, necesarias para la obtención de las normales y la curvatura de Gauss.\\
+\\A continuación se muestra un código de ejemplo que ilustrará la forma de una parametrización utilizando el lenguaje deseado:
+
+\begin{center}
+\begin{tabular}{| p{14cm} |}
+\hline
+//-- Ejemplo para la parametrización de la esfera --//\\
+// Definir las costantes (PI es una cte predefinida)\\
+PI$2$ : real = $2$*PI;\\
+\\
+// Definir funciones adicionales (sin y cos están predefinidas)\\
+compx(u, v : real) : real = cos(v*PI)*cos(u*PI$2$);\\
+compy(u, v : real) : real = cos(v*PI)*sin(u*PI$2$);\\
+compz(u, v : real) : real = sin(v*PI);\\
+\\
+// Definir la función principal\\
+f(u, v : real) : vec$3$ = vec$3$(compx(u,v), compy(u,v), compz(u,v));\\
+\\
+// Usar otra función para redefinir el dominio, en vez del cuadrado $[0,1]\times[0,1]$\\
+g(u, v : real, t$0$, t$1$ : real) : vec$3$ = f(t$0$ * (u-$0.5$), t$1$ * (v-$0.5$));\\
+\\
+//  Para pintar 'g', debe devolver un tipo 'vec$3$' y los dos primeros argumentos \\
+// deben ser reales (u y v). El resto serán parámetros de tiempo (para homotopías)\\
+plot g;\\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section{}
+
+\newpage
 
 \section{Especificación BNF}
 
-
+Se describirá en esta sección de forma rigurosa el lenguaje que recibirá como entrada el programa "procesador":\\
 \begin{tabular}{| p{3.5cm} c p{10cm} |}
 \hline
 
