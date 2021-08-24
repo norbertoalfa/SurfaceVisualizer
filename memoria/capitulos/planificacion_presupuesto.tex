@@ -3,6 +3,8 @@
 
 \chapter{Planificación y presupuesto}
 
+\section{Planificación temporal inicial}
+
 \begin{center}
 \begin{tabular}{ | p{0.5cm} | p{2.5cm} | p{5cm} | p{5cm} | }
 \hline
@@ -17,33 +19,73 @@ $2$ & Implementación básica & Procesador: & Visualizador:\\
  & & - Implementar primera versión del procesador a partir del código de la asignatura Procesadores de Lenguajes, que sólo detecta errores. & - Construir un programa de visualización a partir de código base, haciendo uso de los shaders básicos. La normal será la del triángulo.\\
  & & - Complementar el procesador para traducir a código GLSL (generación de árbol sintáctico), para usarlo en el vertex shader. & \\
 \hline
-$3$ & Primera conexión & \multicolumn{2}{ | p{10cm} | } {- Conectar apropiadamente los programas, para visualizar la superficie definida con la parametrización.} \\
+$3$ & Conexión inicial & \multicolumn{2}{ | p{10cm} | } {- Conectar apropiadamente los programas, para visualizar la superficie definida con la parametrización.} \\
  & & \multicolumn{2}{ | p{10cm} | } {- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.} \\
  & & \multicolumn{2}{ | p{10cm} | } {} \\
+\hline
+$4$ & Completar procesador & \multicolumn{2}{ | p{10cm} | } {- Implementar los algoritmos que calculan los árboles de las derivadas parciales de las expresiones. Añadir seguidamente la generación de funciones típicas, como la normal, el área diferencial y la curvatura de Gauss.} \\
+\hline
+$5$ & Conexión avanzada & \multicolumn{2}{ | p{10cm} | } {- Utilizar la función normal en los puntos, en vez de las normales de los triángulos. Además, mostrar la normal como un segmento de color distinto al de la superficie.}\\
+ & & \multicolumn{2}{ | p{10cm} | } {- Mostrar mediante colores el valor del área diferencial y de la curvatura de Gauss en cada punto.}\\
+ & & \multicolumn{2}{ | p{10cm} | } {- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.}\\
+\hline
+$6$ & Implementación avanzada & \multicolumn{2}{ | p{10cm} | } {- Implementar la teselación uniforme mediante el uso del geometry shader.} \\
+ & & \multicolumn{2}{ | p{10cm} | } {- Completar con una gran variedad de ejemplos.}\\
+ & & \multicolumn{2}{ | p{10cm} | } {- Estudiar el correcto funcionamiento del teselado.}\\
+\hline
+$7$ & Estudio de la mejor medida & \multicolumn{2}{ | p{10cm} | } {- Elegir ciertas estadísticas del renderizado para comprobar si los resultados son buenos.} \\
+ & & \multicolumn{2}{ | p{10cm} | } {- Estudiar varias medidas para controlar el nivel de teselado.}\\
+\hline
+$8$ & Estética & \multicolumn{2}{ | p{10cm} | } {- Completar la interfaz del usuario.} \\
+\hline
+$9$ & Revisión & \multicolumn{2}{ | p{10cm} | } {- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir y añadir elementos si fuese necesario.} \\
 \hline
 \end{tabular}
 \end{center}
 
-- Implementación media.
-9.- Implementar los algoritmos que calculan los árboles de las derivadas parciales de las expresiones. Añadir seguidamente la generación de funciones típicas, como la normal, el área diferencial y la curvatura de Gauss.
-10.- Utilizar la función normal en los puntos, en vez de las normales de los triángulos. Además, mostrar la normal como un segmento de color distinto al de la superficie.
-11.- Mostrar mediante colores el valor del área diferencial y de la curvatura de Gauss en cada punto.
-12.- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.
+\section{Diferencias con la planificación real}
 
-- Implementación avanzada.
-13.- Implementar la teselación uniforme mediante el uso del geometry shader.
-14.- Completar con una gran variedad de ejemplos.
-15.- Estudiar el correcto funcionamiento del teselado.
+\begin{itemize}
+	\item Después de implementar el algoritmo de derivación (fase $4$), fue necesario añadir un algoritmo de simplificación de expresiones, para evitar cálculos triviales (sumar/multiplicar $0$ y multiplicar/dividir por $1$).
+	\item Tras el estudio del geometry shader (fase $6$), se observó que no era tan adecuado para el proyecto como el propio tessellation shader, así que se inició una nueva fase de estudio para dicho shader.
+	\item Durante la fase de estudio de la mejor medida (fase $7$), por la naturaleza del procesador del lenguaje, este era fácilmente adaptable para permitir llamadas a derivadas parciales dentro del lenguaje (de funciones ya definidas). Es por ello que se desarrolló paralelamente esta funcionalidad.
+	\item Finalmente fue necesario introducir una fase de optimización de código, en especial para los shaders (GLSL) para sacar el máximo partido al cáculo vectorial y evitar realizar cálculos repetitivos en la GPU.
+\end{itemize}
 
-- Estudio de la mejor medida.
-16.- Elegir ciertas estadísticas del renderizado para comprobar si los resultados son buenos.
-17.- Estudiar varias medidas para controlar el nivel de teselado.
+\section{Presupuesto}
 
-- Estética
-18.- Completar la interfaz del usuario.
+El presupuesto se ha calculado en base al sueldo medio de un ingeniero informático, junto con el coste de desarrollo temporal del proyecto. No se añaden gastos de licencias de software puesto que el software es libre en su totalidad (ImGui y Mesa, similar a OpenGL).\\
 
-- Revisión
-19.- Estudiar el correcto funcionamiento de ambas aplicaciones hasta ahora. Corregir en caso de ser necesario.
+\begin{tabular}{| p{4cm} | p{2.2cm} |}
+\hline
+Sueldo medio & $1500$ €/mes\\
+Horas a la semana & $40$ h/semana\\
+Horas al mes & $160$ h/mes\\
+\hline
+Precio de la hora & $9.375$ €/h\\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{| p{4cm} | p{1.5cm} |}
+\hline
+Tiempo estimado & $60$ días\\
+Horas al día & $6$ h/día\\
+Total horas & $360$ h\\
+\hline
+Presupuesto horas & $3375$ €\\
+\hline
+\end{tabular}
+
+\hfill \break
+Aunque el hardware usado estaba ya adquirido, se incluirá como posible gasto extra:\\
+
+\begin{tabular}{| p{6cm} | p{1cm} |}
+\hline
+Precio actual Lenovo v$110$-$15$isk $80$tl $8$ GB RAM, $500$ GB HDD& $460$ €\\
+\hline
+Total presupuesto & $\boldsymbol{3835}$ €\\
+\hline
+\end{tabular}
 
 \endinput
 %------------------------------------------------------------------------------------

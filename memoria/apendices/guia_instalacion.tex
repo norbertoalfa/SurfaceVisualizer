@@ -3,9 +3,43 @@
 
 \chapter{Instalación del software}\label{ap:apendice1}
 
-Los apéndices son opcionales.
+\section{Requisitos previos}
 
-Archivo: \texttt{apendices/guia\_instalacion.tex}
+Los requisitos mínimos para poder compilar el proyecto son los siguientes:
+\begin{itemize}
+	\item SO: Ubuntu $16.04$ LTS o superior (o distribuciones similares), actualizado.
+	\item GPU: compatible con versión de OpenGL $4.4$ o superior (para poder usar el tessellation shader, entre otros).
+	\item Paquetes: ``make'', para poder usar el makefile, y ``apt'', para gestionar paquetes.
+\end{itemize}
+
+A continuación se muestran las dependencias del proyecto, aunque el propio makefile las comprobará y actualizará:
+\begin{itemize}
+	\item Procesador:
+	\begin{itemize}
+		\item gcc.
+		\item flex.
+		\item bison, versión $3.2$ o superior (se recomienda la $3.5.1$).
+	\end{itemize}
+	\item Visualizador de Superficies (además de las de Procesador):
+	\begin{itemize}
+		\item g++, versión $11$ o superior.
+		\item mesa-utils y mesa-common-dev, que es una implementación de código abierto de OpenGL.
+		\item libglfw$3$ y libglfw$3$-dev, para que la aplicación pueda gestionar las ventanas del sistema.
+	\end{itemize}
+\end{itemize}
+
+\section{Instalación}
+
+Para instalar el programa basta con clonar el repositorio de GitHub y ejecutar la orden ``make'' desde la terminal, en el directorio raíz del programa. Realizará la comprobación de las dependencias de forma automática y en caso de no estar instaladas solicitará la confirmación de su instalación (a la última versión).\\
+\\Si sólo quiere hacer uso del programa ``procesador'', ejecute el comando:
+\begin{center}
+ make read FILE=<archivo>
+\end{center}
+pero desde el directorio ``procesador''. Esta acción devolverá la traducción de ``<archivo>'' al fichero ``../shaders/functions.s'' y la salida de error en ``../error.log''.
+
+\section{Errores de compilación}
+
+En caso de que aparezcan errores al compilar, compruebe detenidamente que se cumplen los \textbf{Requisitos previos}. Es posible que algunas dependencias no estén actualizadas para el comando ``apt'' y sea necesario instalarlo manualmente desde sus respectivas páginas oficiales.
 
 \endinput
 %------------------------------------------------------------------------------------

@@ -5,4 +5,4 @@ install bison
 ¿install flex?
 //install glfw
 
-sudo apt-get upgrade make gcc g++ bison flex mesa-utils mesa-common-dev libglfw3 libglfw3-dev
+sudo apt-get upgrade gcc g++ bison flex mesa-utils mesa-common-dev libglfw3 libglfw3-dev
