@@ -33,7 +33,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Uniforms to pass
-glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
+glm::mat4 projection = glm::perspective(status.fovy, (float)status.getWidth() / (float)status.getHeight(), status.near, status.depth);
 glm::mat4 view = camera.getViewMatrix();
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 pvm = projection * view * model;
@@ -224,6 +224,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
     sh->setBool("showCotangents", status.showCotangents);
     sh->setBool("showNormals", status.showNormals);
 
+    sh->setFloat("dotVF", status.dotVF);
     sh->setFloat("signNormal", status.invertNorm? -1.0f : 1.0f);
     sh->setBool("useLight", useLight);
     sh->setBool("showHeight", status.showHeight);
@@ -386,7 +387,7 @@ void render()
 		view = camera.getViewMatrix();
 	}
 
-	projection = glm::perspective(glm::radians(45.0f), (float)status.getWidth() / (float)status.getHeight(), 0.1f, 100.0f);
+	projection = glm::perspective(status.fovy, (float)status.getWidth() / (float)status.getHeight(), status.near, status.depth);
 	pvm = projection * view * model;
     pvm_inv = glm::inverse(pvm);
 

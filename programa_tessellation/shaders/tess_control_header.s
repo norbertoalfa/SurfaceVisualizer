@@ -10,6 +10,7 @@ uniform float umbralLength;
 uniform float umbralEdge;
 uniform float expK;
 uniform float signNormal;
+uniform float dotVF;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;  

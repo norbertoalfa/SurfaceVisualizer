@@ -56,7 +56,7 @@ float bestNPtsK(vec2 p1, vec2 p2, vec3 vision1, vec3 vision2, float dotP1, float
         if (improvePerfEsp) {
             hidden = dotP1 > 0.5 && dotP2 > 0.5;
         }
-        outVF = (dot(Front, vision1) > -0.8) && (dot(Front, vision2) > -0.8);
+        outVF = (dot(Front, vision1) > dotVF) && (dot(Front, vision2) > dotVF);
 
         if (!hidden && !outVF) {
             // Calculates if it is a visual edge.
