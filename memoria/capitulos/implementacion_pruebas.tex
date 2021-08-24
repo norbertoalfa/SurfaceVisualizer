@@ -24,12 +24,12 @@
 \\Estas medidas son suficientes para observar si la aplicación está aprovechando correctamente los recursos para obtener una buena visualización de la superficie, ya que el objetivo es que funcione en tiempo real ofreciendo la mínima carga posible al sistema.
 
 \section{Resultados}
-	En esta sección se mostrarán los datos medidos en la aplicación para comparar las técnicas usadas. Se han seleccionado 2 superficies de las disponibles como ejemplos, ``gauss.in'' y ``waves.in''. Los parámetros se han elegido de manera que la visualización sea similar entre los distintos modos de renderizado, minimizando el nº de triángulos de la escena para cada modo, que es el objetivo de estudio: ofrecer un nivel de aproximación específico, maximizando el rendimiento.
+	En esta sección se mostrarán los datos medidos en la aplicación para comparar las técnicas usadas. Se han seleccionado 2 superficies de las disponibles como ejemplos, ``gaussiana.in'' y ``waves.in''. Los parámetros se han elegido de manera que la visualización sea similar entre los distintos modos de renderizado, minimizando el nº de triángulos de la escena para cada modo, que es el objetivo de estudio: ofrecer un nivel de aproximación específico, maximizando el rendimiento.
 		
 	\begin{center}
 	\begin{tabular}{ | p{2cm} | | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | }
 		\hline
-		\multicolumn{6}{ | c | } {gauss.in}\\
+		\multicolumn{6}{ | c | } {gaussiana.in}\\
 		\hline
 		$ $ &
 		\multicolumn{5}{ | c | } {FPS}\\
@@ -99,35 +99,61 @@
 	
 	
 	\newpage
-	Las siguientes imágenes corresponden con la parametrización ``gauss.in'' con los distintos modos de visualización, donde para cada modo se ha buscado la configuración óptima, es decir, aquella en la que se ve visualmente bien y el nº de triángulos es mínimo. Por tanto, las $4$ imágenes debería ser exactamente iguales:
+	Las siguientes imágenes corresponden con la parametrización ``gaussiana.in'' con los distintos modos de visualización, donde para cada modo se ha buscado la configuración óptima, es decir, aquella en la que se ve visualmente bien y el nº de triángulos es mínimo. Por tanto, las $4$ imágenes debería ser exactamente iguales:
 	\begin{figure}[h]
 		\begin{minipage}{0.48\textwidth}
   			\centering
   			\includegraphics[width=0.9\textwidth]{performance/gauss_notess}
-  			\caption{gauss.in sin teselar}
+  			\caption{gaussiana.in sin teselar}
 		\end{minipage}\hfill
 		\begin{minipage}{0.48\textwidth}
   			\centering
   			\includegraphics[width=0.9\textwidth]{performance/gauss_tessbad}
-  			\caption{gauss.in teselado normal}
+  			\caption{gaussiana.in teselado normal}
 		\end{minipage}\hfill
 		
 		\begin{minipage}{0.48\textwidth}
   			\centering
   			\includegraphics[width=0.9\textwidth]{performance/gauss_improve1}
-  			\caption{gauss.in improve$1$}
+  			\caption{gaussiana.in improve$1$}
 		\end{minipage}\hfill
 		\begin{minipage}{0.48\textwidth}
   			\centering
   			\includegraphics[width=0.9\textwidth]{performance/gauss_improve2}
-  			\caption{gauss.in improve$2$}
+  			\caption{gaussiana.in improve$2$}
 		\end{minipage}\hfill
   		\label{fig:imagenes_gauss}
 	\end{figure}	
 	
 	\newpage
+	\begin{figure}[h]
+		\begin{minipage}{0.48\textwidth}
+  			\centering
+  			\includegraphics[width=0.9\textwidth]{performance/gauss_pol_notess}
+  			\caption{gaussiana.in sin teselar}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+  			\centering
+  			\includegraphics[width=0.9\textwidth]{performance/gauss_pol_tessbad}
+  			\caption{gaussiana.in teselado normal}
+		\end{minipage}\hfill
+		
+		\begin{minipage}{0.48\textwidth}
+  			\centering
+  			\includegraphics[width=0.9\textwidth]{performance/gauss_pol_improve1}
+  			\caption{gaussiana.in improve$1$}
+		\end{minipage}\hfill
+		\begin{minipage}{0.48\textwidth}
+  			\centering
+  			\includegraphics[width=0.9\textwidth]{performance/gauss_pol_improve2}
+  			\caption{gaussiana.in improve$2$}
+		\end{minipage}\hfill
+  		\label{fig:imagenes_gauss_pol}
+	\end{figure}	
+	
 	Seguidamente se muestran las imagenes correspondientes a la parametrización ``waves.in''. Sin embargo, debido a la complejidad de la superficie base (plano horizontal perturbado con un coseno), para el modo ``sin teselado'' es imposible llegar a una buena representación incluso utilizando una malla inicial de $1$ millón de triángulos, debido a la aparición de efectos óptimos, por la uniformidad de la malla inicial (parece haber más de un foco mientras que sólo hay uno).\\
 	\\También es posible observar que al pasar de ``improve$1$'' a ``improve$2$'' puede aparecer algún segmento sin teselar. Se debe a que detecta que es un segmento oculto, mediante un cálculo basado en los extremos del segmento, pero como ya se comentó anteriormente esta funcionalidad está pensada para superficies específicas.
+	\newpage
 	\begin{figure}[h]
   		\centering
   		\includegraphics[width=0.9\textwidth]{performance/waves_notess}
@@ -135,17 +161,30 @@
   		\vspace{0.5cm}
   		\includegraphics[width=0.9\textwidth]{performance/waves_tessbad}
   		\caption{waves.in teselado normal}
-  		\label{fig:imagenes_waves}
-	\end{figure}	
-	\newpage
-	\begin{figure}[h]
+  		\vspace{0.5cm}
   		\includegraphics[width=0.9\textwidth]{performance/waves_improve1}
   		\caption{waves.in improve$1$}
   		\vspace{0.5cm}
   		\includegraphics[width=0.9\textwidth]{performance/waves_improve2}
   		\caption{waves.in improve$2$}
-  		\label{fig:imagenes_waves2}
+  		\label{fig:imagenes_waves}
 	\end{figure}	
+	\begin{figure}[h]
+  		\centering
+  		\includegraphics[width=0.9\textwidth]{performance/waves_pol_notess}
+  		\caption{waves.in sin teselar}
+  		\vspace{0.5cm}
+  		\includegraphics[width=0.9\textwidth]{performance/waves_pol_tessbad}
+  		\caption{waves.in teselado normal}
+  		\vspace{0.5cm}
+  		\includegraphics[width=0.9\textwidth]{performance/waves_pol_improve1}
+  		\caption{waves.in improve$1$}
+  		\vspace{0.5cm}
+  		\includegraphics[width=0.9\textwidth]{performance/waves_pol_improve2}
+  		\caption{waves.in improve$2$}
+  		\label{fig:imagenes_waves_pol}
+	\end{figure}	
+	\newpage
 		
 		
 \endinput

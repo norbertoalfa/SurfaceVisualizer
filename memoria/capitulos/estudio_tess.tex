@@ -88,7 +88,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\\Si utilizamos como medida sólo la curvatura, que no depende de la parametrización de la superficie, teselaríamos de igual forma en un triángulo grande $T_1$ y en uno pequeño $T_2$ si $K_{T_1}=K_{T_2}$, obteniendo subtriángulos distintos. Esto se debe a que la parametrización elegida deforma la malla inicial cambiando de forma irregular el tamaño de los triángulos. Un claro ejemplo es la reducción de la base de los triángulos a medida que nos acercamos a los polos en una esfera con la parametrización usual. Se puede observar en la siguiente imágen, donde el color indica el área diferencial de la parametrización.\\
 	\begin{figure}[h]
   		\centering
-  		\includegraphics[width=0.4\textwidth]{esfera_pol}
+  		\includegraphics[width=0.35\textwidth]{esfera_pol}
   		\caption{Deformación heterogénea de la malla}
   		\label{fig:esfera_pol}
 	\end{figure}
@@ -97,9 +97,24 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\\La curvatura de Gauss se ha calculado de la siguiente forma (CITAR WOLFRAM):
 		$$K(x(u,v)) = \frac{det(x_{uu}, x_u, x_v) det(x_{vv}, x_u, x_v) - [det(x_{uv}, x_u, x_v)]^2} {[|x_u|^2|x_v|^2 - <x_u, x_v>^2]^2} (u, v)$$
 	que es la curvatura de Gauss en el punto $x(u, v)$, con $x$ carta de la superficie $S$.\\
-	\\También tiene un punto negativo, y es que genera una excesiva teselación en zonas con una cruvatura de Gauss muy elevada (en valor absoluto), por lo que puede crear efectos antinaturales si hay zonas con poca curvatura cerca, ya que hay un cambio brusco de teselado. Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un exponente $\alpha>0$, en el que si $\alpha<1$ la teselación será más uniforme, manteniendo sin teselar las zonas planas, y si $\alpha\geq1$ se le dará más inportancia a las zonas curvas. En la práctica se recomienda usar $0.1<\alpha<0.5$ para un buen equilibrio calidad/rendimiento.
-	
+	\\También tiene un punto negativo, y es que genera una excesiva teselación en zonas con una cruvatura de Gauss muy elevada (en valor absoluto), por lo que puede crear efectos antinaturales si hay zonas con poca curvatura cerca, ya que hay un cambio brusco de teselado:\\
+	\begin{figure}[h]
+  		\centering
+  		\includegraphics[width=0.45\textwidth]{efecto_curvatura}
+  		\includegraphics[width=0.433\textwidth]{efecto_curvatura_pol}
+  		\label{fig:efecto_curvatura}
+	\end{figure}
 \newpage
+Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un exponente $\alpha>0$, en el que si $\alpha<1$ la teselación será más uniforme, manteniendo sin teselar las zonas planas, y si $\alpha\geq1$ se le dará más inportancia a las zonas curvas. En la práctica se recomienda usar $0.1<\alpha<0.5$ para un buen equilibrio calidad/rendimiento.\\
+\\Las siguientes imágenes muestran el uso de esta funcionalidad, requeriendo el mismo número de triángulos que en las figuras anteriores:
+	\begin{figure}[h]
+  		\centering
+  		\includegraphics[width=0.45\textwidth]{teselado_homo}
+  		\includegraphics[width=0.45\textwidth]{teselado_homo_pol}
+		\caption{Teselado más homogéneo.}
+  		\label{fig:teselado_homo}
+	\end{figure}
+	
 \section{Mejora del teselado}
 	En esta sección vamos a estudiar cómo mejorar el proceso de teselado para mostrar buenos resultados sin tener un gran impacto en el rendimiento. En general, nuestro cerebro reconstruye el objeto visualizado atendiendo a los bordes detectados y a las texturas, además de obviar los elementos que están fuera del campo de visión y aquellos ocultos. La siguiente comparación es un buen ejemplo para corroborarlo:\\
 	\begin{figure}[h]
@@ -110,7 +125,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
   		\caption{Calidad visual según los bordes y texturas}
   		\label{fig:vision_humana}
 	\end{figure}
-	\\Donde la primera figura está aproximada con una cantidad muy inferior de primitivas con respecto a la segunda. La última figura es la diferencia entre las primeras, para así ver la importancia de la correcta representación de bordes y texturas. Para el caso de la visualización de superficies tenemos que:
+	\\La primera figura está aproximada con una cantidad muy inferior de primitivas con respecto a la segunda, y la última es la diferencia entre las dos primeras, para así ver la importancia de la correcta representación de bordes y texturas. Para el caso de la visualización de superficies tenemos que:
 	\begin{enumerate}
 		\item Visualizar una superficie a diferentes \textbf{distancias} equivale a visualizar la misma superficie pero con distinto tamaño, es por ello que el umbral utilizado para la definición de buena aproximación puede ser relativo a la distancia de la cámara al triángulo visualizado. De esta forma, para zonas con características similares y a diferentes distancias, el teselado será mayor en la que está más cerca de la cámara. Además, podemos complementarlo añadiendo una distancia máxima de teselado, para evitar teselar zonas alejadas en superficies no compactas.
 		\item Los únicos $\textbf{bordes}$ posibles son aquellas zonas donde el vector de visualización del punto (con origen la cámara y destino el punto a comprobar, normalizado) es perpendicular a la normal en el punto. Si reducimos el nivel de teselado en zonas que no sean bordes, teniendo cuidado en las zonas con mayor iluminación, mantedremos la misma calidad visual reduciendo el número de primitivas usadas. En la práctica se ha utilizado un factor de reducción de $\frac{2}{3}$.
@@ -119,7 +134,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 		Con $p$ carta, $N(u,v)$ la normal en $p(u,v)$ y $P_L$ la posición de la luz actual.
 		\item Un elemento está $\textbf{fuera del campo de visión}$ si el vector frontal de la cámara y el vector de visualización del punto cumplen ciertas restricciones, cuya complejidad dependerá de la definición de campo de visión escogida. Simplificando el problema, podemos decir que esto sucede si su producto escalar es cercano al $0$, bajo un cierto umbral $\delta>0$ que definirá el campo de visión con forma de cono. Dado un ángulo de visión $\alpha$, el umbral se puede calcular como $cos(\frac{\alpha}{2})$, obtenido a partir de la expresión del producto escalar:
 		$$<p,q>=|p||q|cos(\angle(p,q))$$
-		Para tener una visión de $75$º sería necesario un umbral de $0.793$ aproximadamente. En la prácitca se calcula automáticamente según el FoV en el eje X y el eje Y (se escoge el máximo de ambos FoVs).
+		Para tener una visión de $75$º sería necesario un umbral de $0.793$ aproximadamente. En la prácitca se calcula automáticamente según el FoV en el eje X y el eje Y (se calcula el FoV de la diagonal, para encerrar la ``pirámide de visión'' en un ``cono de visión'' mayor).
 		\item Si la superficie es orientable y su complemento tiene 2 componentes conexas, entonces el punto $p$ está $\textbf{oculto por superposición}$ si el producto escalar del vector de visualización de $p$ con la normal en $p$ es mayor que $0$. Para evitar el solapamiento con la definición de borde, se puede proporcionar un umbral $\epsilon>0$, comprobando si dicho producto es mayor que $\epsilon$ en vez del $0$.
 	\end{enumerate}
 	
