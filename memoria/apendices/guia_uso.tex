@@ -6,12 +6,32 @@
 En este capítulo se explicará brevemente cómo utilizar el programa. Aun así, la interfaz del programa se ha intentado diseñar lo más sencilla y clara posible, mostrando adicionalmente cuadros de texto si se mantiene el ratón sobre ciertos elementos.\\
 \\Primero iniciaremos el programa tal y como se indica en el apéndice de \textbf{Instalación del software}. Una vez abierto el programa se mostrará siempre la última parametrización compilada existosamente. En el lateral izquierdo aparecerá un elemento de la interfaz, el menú, donde se podrá:
 \begin{itemize}
-	\item Seleccionar la parametrización, ya sea una existente, crear una o compilar la actual.
-	\item Cambiar el tamaño de la malla de partida, requeriendo su posterior actualización manual (botón contiguo).
-	\item Visualizar la ventana con los parámetros temporales, con un tick que indica si está activa la ventana o no. Estará semi-visible si la superficie no tiene parámetros temporales. Dicha ventana mostrará los parámetros temporales en orden, permitiendo moverlos manualmente o generar una animación:
+	\item Parametrización:
 	\begin{itemize}
-		\item Auto
+		\item Seleccionar una parametrización ya existente, crearla o compilarla. También se podrá editar la actual, en cuyo caso aparecerá una ventana de edición de la propia interfaz. Dicha ventana también aparecerá en caso de que hayan errores léxicos, sintácticos o semánticos en la parametrización, con la salida del error desplegada.
+		\item Cambiar el tamaño de la malla de partida, requeriendo su posterior actualización manual (botón contiguo).
+		\item Visualizar la ventana con los parámetros temporales, con un tick que indica si está activa la ventana o no. Estará semi-visible si la superficie no tiene parámetros temporales. Dicha ventana mostrará los parámetros temporales en orden, permitiendo moverlos manualmente o generar una animación:
+		\begin{itemize}
+			\item Sin: movimiento sinusoidal entre el valor $0$ y $1$. Ideal para animaciones oscilantes.
+			\item Lineal: movimiento lineal del valor $0$ al $1$, volviendo instantáneamente al $0$. Utilizado para movimientos lineales respecto al tiempo, que junto con el uso de funciones periódicas se puede generar la sensación de movimiento infinito (como los ejemplos wavesX.in).
+		\end{itemize}
 	\end{itemize}
+	\item Visualización del objeto:
+	\begin{itemize}
+		\item Invertir normales (si no se quiere modificar la parametrización).
+		\item Visualizar en modo malla (``Poligon mode'').
+		\item Activar/desactivar la auto-rotación (rotación entorno al punto hacia el que mira la cámara).
+		\item Ver los vectores tangentes, bitangentes y normales a los puntos (ya sean los de la malla inicial o de todos los generados).
+		\item Cambiar modo del color de la superficie, ya sea el color base, la curvatura de Gauss, el área diferencial, la altura o los puntos críticos de ésta vista como función de Morse. Una vez seleccionado un modo, aparecerán coeficientes que permitirán ajustar correctamente la visualización a la superficie actual.
+	\end{itemize}
+	\item Opciones del teselado:
+	\begin{itemize}
+		\item Desactivar/activar el teselado.
+		\item Indicar la precisión a la que se desea llegar con el teselado.
+		\item Opciones avanzadas: modificar aquellos coeficientes específicos del teselado, como el tipo de mejora de rendimiento a usar (``improve'' normal o específica), la distancia de teselado, el umbral para detectar bordes y el exponente aplicado a la curvatura de Gauss. Todos ellos se inician con un valor por defecto.
+	\end{itemize}
+	\item Iluminación: es posible cambiar los coeficientes del modelo de iluminación ``Phong'' y ver el vector de dirección de la luz actualmente. La luz no es direccional, el vector indica la dirección de la luz con respecto al origen $(0,0)$.
+	\item Estadísticas: muestra los fotogramas por segundo y la latencia medias, junto con el número de primitivas generadas tras la fase del geometry shader (después del tessellation shader). Permite además grabar los datos y los almacena de manera automática tras 22 segundos (antes si pulsamos ``Stop'' y seguidamente ``Save info'') en un fichero en el directorio raíz, con nombre dependiente de la parametrización y configuración actual.
 \end{itemize}
 
 \endinput
