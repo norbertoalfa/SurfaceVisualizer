@@ -4,6 +4,11 @@
 \chapter{Guía de uso del programa}\label{ap:apendice2}
 
 En este capítulo se explicará brevemente cómo utilizar el programa. Aun así, la interfaz del programa se ha intentado diseñar lo más sencilla y clara posible, mostrando adicionalmente cuadros de texto si se mantiene el ratón sobre ciertos elementos.\\
+\\Si sólo quiere hacer uso del programa ``procesador'', ejecute el comando:
+\begin{center}
+ make read FILE=<archivo>
+\end{center}
+pero desde el directorio ``procesador''. Esta acción devolverá la traducción de ``<archivo>'' al fichero ``../shaders/functions.s'' y la salida de error en ``../error.log''.\\
 \\Primero iniciaremos el programa tal y como se indica en el apéndice de \textbf{Instalación del software}. Una vez abierto el programa se mostrará siempre la última parametrización compilada existosamente. En el lateral izquierdo aparecerá un elemento de la interfaz, el menú, donde se podrá:
 \begin{itemize}
 	\item Parametrización:
@@ -32,6 +37,22 @@ En este capítulo se explicará brevemente cómo utilizar el programa. Aun así,
 	\end{itemize}
 	\item Iluminación: es posible cambiar los coeficientes del modelo de iluminación ``Phong'' y ver el vector de dirección de la luz actualmente. La luz no es direccional, el vector indica la dirección de la luz con respecto al origen $(0,0)$.
 	\item Estadísticas: muestra los fotogramas por segundo y la latencia medias, junto con el número de primitivas generadas tras la fase del geometry shader (después del tessellation shader). Permite además grabar los datos y los almacena de manera automática tras 22 segundos (antes si pulsamos ``Stop'' y seguidamente ``Save info'') en un fichero en el directorio raíz, con nombre dependiente de la parametrización y configuración actual.
+\end{itemize}
+
+Para mayor comodidad, se han incorporado atajos de teclado para ciertas acciones:
+\begin{itemize}
+	\item 'LCtrl' + 'R': activa/desactiva el modo de rotación automática.
+	\item 'LCtrl' + 'P': cambia entre los modos de visualización malla y relleno.
+	\item 'LCtrl' + 'N': activa/desactiva la visualización de normales.
+	\item 'LCtrl' + 'L': ejecuta el ``procesador'' y compila los shaders.
+\end{itemize}
+
+Además, existen varios controles del ratón para manejar la cámara:
+\begin{itemize}
+	\item Botón izquierdo: si se mantiene pulsado y arrastramos, la cámara realizará una traslación en la dirección contraria.
+	\item Botón derecho: si se mantiene pulsado y arrastramos, la cámara realizará una rotación (cámara orbital) en la dirección contraria.
+	\item Rueda: controla el zoom.
+	\item Botón de la rueda: reinicia la posición de la cámara.
 \end{itemize}
 
 \endinput
