@@ -1,0 +1,62 @@
+Info				Info
+
+Menu				Menu
+Language			Language
+
+Parametrization		Parametrization
+Select_file			Select file
+New_file			New file
+Edit				Edit
+
+Editor				Editor
+Reload				Reload
+Save				Save
+Compile				Compile
+Analizer_output		Analizer output
+
+Map_size			Map size
+Update				Update
+Parameters			Parameters
+Visualization		Visualization
+Invert_normal		Invert normal
+Polygon_mode		Polygon mode
+AutoRotate			AutoRotate
+Show_vectors		Show vectors
+Tangent				Tangent
+Vector_per_vertex	Vector per vertex
+Bitangent			Bitangent
+Normal				Normal
+Show				Show
+Font_color			Font color
+Object_color		Object color
+Tessellation		Tessellation
+Tessellate			Tessellate
+Threshold_K			Threshold K
+Advanced_tessellation	Advanced tessellation
+Improve_perf		Improve perf.
+Improve_perf_esp	Improve perf. esp.
+Auto_threshold		Auto threshold
+Target				Target
+
+Lighting			Lighting
+Light_vector		Light vector
+Advanced_lighting	Advanced lighting
+
+Statistics			Statistics
+Render_info			Render info
+Record				Record
+Save_info			Save info
+Stop				Stop
+
+
+Invert_normal_info		To invert normal's direction
+Polygon_mode_info		Change visualization between filled and polygon mode
+AutoRotate_info			AutoRotate
+Vector_per_vertex_info	Vector per vertex
+Tessellate_info			Tessellate
+Threshold_K_info		Threshold K
+Improve_perf_info		Improve perf.
+Improve_perf_esp_info	Improve perf. esp.
+Auto_threshold_info		Auto threshold
+Target_info				Target
+Light_vector_info		Light vector

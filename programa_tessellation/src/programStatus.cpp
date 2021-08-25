@@ -9,6 +9,9 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 
 	sizeMap = 10;
 
+	languagePath = "languages";
+	language = "english";
+
 	lastParamPath = "variedades";
 	lastParamFile = "lastParam.in";
 
@@ -21,6 +24,8 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 	changeWinTitle = true;
 	changeSizeMap = false;
 	hasError = showError = false;
+
+	loadTextInterface();
 
 	if (loadText() == -1) {
 		paramFile = "toro.in";
@@ -171,6 +176,30 @@ int ProgramStatus::checkErrorLog() {
 	inFile.close();
 
 	return retCode;
+}
+
+int ProgramStatus::loadTextInterface(){
+	std::ifstream inFile;
+	std::string label, data;
+
+	inFile.open(languagePath + "/" + language + ".txt");
+
+	if (!inFile) {
+		std::cerr << "No se ha podido abrir el archivo de parametrización para leer " << languagePath << "/" << language << ".txt" <<std::endl;
+
+		return -1;
+	}
+
+	fileText = "";
+
+	while (inFile >> label && std::getline(inFile, data)) {
+		data.erase(remove(data.begin(), data.end(), '\t'), data.end());
+		textInterface[label] = data;
+	}
+
+	inFile.close();
+
+	return 1;
 }
 
 int ProgramStatus::loadText(){

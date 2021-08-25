@@ -2,6 +2,7 @@
 #define PROGRAM_STATUS_H
 
 #include <iostream>
+#include <map>
 #include <math.h>
 #include <algorithm>
 #include <fstream>
@@ -16,6 +17,8 @@ class ProgramStatus
 		std::string lastParamFile, lastParamPath;
 		std::string errorFile, errorText;
 		std::string frRateFile, frRateInfo;
+		std::string language, languagePath;
+		std::map<std::string, std::string> textInterface;
 
 		float lastMouseX;
 		float lastMouseY;
@@ -96,6 +99,8 @@ class ProgramStatus
 		
 		void setHeight(unsigned int height) { SCR_HEIGHT = height; someChange = true; }
 		
+		void setLanguage(std::string lang) { language = lang; loadTextInterface(); }
+
 		void setParamFile(std::string file) { paramFile = file; changeWinTitle = true; someChange = true; }
 
 		void setParamPath(std::string path) { dirPath = path; }
@@ -148,6 +153,10 @@ class ProgramStatus
 		
 		unsigned int getHeight() { return SCR_HEIGHT; }
 		
+		std::string getLanguage() { return language; }
+
+		std::string getText(std::string label) { return textInterface[label]; }
+		
 		std::string getParamFile() { return paramFile; }
 		
 		std::string getParamPath() { return dirPath; }
@@ -188,6 +197,8 @@ class ProgramStatus
 		void updateShowCritic() { showDiffArea = showK = showHeight = false; }
 
 		int checkErrorLog();
+
+		int loadTextInterface();
 
 		int loadText();
 

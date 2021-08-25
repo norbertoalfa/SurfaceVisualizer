@@ -23,10 +23,8 @@ vec3 lightDir;
 std::string filePathName;
 std::string fileName;
 
-std::string infoNormal = "To invert normal's direction";
-std::string infoPolMode = "Change visualization between filled and polygon mode";
-
 const char* glsl_version = "#version 130";
+char language[100];
 char nameFile[100];
 char text[10000];
 float totalTime = 0.0;
@@ -56,7 +54,7 @@ void initImGUI(GLFWwindow* window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     io = &ImGui::GetIO(); 
-    io->WantCaptureMouse = false;
+    io->WantCaptureMouse = true;
     (void)io;
 
     // Setup Dear ImGui style
@@ -77,6 +75,7 @@ void updateVariables(ProgramStatus &status, Light &light, Object &object, glm::m
     }
 
     if (firstTime) {
+        strcpy(language, status.getLanguage().c_str());
         strcpy(nameFile, status.getParamFile().c_str());
         sizeMap = status.getSizeMap();
         objectColor =  object.getColor();
@@ -101,7 +100,7 @@ void showInfo(std::string infoText, float width=100, float height=50) {
         if (lastHovTiem == 0) {
             lastHovTiem = ImGui::GetTime();
         }
-        if (ImGui::GetTime() - lastHovTiem > 0.1) {
+        if (ImGui::GetTime() - lastHovTiem > 0.1 && !ImGui::IsAnyMouseDown()) {
             bool tempBool = true;
             ImGui::SetNextWindowPos(ImGui::GetMousePos() + ImVec2(10.0, -10.0));
             ImGui::SetNextWindowSize(ImVec2(width, height));
@@ -115,13 +114,18 @@ void showInfo(std::string infoText, float width=100, float height=50) {
 }
 
 void mainWindow(ProgramStatus &status, Object &object) {
-    ImGui::Begin("Menu", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin(status.getText("Menu").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
-    ImGui::TextColored(titleColor, "Parametrization");
+    if (ImGui::InputText(status.getText("Language").c_str(), language, sizeof(language), ImGuiInputTextFlags_EnterReturnsTrue)) {
+        status.setLanguage(std::string(language));
+    }
 
-    if (ImGui::Button("Select file")) {
+    ImGui::TextColored(titleColor, status.getText("Parametrization").c_str());
+    ImGui::Separator();
+
+    if (ImGui::Button(status.getText("Select_file").c_str())) {
         ImGui::SetNextWindowSize(ImVec2(500, 300));
-        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileIn", "Coose File", ".in", ".");
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileIn", "Choose File", ".in", ".");
     }
     
     if (ImGuiFileDialog::Instance()->Display("ChooseFileIn")) {
@@ -136,61 +140,66 @@ void mainWindow(ProgramStatus &status, Object &object) {
         ImGuiFileDialog::Instance()->Close();
     }
     ImGui::SameLine();
-    if (ImGui::Button("New file")) {
+    if (ImGui::Button(status.getText("New_file").c_str())) {
         show_nwfile_window = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("Edit")) {
+    if (ImGui::Button(status.getText("Edit").c_str())) {
         show_editor_window = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("Compile")){
+    if (ImGui::Button(status.getText("Compile").c_str())){
         status.saveLastParam();
         status.setLoadShader(true);
     }
 
-    ImGui::InputInt("Map size", &sizeMap);
+    if (ImGui::InputInt(status.getText("Map_size").c_str(), &sizeMap, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
+        status.setSizeMap(sizeMap);
+        status.changeSizeMap = true;
+    }
     ImGui::SameLine();
-    if (ImGui::Button("Update")) {
+    if (ImGui::Button(status.getText("Update").c_str())) {
         status.setSizeMap(sizeMap);
         status.changeSizeMap = true;
     }
 
     if (status.getTotalParam() > 0) {
-        ImGui::Checkbox("Params", &show_params_window);
+        ImGui::Checkbox(status.getText("Parameters").c_str(), &show_params_window);
     } else {
         bool alwaysFalse = false;
         show_params_window = false;
         ImGui::Checkbox("", &alwaysFalse);
         ImGui::SameLine();
-        ImGui::TextColored(disabledColor, "Params");
+        ImGui::TextColored(disabledColor, status.getText("Parameters").c_str());
     }
 
     ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t");
-    ImGui::TextColored(titleColor, "Visualization");
+    ImGui::TextColored(titleColor, status.getText("Visualization").c_str());
     ImGui::Separator();
 
 
-    ImGui::Checkbox("Invert normal", &status.invertNorm);
-    showInfo(infoNormal, 300);
+    ImGui::Checkbox(status.getText("Invert_normal").c_str(), &status.invertNorm);
+    showInfo(status.getText("Invert_normal_info"), 300);
     ImGui::SameLine();
-    ImGui::Checkbox("Polygon mode", &polMode);
-    showInfo(infoPolMode, 400);
+    ImGui::Checkbox(status.getText("Polygon_mode").c_str(), &polMode);
+    showInfo(status.getText("Polygon_mode_info"), 400);
     if (polMode != status.getActivePolMode()) {
         status.switchPolMode();
     }
     ImGui::SameLine();
-    ImGui::Checkbox("AutoRotate", &autoRot);
+    ImGui::Checkbox(status.getText("AutoRotate").c_str(), &autoRot);
+    showInfo(status.getText("AutoRotate_info"), 300);
     if (autoRot != status.getAutoRotation()) {
         status.switchAutoRot();
     }
 
-    if (ImGui::CollapsingHeader("Show vectors")) {
-        ImGui::Checkbox("Tangent", &status.showTangents);
+    if (ImGui::CollapsingHeader(status.getText("Show_vectors").c_str())) {
+        ImGui::Checkbox(status.getText("Tangent").c_str(), &status.showTangents);
         ImGui::SameLine();
-        ImGui::Checkbox("Vector per vertex", &status.showVectorsPerV);
-        ImGui::Checkbox("Bitangent", &status.showCotangents);
-        ImGui::Checkbox("Normal", &status.showNormals);
+        ImGui::Checkbox(status.getText("Vector_per_vertex").c_str(), &status.showVectorsPerV);
+        showInfo(status.getText("Vector_per_vertex_info"), 300);
+        ImGui::Checkbox(status.getText("Bitangent").c_str(), &status.showCotangents);
+        ImGui::Checkbox(status.getText("Normal").c_str(), &status.showNormals);
     }
 
     const char *items[] = {"Color", "Area", "K", "Height", "Critic"};
@@ -199,7 +208,7 @@ void mainWindow(ProgramStatus &status, Object &object) {
         ImGui::SetNextTreeNodeOpen(false);
     }
 
-    if(ImGui::CollapsingHeader(("Show " + std::string(items[currItemShow])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
+    if(ImGui::CollapsingHeader((status.getText("Show") + " " + std::string(items[currItemShow])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
         hideListShow = false;
         if (ImGui::ListBox("", &currItemShow, items, 5)) {
             hideListShow = true;
@@ -240,52 +249,57 @@ void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::NextColumn();
     ImGui::Columns(1);
 
-    if (ImGui::ColorEdit3("Font color", (float*)&fontColor, ImGuiColorEditFlags_NoInputs)) {
+    if (ImGui::ColorEdit3(status.getText("Font_color").c_str(), (float*)&fontColor, ImGuiColorEditFlags_NoInputs)) {
         status.fontColor = glm::vec3(fontColor);
     }
     ImGui::SameLine();
-    if (ImGui::ColorEdit3("Object color", (float*)&objectColor, ImGuiColorEditFlags_NoInputs)) {
+    if (ImGui::ColorEdit3(status.getText("Object_color").c_str(), (float*)&objectColor, ImGuiColorEditFlags_NoInputs)) {
         object.setColor(glm::vec3(objectColor));
         object.setColorChange(true);
     }
 
     ImGui::NewLine();
-    ImGui::TextColored(titleColor, "Tessellation");
+    ImGui::TextColored(titleColor, status.getText("Tessellation").c_str());
     ImGui::Separator();
 
-    ImGui::Checkbox("Tessellate", &status.tessGlobal);
-    ImGui::SliderFloat("Umbral length", &(status.umbralLength), status.minLength, status.maxLength, "%.10f");
+    ImGui::Checkbox(status.getText("Tessellate").c_str(), &status.tessGlobal);
+    showInfo(status.getText("Tessellate_info"), 300);
+    ImGui::SliderFloat(status.getText("Threshold_K").c_str(), &(status.umbralLength), status.minLength, status.maxLength, "%.10f");
+    showInfo(status.getText("Threshold_K_info"), 300);
 
-    if (ImGui::CollapsingHeader("Advanced tesselation")) {
-        ImGui::InputFloat("Min length", &status.minLength, 0.0f, 0.0f, "%.10f");
-        ImGui::InputFloat("Max length", &status.maxLength, 0.0f, 0.0f, "%.10f");
+    if (ImGui::CollapsingHeader(status.getText("Advanced_tessellation").c_str())) {
+        ImGui::InputFloat("Min thres.", &status.minLength, 0.0f, 0.0f, "%.10f");
+        ImGui::InputFloat("Max thres.", &status.maxLength, 0.0f, 0.0f, "%.10f");
         ImGui::SliderFloat("Tess. dist.", &(status.tessDist), 1.0f, 100.0f, "%.1f");
         ImGui::SliderFloat("Exponent K", &(status.expK), 0.01f, 3.0f, "%.3f");
-        ImGui::SliderFloat("Umbral edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
+        ImGui::SliderFloat("Threshold edge", &(status.umbralEdge), 0.001f, 1.0f, "%.3f");
 
         if (status.tessGlobal) {
-            ImGui::Checkbox("Improve perf.", &status.improvePerf);
+            ImGui::Checkbox(status.getText("Improve_perf").c_str(), &status.improvePerf);
+            showInfo(status.getText("Improve_perf_info"), 300);
             if (status.improvePerf) {
                 ImGui::SameLine();
-                ImGui::Checkbox("Improve perf. Esp.", &status.improvePerfEsp);
+                ImGui::Checkbox(status.getText("Improve_perf_esp").c_str(), &status.improvePerfEsp);
+                showInfo(status.getText("Improve_perf_esp_info"), 300);
             }
-            ImGui::Checkbox("Auto umbral", &status.autoUmbral);
-            if (status.autoUmbral) {
-                ImGui::SameLine();
-                if (ImGui::InputInt("Target", &nTarget, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
-                    status.targetNP = nTarget;
-                }
+            ImGui::Checkbox(status.getText("Auto_threshold").c_str(), &status.autoUmbral);
+            showInfo(status.getText("Auto_threshold_info"), 300);
+            ImGui::SameLine();
+            if (ImGui::InputInt(status.getText("Target").c_str(), &nTarget, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
+                status.targetNP = nTarget;
             }
+            showInfo(status.getText("Target_info"), 300);
         }
     }
 
     ImGui::NewLine();
-    ImGui::TextColored(titleColor, "Lighting");
+    ImGui::TextColored(titleColor, status.getText("Lighting").c_str());
     ImGui::Separator();
 
-    ImGui::Checkbox("Light vector", &show_light_vector);
+    ImGui::Checkbox(status.getText("Light_vector").c_str(), &show_light_vector);
+    showInfo(status.getText("Light_vector_info"), 300);
 
-    if (ImGui::CollapsingHeader("Advanced lighting")) {
+    if (ImGui::CollapsingHeader(status.getText("Advanced_lighting").c_str())) {
         if (ImGui::SliderFloat("Ambient Strength", &(status.ambientStrength), 0.0f, 1.0f)) status.updateLightCoeff();
         if (ImGui::SliderFloat("Diffuse Strength", &(status.diffStrength), 0.0f, 1.0f)) status.updateLightCoeff();
         if (ImGui::SliderFloat("Specular Strength", &(status.specularStrength), 0.0f, 1.0f)) status.updateLightCoeff();
@@ -293,14 +307,14 @@ void mainWindow(ProgramStatus &status, Object &object) {
     }
 
     ImGui::NewLine();
-    ImGui::TextColored(titleColor, "Statistics");
+    ImGui::TextColored(titleColor, status.getText("Statistics").c_str());
     ImGui::Separator();
 
     if (show_render_info) {
         ImGui::SetNextTreeNodeOpen(true);
     }
 
-    if (ImGui::CollapsingHeader("Render info")) {
+    if (ImGui::CollapsingHeader(status.getText("Render_info").c_str())) {
         show_render_info = true;
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 3000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate / 3.0);
@@ -324,17 +338,17 @@ void mainWindow(ProgramStatus &status, Object &object) {
         bool saveInfo = false;
 
         if (!status.recordInfo) {
-            if (ImGui::Button("Record")) {
+            if (ImGui::Button(status.getText("Record").c_str())) {
                 status.recordInfo = true;
             }
             ImGui::SameLine();
-            if (ImGui::Button("Save info")) {
+            if (ImGui::Button(status.getText("Save_info").c_str())) {
                 status.recordInfo = false;
                 status.saveFrRateInfo();
                 nSamples = 0;
             }
         } else {
-            if (ImGui::Button("Stop")) {
+            if (ImGui::Button(status.getText("Stop").c_str())) {
                 status.recordInfo = false;
             }
             ImGui::ProgressBar(nSamples / 23.0);
@@ -381,21 +395,21 @@ void editorWindow(ProgramStatus &status) {
         editorHeight = numLines*15;
     }
 
-    ImGui::Begin("Editor", &show_editor_window);
+    ImGui::Begin(status.getText("Editor").c_str(), &show_editor_window);
     ImGui::SetWindowSize(ImVec2(status.getWidth()*0.85, status.getHeight()*0.85));
     
-    if (ImGui::Button("Reload") || firstEditor){
+    if (ImGui::Button(status.getText("Reload").c_str()) || firstEditor){
         status.loadText();
         strcpy(text, status.getFileText().c_str());
         firstEditor = false;
     }
     ImGui::SameLine();
-    if (ImGui::Button("Save")){
+    if (ImGui::Button(status.getText("Save").c_str())){
         status.setFileText(std::string(text));
         status.saveText();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Compile")){
+    if (ImGui::Button(status.getText("Compile").c_str())){
         status.setFileText(std::string(text));
         status.setLoadShader(true);
     }
@@ -405,7 +419,7 @@ void editorWindow(ProgramStatus &status) {
         show_dialog_error = false;
     }
 
-    if (ImGui::CollapsingHeader("Analizer output")) {
+    if (ImGui::CollapsingHeader(status.getText("Analizer_output").c_str())) {
         ImGui::Text((status.getErrorText()).c_str());
     }
 
@@ -440,7 +454,7 @@ void editorWindow(ProgramStatus &status) {
 }
 
 void paramsWindow(ProgramStatus &status) {
-    ImGui::Begin("Params", &show_params_window, ImGuiWindowFlags_AlwaysAutoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+    ImGui::Begin(status.getText("Parameters").c_str(), &show_params_window, ImGuiWindowFlags_AlwaysAutoResize);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
         
     for (int i = 0; i < status.getTotalParam(); i++) {
         std::string nameParam = "t" + std::to_string(i);
@@ -473,8 +487,8 @@ void paramsWindow(ProgramStatus &status) {
     ImGui::End();
 }
 
-void lightVectorInterface(Light &light, glm::mat4 pvm_inv) {
-    ImGui::Begin("Light vector", &show_render_info, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
+void lightVectorInterface(Light &light, glm::mat4 pvm_inv, ProgramStatus &status) {
+    ImGui::Begin(status.getText("Light_vector").c_str(), &show_render_info, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
 
     if (ImGui::gizmo3D("##Dir1", lightDir, 200, imguiGizmo::modeDirection)) {
         lightDirGlm = pvm_inv * glm::vec4(-lightDir.x, -lightDir.y, lightDir.z, lightVector.w);
@@ -499,7 +513,7 @@ void visualizeInterface(ProgramStatus &status, Light &light, Object &object, glm
 
     if (show_params_window) { paramsWindow(status); }
 
-    if (show_light_vector) { lightVectorInterface(light, pvm_inv); }
+    if (show_light_vector) { lightVectorInterface(light, pvm_inv, status); }
 
     // Rendering
     ImGui::Render();

@@ -1,0 +1,61 @@
+Info				Info
+
+Menu				Menú
+Language			Idioma
+
+Parametrization		Parametrización
+Select_file			Seleccionar
+New_file			Nuevo
+Edit				Editar
+
+Editor				Editor
+Reload				Recargar
+Save				Guardar
+Compile				Compilar
+Analizer_output		Salida del analizador
+
+Map_size			Tamaño malla
+Update				Actualizar
+Parameters			Parámetros
+Visualization		Visualización
+Invert_normal		Invertir normal
+Polygon_mode		Modo malla
+AutoRotate			Auto-rotar
+Show_vectors		Ver vectores
+Tangent				Tangente
+Vector_per_vertex	Vector por vértice
+Bitangent			Bitangente
+Normal				Normal
+Show				Ver
+Font_color			Color de fondo
+Object_color		Color del objeto
+Tessellation		Teselación
+Tessellate			Teselar
+Threshold_K			Umbral K
+Advanced_tessellation	Teselación avanzada
+Improve_perf		Mejora ren.
+Improve_perf_esp	Mejora rend. esp.
+Auto_threshold		Auto-umbral
+Target				Objetivo
+
+Lighting			Iluminación
+Light_vector		Vector de la luz
+Advanced_lighting	Iluminación avanzada
+
+Statistics			Estadísticas
+Render_info			Info renderizado
+Record				Grabar
+Save_info			Guardar info
+Stop				Parar
+
+Invert_normal_info		Para invertir la dirección de la normal
+Polygon_mode_info		Cambia la visualización entre modo malla y relleno
+AutoRotate_info			Auto-rotación
+Vector_per_vertex_info	Vector por cada vértice generado
+Tessellate_info			Activar/Desactivar teselado
+Threshold_K_info		Umbral de la medida basada en K
+Improve_perf_info		Mejora de rendimiento genérica
+Improve_perf_esp_info	Mejora de rendimiento específica
+Auto_threshold_info		Auto-detectar umbral
+Target_info				Nº de primitivas objetivo
+Light_vector_info		Vector de la luz

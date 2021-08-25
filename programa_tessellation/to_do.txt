@@ -1,5 +1,6 @@
+- Cambiar cálculo presupuesto con 1800 horas anuales (10€ la hora).
+- Explicar atajos de teclado y controles raton.
 - Caso wthlight. Escribir: caso interesante teorico, en la practica es costoso (¿y varias fuentes de luz?).
 
-- Opcional: Añadir info para cada elemento.
 - Opcional: renombrar como "renderData" y mover aquellos métodos no apropiados para esa clase.
 - Opcional: Separar codigo procesador.
