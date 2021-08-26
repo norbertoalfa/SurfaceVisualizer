@@ -27,13 +27,16 @@ CPPFLAGS := $(INC_FLAGS) -g
 CXXFLAGS := -std=c++11
 
 
-all: $(TARGET_EXEC) shader
+all: shader execute
 
 # Check and upgrade dependencies
-requirements:
+install:
+	sudo apt-get update
 	sudo apt-get upgrade gcc g++ bison flex mesa-utils mesa-common-dev libglfw3 libglfw3-dev
+	$(MAKE) shader
+	$(MAKE) bin/$(TARGET_EXEC)
 	
-$(TARGET_EXEC): bin/$(TARGET_EXEC)
+execute: bin/$(TARGET_EXEC)
 	./bin/$(TARGET_EXEC)
 
 # The final build step.

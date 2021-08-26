@@ -34,8 +34,12 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 		\item Está pensado para realizar directamente el algoritmo de teselación, por lo que no hay que implementarlo.
 	\end{itemize}
 	
-	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente.
-	
+	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación de un triángulo se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente.
+
+\section{Medidas según la definición}
+
+	A continuación se desglosan todas las medidas estudiadas, atendiendo a las diferentes definiciones de ``buena aproximación a una superficie''.
+
 	\subsection{Medida basada en el volumen}
 	
 	Consiste en estimar el volumen de la diferencia entre el poliedro generado y la superficie original a nivel local. Esta medida está asociada al primer concepto de superficie bien representada:
@@ -94,14 +98,12 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\end{figure}
 	\\Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
 	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.\\
-	\\La curvatura de Gauss se ha calculado de la siguiente forma (CITAR WOLFRAM):
-		$$K(x(u,v)) = \frac{det(x_{uu}, x_u, x_v) det(x_{vv}, x_u, x_v) - [det(x_{uv}, x_u, x_v)]^2} {[|x_u|^2|x_v|^2 - <x_u, x_v>^2]^2} (u, v)$$
-	que es la curvatura de Gauss en el punto $x(u, v)$, con $x$ carta de la superficie $S$.\\
 	\\También tiene un punto negativo, y es que genera una excesiva teselación en zonas con una cruvatura de Gauss muy elevada (en valor absoluto), por lo que puede crear efectos antinaturales si hay zonas con poca curvatura cerca, ya que hay un cambio brusco de teselado:\\
 	\begin{figure}[h]
   		\centering
   		\includegraphics[width=0.45\textwidth]{efecto_curvatura}
   		\includegraphics[width=0.433\textwidth]{efecto_curvatura_pol}
+		\caption{Teselado basado en K.}
   		\label{fig:efecto_curvatura}
 	\end{figure}
 \newpage
@@ -111,10 +113,11 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
   		\centering
   		\includegraphics[width=0.45\textwidth]{teselado_homo}
   		\includegraphics[width=0.45\textwidth]{teselado_homo_pol}
-		\caption{Teselado más homogéneo.}
+		\caption{Teselado con exponente $\alpha$.}
   		\label{fig:teselado_homo}
 	\end{figure}
-	
+
+\newpage	
 \section{Mejora del teselado}
 	En esta sección vamos a estudiar cómo mejorar el proceso de teselado para mostrar buenos resultados sin tener un gran impacto en el rendimiento. En general, nuestro cerebro reconstruye el objeto visualizado atendiendo a los bordes detectados y a las texturas, además de obviar los elementos que están fuera del campo de visión y aquellos ocultos. La siguiente comparación es un buen ejemplo para corroborarlo:\\
 	\begin{figure}[h]
@@ -129,7 +132,7 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
 	\begin{enumerate}
 		\item Visualizar una superficie a diferentes \textbf{distancias} equivale a visualizar la misma superficie pero con distinto tamaño, es por ello que el umbral utilizado para la definición de buena aproximación puede ser relativo a la distancia de la cámara al triángulo visualizado. De esta forma, para zonas con características similares y a diferentes distancias, el teselado será mayor en la que está más cerca de la cámara. Además, podemos complementarlo añadiendo una distancia máxima de teselado, para evitar teselar zonas alejadas en superficies no compactas.
 		\item Los únicos $\textbf{bordes}$ posibles son aquellas zonas donde el vector de visualización del punto (con origen la cámara y destino el punto a comprobar, normalizado) es perpendicular a la normal en el punto. Si reducimos el nivel de teselado en zonas que no sean bordes, teniendo cuidado en las zonas con mayor iluminación, mantedremos la misma calidad visual reduciendo el número de primitivas usadas. En la práctica se ha utilizado un factor de reducción de $\frac{2}{3}$.
-		\item Ver la $\textbf{textura}$ de una superficie equivale a ver cómo afecta la iluminación a la misma, por lo que en nuestro caso una zona con textura visible es aquella donde el factor de iluminación difusa y especular es mayor que $0$. Además, podemos reducir el nivel de teselado como en el apartado anterior en caso de que la iluminación sea tenue, es decir, mayor que $0$ pero menor que $\alpha>0$ (en la práctica se ha utilizado $\alpha = 0.5$). El factor se calcula de la siguiente forma:
+		\item Ver la $\textbf{textura}$ de una superficie equivale a ver cómo afecta la iluminación a la misma, por lo que en nuestro caso una zona con textura visible es aquella donde el factor de iluminación difusa es mayor que $0$. Además, podemos reducir el nivel de teselado como en el apartado anterior en caso de que la iluminación sea tenue, es decir, mayor que $0$ pero menor que un umbral $\alpha>0$ (en la práctica se ha utilizado $\alpha = 0.5$). El factor de iluminación difusa se calcula de la siguiente forma:
 		$$<N(u,v),\frac{P_L-p(u,v)}{|P_L-p(u,v)|}>$$
 		Con $p$ carta, $N(u,v)$ la normal en $p(u,v)$ y $P_L$ la posición de la luz actual.
 		\item Un elemento está $\textbf{fuera del campo de visión}$ si el vector frontal de la cámara y el vector de visualización del punto cumplen ciertas restricciones, cuya complejidad dependerá de la definición de campo de visión escogida. Simplificando el problema, podemos decir que esto sucede si su producto escalar es cercano al $0$, bajo un cierto umbral $\delta>0$ que definirá el campo de visión con forma de cono. Dado un ángulo de visión $\alpha$, el umbral se puede calcular como $cos(\frac{\alpha}{2})$, obtenido a partir de la expresión del producto escalar:
@@ -139,7 +142,7 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
 	\end{enumerate}
 	
 	Aplicando los cuatro primeros apartados podemos mejorar el rendimiento del programa para cualquier superficie, independientemente de sus características topológicas y geométricas.\\
-	\\En cuanto al último apartado, el aumento de rendimiento es comparable al de las zonas no iluminadas (sin textura) pero se trata de una situación más específica y no siempre se va a poder utilizar. Es por ello que en el programa se da a elegir al usuario si quiere activar o no dicha funcionalidad (desactivada por defecto).
+	\\En cuanto al último apartado, el aumento de rendimiento puede ser bastante grande según el tipo de superficie, pero se trata de una situación más específica y no siempre se va a poder utilizar. Es por ello que en el programa se da a elegir al usuario si quiere activar o no dicha funcionalidad (desactivada por defecto).
 	
 	
 \section{Estimación de las medidas}

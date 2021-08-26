@@ -80,7 +80,7 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 	tessDist = 25.0f;
 	umbralLength = 0.01f;
 	umbralEdge = 0.5f;
-	expK = 0.01;
+	expK = 0.25;
 	lambda = 0.00005f;
 
 	minLength = 0.000001f;
