@@ -6,41 +6,11 @@
 En este capítulo se describe el estudio realizado para teselar de manera eficiente un triángulo. Esta técnica se implementará en shaders, para poder ejecutarlo directamente en la GPU, que ofrece mayor rendimiento que la CPU para dicho problema. En un principio se iba a realizar en un Geometry Shader pero más tarde se observó que era más acertado el uso de un Tessellation Shader. \\
 \\ Cabe destacar antes que la idea inicial era desarrollar un algoritmo de división recursiva de los triángulos, el cuál se detiene en el nivel en el que se cree que representa correctamente a la porción de superficie. Sin embargo, el lenguaje Glsl no permite realizar llamadas recursivas, por lo que era necesario buscar alternativas.
 
-\section{Geometry shader}
-	La ventaja de este tipo de shader es que es muy flexible a la hora de generar nuevas primitivas, ya que permite añadir primitivas totalmente disconexas.\\
-	\\ En primer lugar opté por describir de forma explícita un cierto número de niveles de la función recursiva deseada, $3$ niveles concretamente. Los resultados eran aceptables pero se podía exceder el límite de vértices, quedando así una superficie incompleta. Además, el tiempo de compilación crecía de forma exponencial a medida que se añadían más niveles (para $2$ niveles era de $10$-$15$s y para $3$ no concluía).\\
-	\\ Puesto que este método era costoso temporalmente y tenía muchas limitaciones, decidí implementar un algoritmo similar pero en un bucle, cuyo esquema es el siguiente:
-	\begin{enumerate}
-		\item Dado un lado, dividirlo en tantos segmentos como sea necesario, atendiendo a una cierta medida. Dicha medida sólo depende de las características del lado, para que el pegado sea el correcto con los triángulos adyacentes.
-		\item Se realiza una división hacia el baricentro, de forma similar al punto anterior.
-		\item Con los vértices de los dos puntos anteriores se genera una malla, es decir, para cada lado, se genera otro lado paralelo para cada subdivisión hacia el baricentro, manteniendo proporcionalmente las subdivisiones del lado original.
-		\item Se genera una tira de triángulos cuyos vértices sean los de la malla anterior.
-	\end{enumerate}
-	
-	Con este método los problemas anteriores se solventan en gran medida, pero dicho algoritmo es semejante al del Tessellation shader, por lo que era natural estudiar el funcionamiento en tal shader.\\
-	\\ Finalmente, los inconvenientes observados han sido los siguientes:
-	\begin{itemize}
-		\item El número de vértices de salida está limitado por una constante predefinida, con valor GL$\_$MAX$\_$GEOMETRY$\_$OUTPUT$\_$VERTICES=$256$ (depende del hardware), es decir, como mucho se puede devolver una tira de $254$ triángulos, independientemente del tamaño del triángulo original.
-		\item El shader tarda en compilarse de media entre $3$ y $5$ segundos.
-	\end{itemize}
-	
-\section{Tessellation shader}
-
-	Este shader tiene un pequeño problema y es que la subdivisión está predefinida (equal, fractional$\_$odd o fractional$\_$even spacing), por lo que los vértices generados en la fase de control del Tessellation shader tienen un esquema fijo, para un número de subdivisiones dado. No es un gran inconveniente puesto que en la fase de evaluación se pueden variar libremente dichos vértices, siempre que se haga con cuidado (en esta fase los vértices se generan mediante coordenadas baricéntricas). \\
-	\\ Las ventajas con respecto al Geometry shader son las siguientes:
-	\begin{itemize}
-		\item El shader tarda en compilarse de media menos de $1s$.
-		\item El número de vértices de salida no está tan limitado (GL$\_$MAX$\_$PATCH$\_$VERTICES$=36477$ frente a $256$).
-		\item Está pensado para realizar directamente el algoritmo de teselación, por lo que no hay que implementarlo.
-	\end{itemize}
-	
-	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación de un triángulo se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente.
-
 \section{Medidas según la definición}
 
 	A continuación se desglosan todas las medidas estudiadas, atendiendo a las diferentes definiciones de ``buena aproximación a una superficie''.
 
-	\subsection{Medida basada en el volumen}
+	\subsection*{Medida basada en el volumen}
 	
 	Consiste en estimar el volumen de la diferencia entre el poliedro generado y la superficie original a nivel local. Esta medida está asociada al primer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 1]
@@ -62,7 +32,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
   		\label{fig:pico_volumen}
 	\end{figure}
 	
-	\subsection{Medida basada en el área}
+	\subsection*{Medida basada en el área}
 	
 	Consiste en estimar el área de la superficie original localmente. Esta medida está asociada al segundo concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 2]
@@ -82,7 +52,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
   		\label{fig:plano_tess}
 	\end{figure}
 	
-	\subsection{Medida basada en la curvatura}
+	\subsection*{Medida basada en la curvatura}
 	Consiste en estimar la curvatura de Gauss por área. Esta medida está asociada al tercer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 3]
 		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si para todo triángulo $T$ del politopo se cumple que $K_T A(T) < \epsilon$, donde $K_T$ es el máximo valor de la curvatura de Gauss en valor absoluto en $T$.
@@ -96,7 +66,8 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
   		\caption{Deformación heterogénea de la malla}
   		\label{fig:esfera_pol}
 	\end{figure}
-	\\Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
+	\newpage
+	Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
 	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.\\
 	\\También tiene un punto negativo, y es que genera una excesiva teselación en zonas con una cruvatura de Gauss muy elevada (en valor absoluto), por lo que puede crear efectos antinaturales si hay zonas con poca curvatura cerca, ya que hay un cambio brusco de teselado:\\
 	\begin{figure}[h]
@@ -117,7 +88,6 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
   		\label{fig:teselado_homo}
 	\end{figure}
 
-\newpage	
 \section{Mejora del teselado}
 	En esta sección vamos a estudiar cómo mejorar el proceso de teselado para mostrar buenos resultados sin tener un gran impacto en el rendimiento. En general, nuestro cerebro reconstruye el objeto visualizado atendiendo a los bordes detectados y a las texturas, además de obviar los elementos que están fuera del campo de visión y aquellos ocultos. La siguiente comparación es un buen ejemplo para corroborarlo:\\
 	\begin{figure}[h]
