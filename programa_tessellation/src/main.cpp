@@ -211,7 +211,7 @@ void updateUniforms(Shader *sh, bool showPol=false, bool showVectors=false)
                 !status.showHeight && !status.showCritic) {
         color = glm::vec3(0.0f, 0.0f, 0.0f);
         useLight = false;
-    }
+    } 
 
     sh->setMat4("projection", projection);
     sh->setMat4("view", view);

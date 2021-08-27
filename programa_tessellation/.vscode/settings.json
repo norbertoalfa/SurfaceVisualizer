@@ -63,6 +63,8 @@
         "stdio.h": "c",
         "stdlib.h": "c",
         "*.ipp": "c",
-        "nodo.h": "c"
+        "nodo.h": "c",
+        "filesystem": "cpp",
+        "codecvt": "cpp"
     }
 }

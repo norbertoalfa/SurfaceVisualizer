@@ -24,7 +24,6 @@ std::string filePathName;
 std::string fileName;
 
 const char* glsl_version = "#version 130";
-char language[100];
 char nameFile[100];
 char text[10000];
 float totalTime = 0.0;
@@ -32,6 +31,7 @@ float totalPrimitives = 0.0;
 float lastHovTiem = 0.0;
 int sizeMap;
 int nTarget;
+int currItemLan = 0;
 int currItemShow = 0;
 int framesCount = 1;
 int nSamples = 0;
@@ -46,6 +46,7 @@ bool show_render_info = true;
 bool show_light_vector = false;
 bool firstEditor = true;
 bool firstTime = true;
+bool hideListLan = true;
 bool hideListShow = true;
 
 
@@ -75,13 +76,13 @@ void updateVariables(ProgramStatus &status, Light &light, Object &object, glm::m
     }
 
     if (firstTime) {
-        strcpy(language, status.getLanguage().c_str());
         strcpy(nameFile, status.getParamFile().c_str());
         sizeMap = status.getSizeMap();
         objectColor =  object.getColor();
         fontColor = status.fontColor;
         nTarget = status.targetNP;
         firstTime = false;
+        currItemLan = status.getLanguage();
 
         if (status.getTotalParam() > 0) {
             show_params_window = true;
@@ -116,8 +117,23 @@ void showInfo(std::string infoText, float width=100, float height=50) {
 void mainWindow(ProgramStatus &status, Object &object) {
     ImGui::Begin(status.getText("Menu").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
-    if (ImGui::InputText(status.getText("Language").c_str(), language, sizeof(language), ImGuiInputTextFlags_EnterReturnsTrue)) {
-        status.setLanguage(std::string(language));
+    char *itemsLan[10];
+
+    for (int i=0; i<status.getNLanguages(); i++) {
+        itemsLan[i] = new char[status.languages[i].length() + 1];
+        strcpy(itemsLan[i], status.languages[i].c_str());
+    }
+
+    if (hideListLan) {
+        ImGui::SetNextTreeNodeOpen(false);
+    }
+
+    if(ImGui::CollapsingHeader((status.getText("Language") + " " + std::string(itemsLan[currItemLan])).c_str(), ImGuiTreeNodeFlags_Bullet)) {
+        hideListLan = false;
+        if (ImGui::ListBox("", &currItemLan, itemsLan, status.getNLanguages())) {
+            hideListLan = true;
+            status.setLanguage(currItemLan);
+        }
     }
 
     ImGui::TextColored(titleColor, status.getText("Parametrization").c_str());

@@ -10,7 +10,8 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 	sizeMap = 10;
 
 	languagePath = "languages";
-	language = "english";
+	actualLan = 0;
+	updateLanguages();
 
 	lastParamPath = "variedades";
 	lastParamFile = "lastParam.in";
@@ -114,6 +115,26 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 					std::string("// To plot 'g', it must return a 'vec3' type and the first two arguments must be reals.\n") +
 					std::string("plot g;");
 }
+
+void ProgramStatus::updateLanguages() {
+	DIR *dir;
+	struct dirent *ent;
+
+	nLanguages = 0;
+
+	if ((dir = opendir (languagePath.c_str())) != NULL) {
+		while ((ent = readdir (dir)) != NULL) {
+			if (std::string(ent->d_name).compare(".") != 0 && std::string(ent->d_name).compare("..") != 0) {
+				languages[nLanguages] = std::string(ent->d_name);
+				languages[nLanguages] = languages[nLanguages].substr(0, languages[nLanguages].length() - 4);
+				nLanguages++;
+			}
+		}
+		closedir (dir);
+	} else {
+		perror("Error al leer el directorio.");
+	}
+}
 		
 bool ProgramStatus::getSomeAutoParam() {
 	bool result = false;
@@ -182,10 +203,10 @@ int ProgramStatus::loadTextInterface(){
 	std::ifstream inFile;
 	std::string label, data;
 
-	inFile.open(languagePath + "/" + language + ".txt");
+	inFile.open(languagePath + "/" + languages[actualLan] + ".txt");
 
 	if (!inFile) {
-		std::cerr << "No se ha podido abrir el archivo de parametrización para leer " << languagePath << "/" << language << ".txt" <<std::endl;
+		std::cerr << "No se ha podido abrir el archivo de parametrización para leer " << languagePath << "/" << languages[actualLan] << ".txt" <<std::endl;
 
 		return -1;
 	}

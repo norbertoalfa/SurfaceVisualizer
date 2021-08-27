@@ -6,6 +6,7 @@
 #include <math.h>
 #include <algorithm>
 #include <fstream>
+#include <dirent.h>
 #include <glm/glm.hpp>
 
 enum AutoParamsType {PARAM_MANUAL, PARAM_SIN, PARAM_LINEAL};
@@ -17,7 +18,7 @@ class ProgramStatus
 		std::string lastParamFile, lastParamPath;
 		std::string errorFile, errorText;
 		std::string frRateFile, frRateInfo;
-		std::string language, languagePath;
+		std::string languagePath;
 		std::map<std::string, std::string> textInterface;
 
 		float lastMouseX;
@@ -25,6 +26,8 @@ class ProgramStatus
 
 		unsigned int SCR_WIDTH;
 		unsigned int SCR_HEIGHT;
+
+		int nLanguages, actualLan;
 
 		int sizeMap;
 
@@ -44,6 +47,7 @@ class ProgramStatus
 		
 	public:
 		AutoParamsType autoParams[10];
+		std::string languages[10];
 		
 		glm::vec3 fontColor;
 
@@ -99,7 +103,7 @@ class ProgramStatus
 		
 		void setHeight(unsigned int height) { SCR_HEIGHT = height; someChange = true; }
 		
-		void setLanguage(std::string lang) { language = lang; loadTextInterface(); }
+		void setLanguage(int i) { actualLan = i; loadTextInterface(); }
 
 		void setParamFile(std::string file) { paramFile = file; changeWinTitle = true; someChange = true; }
 
@@ -147,14 +151,16 @@ class ProgramStatus
 		
 		bool getSomeAutoParam();
 
+		int getNLanguages() { return nLanguages; }
+
+		int getLanguage() { return actualLan; }
+
 		int getSizeMap() { return sizeMap; }
 		
 		unsigned int getWidth() { return SCR_WIDTH; }
 		
 		unsigned int getHeight() { return SCR_HEIGHT; }
 		
-		std::string getLanguage() { return language; }
-
 		std::string getText(std::string label) { return textInterface[label]; }
 		
 		std::string getParamFile() { return paramFile; }
@@ -179,6 +185,8 @@ class ProgramStatus
 		
 		
 		// Methods
+
+		void updateLanguages();
 
 		void updateFovs();
 

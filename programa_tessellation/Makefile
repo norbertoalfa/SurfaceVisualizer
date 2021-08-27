@@ -32,7 +32,10 @@ all: shader execute
 # Check and upgrade dependencies
 install:
 	sudo apt-get update
-	sudo apt-get upgrade gcc g++ bison flex mesa-utils mesa-common-dev libglfw3 libglfw3-dev
+	sudo apt-get upgrade gcc g++ flex libglapi-mesa mesa-utils mesa-common-dev libglfw3 libglfw3-dev
+	tar -zxvf bison-3.5.tar.gz
+	cd bison-3.5 && ./configure && $(MAKE) && sudo $(MAKE) install
+	rm -rf bison-3.5
 	$(MAKE) shader
 	$(MAKE) bin/$(TARGET_EXEC)
 	
