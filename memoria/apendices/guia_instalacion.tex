@@ -7,9 +7,9 @@
 
 Los requisitos mínimos para poder compilar el proyecto son los siguientes:
 \begin{itemize}
-	\item SO: Ubuntu $16.04$ LTS o superior (o distribuciones similares).
+	\item SO: Ubuntu $18.04$ LTS o superior (o distribuciones similares).
 	\item GPU: compatible con versión de OpenGL $4.4$ o superior (para poder usar el tessellation shader, entre otros).
-	\item Paquetes: ``make'', para poder usar el makefile, y ``apt'', para gestionar paquetes.
+	\item Dependencias: ``make'', para poder usar el makefile, y ``apt'', para gestionar paquetes.
 \end{itemize}
 
 A continuación se muestran las dependencias del proyecto, aunque el propio makefile las comprobará y actualizará:
@@ -18,19 +18,20 @@ A continuación se muestran las dependencias del proyecto, aunque el propio make
 	\begin{itemize}
 		\item gcc.
 		\item flex.
-		\item bison, versión $3.2$ o superior (se recomienda la $3.5.1$).
+		\item bison, versión $3.5$ o superior.
 	\end{itemize}
 	\item Visualizador de Superficies (además de las de Procesador):
 	\begin{itemize}
 		\item g++, versión $11$ o superior.
-		\item mesa-utils y mesa-common-dev, que es una implementación de código abierto de OpenGL.
+		\item libglapi-mesa, mesa-utils y mesa-common-dev, que es una implementación de código abierto de OpenGL.
 		\item libglfw$3$ y libglfw$3$-dev, para que la aplicación pueda gestionar las ventanas del sistema.
 	\end{itemize}
 \end{itemize}
 
 \section{Instalación}
 
-Para instalar el programa basta con clonar el repositorio de GitHub y ejecutar la orden ``make install'' desde la terminal, en el directorio raíz del programa. Realizará la comprobación de las dependencias de forma automática y en caso de no estar instaladas solicitará la confirmación de su instalación (a la última versión). Después compilará automáticamente el programa.
+Para instalar el programa basta con clonar el repositorio de GitHub y ejecutar la orden ``make install'' desde la terminal, en el directorio raíz del programa. Realizará la comprobación de las dependencias de forma automática y en caso de no estar instaladas solicitará la confirmación de su instalación (a la última versión). Después compilará automáticamente el programa.\\
+\\ Internamente utiliza  ``apt-get upgrade'', excepto para Bison, que será instalado haciendo uso de recursos locales, con la versión exacta $3.5$.
 
 \section{Errores de compilación}
 
