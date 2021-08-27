@@ -10,8 +10,15 @@
 
 \chapter{Introducción}
 
-De acuerdo con la comisión de grado, el TFG debe incluir una introducción en la que se describan claramente los objetivos previstos inicialmente en la propuesta de TFG, indicando si han sido o no alcanzados, los antecedentes importantes para el desarrollo, los resultados obtenidos, en su caso y las principales fuentes consultadas.
-
-Ver archivo \texttt{preliminares/introduccion.tex}
+En el ámbito matemático, cuando se define una estructura ligada a un elemento, la pregunta natural es si siempre es posible encontrar una para un elemento concreto (existencia) y en caso de que exista, si es la única bajo ciertas condiciones (unicidad).\\
+\\Nosotros estudiaremos la existencia y unicidad, salvo difeomorfismos, de una estructura diferenciable para una variedad topológica $2$-dimensional. Este es un teorema clásico de la topología diferencial, cuyas demostraciones previas requieren de un conocimiento amplio en el campo y su realización es extensa. Sin embargo, Allen-Hatcher en el artículo ``The Kirby Torus Trick for Surfaces'' enuncia y demuestra $2$ resultados cuyo corolario trivial es dicho teorema.\\
+\\Cabe destacar que el teorema deja de ser cierto para estructuras de mayor complejidad, como la conforme y la isométrica, he incluso para variedades de dimensión $n \geq 3$.
+\\Para comprender la importancia del problema de suavizar una ``estructura topológica'', se ha propuesto el estudio de la realización de una buena aproximación a una superficie, gestionando los recursos de manera eficiente para su visualización en tiempo real. Además, permitirá la visualización de homotopías a modo de animaciones fluidas.\\
+\\Actualmente estamos observando el auge del hardware para renderizado mediante trazados de rayos, muy útil para la correcta representación de una superficie (bajo un cierto margen de error), pero está lejos de las capacidades de un computador medio si se quiere ejecutar en tiempo real. Es por ello que se ha orientado el estudio al uso de mallas, es decir, aproximar una superficie mediante un conjunto de triángulos, para renderizar mediante rasterizado. El estudio en sí consistirá en detectar en qué zonas será necesaria una mayor cantidad de triángulos para aproximarla mejor.\\
+\\Inicialmente se propuso el uso del Geometry shader para implementar un algoritmo de teselado propio, ya que el Geometry shader requiere una versión no muy reciente de OpenGL y aportaría mayor flexibilidad. Sin embargo, por algunas causas que se comentarán en apartado de \textbf{Implementación y pruebas}, decidimos utilizar el Tessellation shader, que es más reciente y está diseñado específicamente para el teselado, incrementando considerablemente el rendimiento de la aplicación.\\
+\\El problema a tratar es la explicación de la prueba de existencia y unicidad, salvo difeomorfismos, de una estructura diferenciable para toda variedad topológica 2-dimensional sin bordes, de manera que un estudiante del grado de Matemáticas lo entienda con claridad, siempre que suponga ciertos los resultados utilizados de la teoría de Morse. También se diseñará he implementará un programa capaz de visualizar una superficie por cartas, mediante rasterizado, gestionando correctamente los recursos. Además, se ha conseguido incluir la posibilidad de utilizar derivadas parciales de funciones definidas por el ususario y la visualización de funciones de Morse por niveles junto con sus puntos críticos (actualmente sólo para la función de Morse ``altura'').\\
+\\-Exponer con claridad las técnicas y áreas matemáticas, así como los conceptos y herramientas de la ingeniería informática que se han empleado.\\
+\\-Sintetizar el contenido de la memoria.\\
+\\-Citar las principales fuentes consultadas.\\
 
 \endinput

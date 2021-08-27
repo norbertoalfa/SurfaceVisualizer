@@ -14,7 +14,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	
 	Consiste en estimar el volumen de la diferencia entre el poliedro generado y la superficie original a nivel local. Esta medida está asociada al primer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 1]
-		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el volumen contenido entre ambos es menor que $\epsilon$.
+		Dada una superficie $S$ y una malla $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el volumen contenido entre ambos es menor que $\epsilon$.
 	\end{definicion}
 	La medida equivalente para los lados es el área de la sección cuya base es el lado del triángulo y el borde restante es la curva original a aproximar con dicho lado.\\ 
 	\begin{figure}[h]
@@ -36,7 +36,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	
 	Consiste en estimar el área de la superficie original localmente. Esta medida está asociada al segundo concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 2]
-		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el ratio de área $r=\frac{A(S)} {A(P)}$ cumple que $r-1 < \epsilon$ (siempre se tiene que $r\geq 1$).
+		Dada una superficie $S$ y una malla $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el ratio de área $r=\frac{A(S)} {A(P)}$ cumple que $r-1 < \epsilon$ (siempre se tiene que $r\geq 1$).
 	\end{definicion}
 	
 	La medida equivalente para los lados es $r=\frac{L(\alpha)} {L(l)}$ donde $L$ es la longitud, $l$ el lado del triángulo y $\alpha$ la curva a estimar.\\
@@ -55,7 +55,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\subsection*{Medida basada en la curvatura}
 	Consiste en estimar la curvatura de Gauss por área. Esta medida está asociada al tercer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 3]
-		Dada una superficie $S$ y un politopo $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si para todo triángulo $T$ del politopo se cumple que $K_T A(T) < \epsilon$, donde $K_T$ es el máximo valor de la curvatura de Gauss en valor absoluto en $T$.
+		Dada una superficie $S$ y una malla $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si para todo triángulo $T$ del politopo se cumple que $K_T A(T) < \epsilon$, donde $K_T$ es el máximo valor de la curvatura de Gauss en valor absoluto en $T$.
 	\end{definicion}
 	
 	La medida equivalente para los lados es $K_l L$ donde $L$ es la longitud y $l$ el lado del triángulo.\\
