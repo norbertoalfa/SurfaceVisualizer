@@ -3,10 +3,10 @@
 
 \chapter{Implementación y pruebas}
 
-\section{Tipo de shader para el teselado}
+\section*{Tipo de shader para el teselado}
 En esta sección se justificará el uso del tesellation shader para el estudio del teselado de una superficie.
  
-\subsection{Geometry shader}
+\subsection*{Geometry shader}
 	La ventaja de este tipo de shader es que es muy flexible a la hora de generar nuevas primitivas, ya que permite añadir primitivas totalmente disconexas.\\
 	\\ En primer lugar opté por describir de forma explícita un cierto número de niveles de la función recursiva deseada, $3$ niveles concretamente. Los resultados eran aceptables pero se podía exceder el límite de vértices, quedando así una superficie incompleta. Además, el tiempo de compilación crecía de forma exponencial a medida que se añadían más niveles (para $2$ niveles era de $10$-$15$s y para $3$ no concluía).\\
 	\\ Puesto que este método era costoso temporalmente y tenía muchas limitaciones, decidí implementar un algoritmo similar pero en un bucle, cuyo esquema es el siguiente:
@@ -24,7 +24,7 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 		\item El shader tarda en compilarse de media entre $3$ y $5$ segundos.
 	\end{itemize}
 	
-\subsection{Tessellation shader}
+\subsection*{Tessellation shader}
 
 	Este shader tiene un pequeño problema y es que la subdivisión está predefinida (equal, fractional$\_$odd o fractional$\_$even spacing), por lo que los vértices generados en la fase de control del Tessellation shader tienen un esquema fijo, para un número de subdivisiones dado. No es un gran inconveniente puesto que en la fase de evaluación se pueden variar libremente dichos vértices, siempre que se haga con cuidado (en esta fase los vértices se generan mediante coordenadas baricéntricas). \\
 	\\Además, la versión de OpenGL necesaria es superior al del Geometry shader ($4.0$ frente a $3.2$).
@@ -38,7 +38,7 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación de un triángulo se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente.
 
 \newpage
-\section{Optimización del código GLSL}
+\section*{Optimización del código GLSL}
 	Puesto que queremos que el programa renderice la escena en tiempo real, es necesario simplificar todo lo posible el código de los shaders, sobre todo del fragment shader (se va a ejecutar para cada vértice generado en el teselado). Para ello se han tenido en cuenta los siguientes hechos (FUENTE GLSL OPTIMIZATIONS):
 	\begin{itemize}
 		\item Evitar el uso de saltos condicionales y de bucles. En caso de ser necesario algún bucle, usar los de la forma ``for(int i=$0$; i<n; i++)'' con $n$ entero constante, para permitir el desenrollado del bucle por el compilador.
@@ -50,14 +50,17 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 	
 	Es cierto que el compilador ya realiza de manera automática algunas de estas optimizaciones, pero su puesta en práctica reduce ligeramente el tiempo de compilación.
 
-\section{Generación de informes}
+\section*{Interfaz}
+Para la implementación de la interfaz se ha utilizado la librería de código libre ``Dear ImGui'' \cite{DearImGui}, junto los complementos ``ImGui Quat'' \cite{LVector} para visualizar el vector de luz y modificarlo, e ``ImGui Dialog'' \cite{Dialog} para mostrar un diálogo con un explorador de archivo y así poder seleccionar la parametrización deseada.
+
+\section*{Generación de informes}
 
 	Para medir el rendimiento de la aplicación se han medido los fotogramas generados por segundo y las primitivas que hay presentes en la escena, incluyendo las que son producto del teselado.\\
 \\La medición del nº de primitivas se ha realizado mediante el uso de la estructura "query" de OpenGL, la cual se actualiza cada vez que renderiza la escena. El nº de fotogramas por segundo se ha calculado manualmente, a partir de la latencia entre fotogramas (cuando se acumula más de $1$ segundo de latencia, devuelve el nº de fps en ese segundo).\\
 \\Además, para mayor comodidad se ha añadido una opción para realizar dichas mediciones de forma automática y escribir los resultados en un archivo cuyo nombre dependerá de la parametrización actual y el modo de visualización. Por defecto realiza $22$ medidas ($22$ segundos). Es ligeramente mayor que $20$ para después quitar la primera y/o última medida, ya que están influenciadas por la interacción del usuario con la interfaz.\\
 \\Estas medidas son suficientes para observar si la aplicación está aprovechando correctamente los recursos para obtener una buena visualización de la superficie, ya que el objetivo es que funcione en tiempo real ofreciendo la mínima carga posible al sistema.
 
-\section{Resultados}
+\section*{Resultados}
 	En esta sección se mostrarán los datos medidos en la aplicación para comparar las técnicas usadas. Se han seleccionado 2 superficies de las disponibles como ejemplos, ``gaussiana.in'' y ``waves.in''. Los parámetros se han elegido de manera que la visualización sea similar entre los distintos modos de renderizado, minimizando el nº de triángulos de la escena para cada modo, que es el objetivo de estudio: ofrecer un nivel de aproximación específico, maximizando el rendimiento.
 		
 	\begin{center}

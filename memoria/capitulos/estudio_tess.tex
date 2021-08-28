@@ -40,7 +40,7 @@ En este capítulo se describe el estudio realizado para teselar de manera eficie
 	\end{definicion}
 	
 	La medida equivalente para los lados es $r=\frac{L(\alpha)} {L(l)}$ donde $L$ es la longitud, $l$ el lado del triángulo y $\alpha$ la curva a estimar.\\
-	\\Es una buena alternativa para poder detectar dichos picos, ya que cuando hay uno o varios picos mal aproximados el área original entorno al pico es mucho mayor que la de la superficie generada (el ratio es grande). Además, de esta forma estamos evitando la aparición del problema del farolillo de Schwarz (--CITAR--) debido a que buscamos estimar con una cierta precisión el área original.\\
+	\\Es una buena alternativa para poder detectar dichos picos, ya que cuando hay uno o varios picos mal aproximados el área original entorno al pico es mucho mayor que la de la superficie generada (el ratio es grande). Además, de esta forma estamos evitando la aparición del problema del farolillo de Schwarz \cite{SchLantern} debido a que buscamos estimar con una cierta precisión el área original.\\
 	\\Sin embargo, al usar esta medida asumimos que la parametrización a nivel local funciona como una gráfica, como por ejemplo $p(u,v)=(p_x(u,v),p_y(u,v),p_z(u,v)) = (u,v,p_z(u,v))$. Esto no es cierto en la gran mayoría de casos y se puede ver fácilmente con la siguiente parametrización del plano $[0,1]x[0,1]$, embebido en $\R^3$:
 	$$p(u,v)=(cos(\frac{\pi}{2} u), sin(\frac{\pi}{2} v), 0 )$$
 	\\Al ser un plano no debería de teselar, pero como detecta que la curva a estimar en el lado del triángulo no está bien aproximada, entonces subdivide:

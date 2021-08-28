@@ -3,6 +3,8 @@
 
 \chapter{Conceptos básicos}
 
+Este capítulo tiene el objetivo de introduccir los conceptos básicos sobre Informática Gráfica y OpenGL. Dichos conceptos se han obtenido de las referencias \cite{KhronosWiki} y \cite{LearnOGL}, junto con el conocimiento adquirido de la asignatura Informática Gráfica.
+
 \begin{definicion} Una \textbf{primitiva} es el objeto básico de visualización. Pueden ser puntos, segmentos, patrones de segmentos, polígonos y patrones de polígonos. En nuestro caso las primitivas a usar serán triángulos.
 \end{definicion}
 
@@ -42,7 +44,7 @@
 		\item $K_p > 0$, esférica, localmente es una esfera de radio $R = \frac{1}{\sqrt{K_p}}$.
 		\item $K_p < 0$, hiperbólica, localmente es un espacio hiperbólico de cruvatura $K_p$.
 	\end{itemize}
-La curvatura de Gauss se ha calculado de la siguiente forma (CITAR WOLFRAM):
+La curvatura de Gauss se ha calculado de la siguiente forma \cite{Wolfram}:
 		$$K_{x(u,v)} = \frac{det(x_{uu}, x_u, x_v) det(x_{vv}, x_u, x_v) - [det(x_{uv}, x_u, x_v)]^2} {[|x_u|^2|x_v|^2 - <x_u, x_v>^2]^2} (u, v)$$
 	que es la curvatura de Gauss en el punto $x(u, v)$, con $x$ carta de la superficie $S$. Existen muchas maneras distintas de calcularla, pero esta es la que nos favorecerá para su correcta obtención mediante los árboles de expresión.
 \end{definicion}
