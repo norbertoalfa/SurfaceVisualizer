@@ -112,7 +112,8 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
 	\end{enumerate}
 	
 	Aplicando los cuatro primeros apartados podemos mejorar el rendimiento del programa para cualquier superficie, independientemente de sus características topológicas y geométricas.\\
-	\\En cuanto al último apartado, el aumento de rendimiento puede ser bastante grande según el tipo de superficie, pero se trata de una situación más específica y no siempre se va a poder utilizar. Es por ello que en el programa se da a elegir al usuario si quiere activar o no dicha funcionalidad (desactivada por defecto).
+	\\En cuanto al último apartado, el aumento de rendimiento puede ser bastante grande según el tipo de superficie, pero se trata de una situación más específica y no siempre se va a poder utilizar. Es por ello que en el programa se da a elegir al usuario si quiere activar o no dicha funcionalidad (desactivada por defecto).\\
+	\\También se intentó implementar un post-procesado de los vértices, moviéndolos según la función de curvatura de Gauss ($K$), para reposicionar los vérices en zonas de las superficies críticas (extremos de la función $K$), pero su cálculo era costoso y al realizarse para cada vértice se generaba un gran impacto en el rendimiento. Además, los resultados obtenidos no eran muy diferentes al mismo teselado sin dicha funcionalidad, aunque puede ser interesante para otro tipo de problemas (se comentará en las \textbf{Conclusiones y vías futuras}).
 	
 	
 \section{Estimación de las medidas}
