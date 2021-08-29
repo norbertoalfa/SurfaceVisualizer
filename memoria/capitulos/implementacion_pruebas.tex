@@ -37,7 +37,6 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 	
 	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación de un triángulo se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente.
 
-\newpage
 \section*{Optimización del código GLSL}
 	Puesto que queremos que el programa renderice la escena en tiempo real, es necesario simplificar todo lo posible el código de los shaders, sobre todo del fragment shader (se va a ejecutar para cada vértice generado en el teselado). Para ello se han tenido en cuenta los siguientes hechos (FUENTE GLSL OPTIMIZATIONS):
 	\begin{itemize}
@@ -49,6 +48,12 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 	\end{itemize}
 	
 	Es cierto que el compilador ya realiza de manera automática algunas de estas optimizaciones, pero su puesta en práctica reduce ligeramente el tiempo de compilación.
+
+\section*{Procesador}
+La implementación del ``procesador'' nos se ha realizado desde cero, se ha partido de una implementación parcial que se aportaba en la asignatura de Procesadores de lenguajes. Dicha implementación, tras ser adaptada, sólo realizaba la traducción directa del código de entrada, junto con la comprobación de errores (léxicos, sintácticos y semánticos). La parte restante corresponde con la generación del árbol de expresión y calcular los árboles derivados, además de adecuar la salida correctamente para que se pueda utilizar como parte de un shader.
+
+\section*{Visualizador}
+En un principio se propuso utilizar como código de partida el proporcionado en la asignatura de Informática Gráfica, pero se observó que tenía muchas funcionalidades que no se llegarían a utilizar y cuya adaptación requeriría más tiempo. Por ello se decidió empezar de cero, pero utilizando como ``esqueleto'' un código de ejemplo de la referencia LearnOpenGL \cite{LearnOGL}, que aportaban simplemente la visualización de un objeto en una escena $3$D con una fuente de luz y una cámara sencilla.
 
 \section*{Interfaz}
 Para la implementación de la interfaz se ha utilizado la librería de código libre ``Dear ImGui'' \cite{DearImGui}, junto los complementos ``ImGui Quat'' \cite{LVector} para visualizar el vector de luz y modificarlo, e ``ImGui Dialog'' \cite{Dialog} para mostrar un diálogo con un explorador de archivo y así poder seleccionar la parametrización deseada.
