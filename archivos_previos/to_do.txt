@@ -2,3 +2,4 @@
 
 - Opcional: renombrar como "renderData" y mover aquellos métodos no apropiados para esa clase.
 - Opcional: Separar codigo procesador.
+
