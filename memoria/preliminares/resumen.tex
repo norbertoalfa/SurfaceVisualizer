@@ -7,11 +7,22 @@
 
 %\selectlanguage{spanish}
 \chapter{Resumen}
+El trabajo realizado consiste en el desarrollo de una demostración más sencilla de un teorema clásico de la topología diferencial. Está orientado a transmitir al lector la importancia de dicho resultado. Además, se traslada al ámbito informático para entender la dificultad que colleva representar correctamente una superficie.\\
+\\En la parte matemática se trata la demostración de $2$ resultados indicados en el artículo de Allen Hatcher \cite{arXiv:1312.3518} cuyo corolario directo es el teorema central: toda variedad topológica $2$-dimensional tiene una única estructura diferenciable salvo difeormorfismos. Su desarrollo requerirá de mucha información de la teoría de Morse, la cual es muy amplia y por tanto no se aportará un gran nivel de detalle, ya que el objetivo de este proyecto no es la investigación en el campo de dicha teoría.\\
+\\La visualización de la superficie se realizará mediante una aproximación con mallas indexadas (conjunto de triángulos), cuyos vértices siempre estarán en la superficie objetivo. El problema residirá en estudiar cuándo es necesario subdividir un triángulo para representar con mayor precisión esa zona.\\
+\\Para visualizar correctamente una superficie cualquiera se han estudiado varias definiciones posibles, atendiendo a diferentes cualidades de las superficies. Puesto que lo que se desea es que la superficie se visualize correctamente, la definición escogida estará orientada a cómo la visión humana la percibe. Anque nos centremos en esta definición, trivialmente el límite de la malla indexada será la superficie a representar.\\
+\\El estudio de la demostración del teorema nos ha aportado varios recursos bastante interesantes, tales como ``el truco del Toro'' o el uso del grafo asociado a una función de Morse para obtener difeomorfismos de partes de la superficie a discos, anillos, ``pantalones'' o ``pantalones cruzados''.\\
+\\Finalmente, el programa implementado nos ha servido de herramienta de visualización de homotopías de manera eficiente, incluso para la función de Morse ``altura'' con dominio la superficie definida. En un futuro se podría incluir la posibilidad de que el usuario indique una función de Morse, pero habría que redefinir los programas ``procesador'' (procesa la parametrización en un lenguaje específico) y ``visualizador'' (visualiza la escena).\\
 
-Resumen en español (recomendado de 800 a 1500 palabras).
-
-Fichero: \texttt{preliminares/resumen.tex}
-
+\newpage
+Las palabras clave que definen este proyecto son:
+\begin{itemize}
+	\item Superficie.
+	\item Profundizar.
+	\item Entendimiento.
+	\item Visualización.
+	\item Eficiencia.
+\end{itemize}
 
 % Al finalizar el resumen en inglés, volvemos a seleccionar el idioma español para el documento
 %\selectlanguage{spanish} 
