@@ -49,7 +49,7 @@ Clona este repositorio o descárgalo como zip. A continuación inicie la termina
 ```
 make install
 ```
-el cual actualizará las dependencias e instalará **Bison** (para el programa *procesador*). Si la instalación no ha tenido éxito deberá revisar el apartado de [requisitos previos](##requisitos-previos).
+el cual actualizará las dependencias e instalará **Bison** (para el programa *procesador*). Si la instalación no ha tenido éxito deberá revisar el apartado de [requisitos previos](#requisitos-previos).
 
 En caso afirmativo, finalizar compilando el programa con el comando:
 ```
