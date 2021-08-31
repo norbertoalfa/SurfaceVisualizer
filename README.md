@@ -89,7 +89,7 @@ Para facilitar el uso del programa se han proporcionado atajos de teclado para a
 
 <a name="idioma"></a>
 ### Language
-Se puede seleccionar el idioma que se desee, de entre los disponibles (directorio [languages](program/languages)), en la ventana **Menu** de la interfaz.
+Se puede seleccionar el idioma que se desee, de entre los disponibles (directorio [languages](programa/languages)), en la ventana **Menu** de la interfaz.
 
 <a name="parametrizacion"></a>
 ### Parameterization
