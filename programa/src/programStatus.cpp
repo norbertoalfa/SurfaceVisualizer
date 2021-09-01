@@ -101,7 +101,7 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 	
 	someChange = true;
 
-	defaultText = 	std::string("//-- Structure example with sphere parametrization --//\n\n") + 
+	defaultText = 	std::string("//-- Structure example with sphere parameterization --//\n\n") + 
 					std::string("// Define constants \n") + 
 					std::string("PI2 : real = 2*PI;\n\n") + 
 					std::string("// Define aditional functions \n") + 
