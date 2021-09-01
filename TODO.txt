@@ -1,5 +1,2 @@
-- Hablar de la teselación Phong (favorece la visualización en caso de que se use dicho modelo de iluminación)
-
 - Opcional: renombrar como "renderData" y mover aquellos métodos no apropiados para esa clase.
 - Opcional: Separar codigo procesador.
-
