@@ -8,7 +8,7 @@ Este capítulo tiene el objetivo de introduccir los conceptos básicos utilizado
 \begin{definicion} Una \textbf{variedad topológica} 2-dimensional es un espacio de Hausdorff localmente Euclídeo que verifica el segundo axioma de numerabilidad, es decir, su topología tiene una base numerable.
 \end{definicion}
 
-\begin{definicion} Un \textbf{embebimiento o encaje} es una aplicación continua e inyectiva de un espacio topológico en otro. La restricción de su imagen aporta un homeomorfismo.
+\begin{definicion} Un \textbf{embebimiento o encaje} es una aplicación continua e inyectiva de un espacio topológico en otro que es un homeomorfismo sobre la imagen dotada por la topología inducida.
 \end{definicion}
 
 \begin{definicion} Un \textbf{sistema coordenado} sobre $S$ es un embebimiento $h : \mathbb{R}^2 \rightarrow S$.
@@ -27,16 +27,20 @@ Este capítulo tiene el objetivo de introduccir los conceptos básicos utilizado
 \begin{definicion} Una \textbf{variedad diferenciable} 2-dimensional es una variedad topológica $2-dimensional$ $S$ junto con una estructura diferenciable $E$, es decir, el par $(S, E)$.
 \end{definicion}
 
-\begin{definicion} Una \textbf{inmersión} es una aplicación diferenciable entre variedades diferenciables cuya derivada es inyectiva en todo punto.
+\begin{definicion} Una aplicación $f: N \rightarrow M$ entre las variedades diferenciables $N$ y $M$ se dice que es \textbf{diferenciable} si la composición con las cartas de ambas estructuras diferenciables es diferenciable en el sentido real, es decir, $\forall \phi \in E_N$, $\forall \psi \in E_M$ se tiene que $\psi^{-1} \circ f \circ \phi$ es diferenciable.
 \end{definicion}
 
-\begin{definicion} Una \textbf{celda} $C$ es un subconjunto abierto de un espacio topológico $X$ tal que $C$ homeomorfa a la bola unidad n-dimensional, que se puede extender de forma continua al borde. Dicho homeomorfismo se denomina $\textbf{aplicación celda}$. Si esta aplicación es diferenciable, se dice que la celda es diferenciable.
+\begin{definicion} Una \textbf{inmersión} es una aplicación diferenciable entre variedades diferenciables cuya diferencial es inyectiva en todo punto.
 \end{definicion}
 
-\begin{definicion} Una \textbf{triangulación diferenciable} de una variedad $X$ es un conjunto de celdas diferenciables tal que la unión de todas ellas es $X$ y cuyas intersecciones son únicamente los lados, es decir, los interiores son disjuntos $2$ a $2$.
+\begin{definicion} Una n-celda $n \in \N$, en un espacio topológico $X$, es una aplicación continua $f: \overline{B}^n \rightarrow X$ tal que, si llamamos $C=f(B^2)$, la aplicación $f|_{B^n}:B^n \rightarrow C$ es un homeomorfismo (donde $B^n$ es la bola unidad abierta en $\R^n$ y $\overline{B}^n$ la cerrada). Si $X$ es una variedad diferenciable y $f$ es diferenciable (es decir, extiende diferenciablemente más allá de $\overline{B}^n$), la celda se dirá diferenciable.\\
+\\Al conjunto $f(\partial B^n)=f(S^{n-1})$ se le llama caras borde de la celda (lados si $n=2$, vértices si $n=1$), mientras que al conjunto $C$ se le refiere como el interior de la celda. Es común identificar la celda con el conjunto $C$ si ello no conlleva a ambigüedad.
+\end{definicion}
+
+\begin{definicion} Una \textbf{triangulación diferenciable} de una variedad diferenciable $X$ es un conjunto de celdas diferenciables con interiores disjuntos dos a dos y cuya unión es $X$.
 \end{definicion}
 \newpage
-\begin{definicion} Sean $f$ y $g$ homeomorfismos entre los espacios topológicos $X$ e $Y$. Una \textbf{isotopía} es una homotopía entre $f$ y $g$, $H: X \times [0,1] \rightarrow Y$, con:
+\begin{definicion} Sean $f$ y $g$ homeomorfismos entre los espacios topológicos $X$ e $Y$. Una \textbf{isotopía} es una homotopía que deforma $f$ en $g$, $H: X \times [0,1] \rightarrow Y$, y que satisface:
 	\begin{enumerate}
 		\item $H_0 = f$.
 		\item $H_1 = g$.
@@ -44,14 +48,11 @@ Este capítulo tiene el objetivo de introduccir los conceptos básicos utilizado
 	\end{enumerate}
 \end{definicion}
 
-\begin{definicion} Sean $f$ y $g$ embebimientos entre las variedades $N$ e $M$. Una \textbf{isotopía de embebimientos} es un homeomorfismo $H: M \times [0,1] \rightarrow M \times [0,1]$ cumpliendo:
+\begin{definicion} Dos embebimientos $f,g : N \rightarrow M$ de una variedad $N$ en otra $M$ se dicen \textbf{isotópicos} si existe $H: N \times [0,1] \rightarrow M$ aplicación continua tal que:
 	\begin{enumerate}
-		\item $H(y, 0) = (y, 0)$ $\forall y \in M$.
-		\item $H(f(x), 1) = (g(x), 1)$ $\forall x \in N$.
-		\item $H(M \times \{t\}) = M \times \{t\}$ $\forall t \in [0,1]$.
+		\item $H(\cdot, y) : N \rightarrow M$ es un embebimiento $\forall t \in [0,1]$.
+		\item $H(0, p) = f(p)$, $H(1,p) = g(p)$ $\forall p \in N$.
 	\end{enumerate}
-	
-	Equivalentemente podemos decir que $H$ es la isotopía de $Id_M$ en $g \circ f^{-1}$ donde tenga sentido.
 \end{definicion}
 
 \begin{definicion} Sea $M$ una variedad diferenciable y $f: M \rightarrow \R$ una función diferenciable en $M$. Un punto $p \in M$ se dice que es un $\textbf{punto crítico}$ de $f$ si $Df(p) = 0$ en $T_pM$. A su imagen por $f$, $f(p)$, se le dice $\textbf{valor crítico}$ de $f$.
@@ -61,15 +62,15 @@ Este capítulo tiene el objetivo de introduccir los conceptos básicos utilizado
 \\ El $\textbf{índice}$ de dicho punto es la dimensión del mayor subespacio de $T_pM$ donde $H_\phi(f)$ es definida negativa. No depende de $\phi$ por la regla de Sylvester, ya que $H$ para otra parametrización $\psi$ cumple $H_\psi(f) = J^t(\theta) H_\phi(f) J(\theta)$, con $\theta$ el cambio de coordenadas y $J$ la matriz Jacobiana.
 \end{definicion}
 
-\begin{definicion} Sea $f$ una función diferencaible en una superficie $S$, se dice que es una $\textbf{función de Morse}$ si todos sus puntos críticos son no degenerados.
+\begin{definicion} Sea $f$ una función diferenciable en una superficie diferenciable $S$, se dice que es una $\textbf{función de Morse}$ si todos sus puntos críticos son no degenerados.
 \end{definicion}
 
 \newpage
-\begin{definicion} Sea $f$ una función de Morse, dados $a < b$ valores regulares de $f$ en $\R$ definimos:
+\begin{definicion} Sea $f$ una función de Morse en una superficie diferenciable $S$, dados $a < b$ valores regulares de $f$ en $\R$ definimos:
 	\begin{itemize}
-		\item $V(a) = f^{-1}(a)$, se puede ver como una curva de nivel.
-		\item $M(a) = f^{-1}((-\infty, a])$, el conjunto que hay ``debajo'' de la curva de nivel cuyo valor es $a$.
-		\item $M'(a) = f^{-1}([a,\infty))$, el conjunto que hay ``encima'' de la curva de nivel cuyo valor es $a$.
+		\item $V(a) = f^{-1}(a)$, se suele referir como una curva de nivel $f$.
+		\item $M(a) = f^{-1}((-\infty, a])$, el conjunto que hay ``debajo'' de la curva de nivel para el valor regular $a$.
+		\item $M'(a) = f^{-1}([a,\infty))$, el conjunto que hay ``encima'' de la curva de nivel para el valor regular $a$.
 		\item $W(a,b) = f^{-1}([a,b])$, el conjunto contenido entre 2 curvas de nivel.
 	\end{itemize}
 \end{definicion}
@@ -79,6 +80,9 @@ Este capítulo tiene el objetivo de introduccir los conceptos básicos utilizado
   	\includegraphics[width=0.4\textwidth]{niveles_morse}
   	\label{fig:niveles_morse}
 \end{figure}
+
+\begin{definicion} Una aplicación continua $f$ se dice \textbf{propia} si la imagen inversa $f^{-1}(M)$ es compacta para cualquier compacto $M$.
+\end{definicion}
 
 \endinput
 %------------------------------------------------------------------------------------
