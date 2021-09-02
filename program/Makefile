@@ -59,11 +59,11 @@ $(BUILD_DIR)/%.cpp.o: src/%.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@ -I./include
 
-shader: variedades/lastParam.in
-	cd ./procesador/ && $(MAKE) all
+shader: manifolds/lastParam.in
+	cd ./processor/ && $(MAKE) all
 	cd ..
 
 clean:
 	rm -rf bin/* obj/* imgui.ini
-	cd ./procesador/ && $(MAKE) clean
+	cd ./processor/ && $(MAKE) clean
 	cd ..

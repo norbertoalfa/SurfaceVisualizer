@@ -45,7 +45,7 @@ For the compilation of the program, it will need the following dependencies, alt
 
 <a name="proceso-de-instalacion"></a>
 ### Install process
-Clone or download this repository. Then initialize the command line in the folder [programa](programa) and run the following command:
+Clone or download this repository. Then initialize the command line in the folder [program](program) and run the following command:
 ```
 make install
 ```
@@ -59,11 +59,11 @@ As a consequence, the program will start.
 
 <a name="uso"></a>
 ## Usage
-After installing the program, we can start it by using `make` on the folder [programa](programa) or running the next command:
+After installing the program, we can start it by using `make` on the folder [program](program) or running the next command:
 ```
 ./bin/program
 ```
-At start, it will use the last compiled parameterization, always saved on the file [lastParam.in](programa/variedades/lastParam.in).
+At start, it will use the last compiled parameterization, always saved on the file [lastParam.in](program/manifolds/lastParam.in).
 
 If you don't know how some interface element works, just let the mouse over it for a few seconds and an information window will appear explaining its functionality.
 
@@ -89,11 +89,11 @@ I added some shortcuts for a more comfortable use:
 
 <a name="idioma"></a>
 ### Language
-You can select the language you want, if it is available on the folder [languages](programa/languages), on **Menu** window.
+You can select the language you want, if it is available on the folder [languages](program/languages), on **Menu** window.
 
 <a name="parametrizacion"></a>
 ### Parameterization
-You will be able to select a predefined parameterization (exists some examples on the folder [variedades](programa/variedades)) or create one.
+You will be able to select a predefined parameterization (exists some examples on the folder [manifolds](program/manifolds)) or create one.
 
 If you decide to create one, edit window will appear with the following example code, showing a typical parameterization scheme:
 ```
@@ -118,7 +118,7 @@ plot g;
 ```
 You can open this editor whenever you want, to do some change on the actual surface's definition. If there are any errors (lexical, syntactical or semantical) it will be shown in this window.
 
-All the changes will be automatically saved on the file [lastParam.in](programa/variedades/lastParam.in). If you want to save it in the original file, press the button **Save**.
+All the changes will be automatically saved on the file [lastParam.in](program/manifolds/lastParam.in). If you want to save it in the original file, press the button **Save**.
 
 In addition to the base params, you can use *time* parameters, which objective is to allow representations of homotopies (in a smooth animation). You can change those parameters in the **Parameters** window (fixed domain [0,1]).
 

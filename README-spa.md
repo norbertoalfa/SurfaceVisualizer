@@ -45,7 +45,7 @@ Las dependencias para compilar el programa son las siguientes, aunque se actuali
 
 <a name="proceso-de-instalacion"></a>
 ### Proceso de instalación
-Clona este repositorio o descárgalo como zip. A continuación inicie la terminal en el directorio [programa](programa) y ejecute el comando:
+Clona este repositorio o descárgalo como zip. A continuación inicie la terminal en el directorio [programa](program) y ejecute el comando:
 ```
 make install
 ```
@@ -59,11 +59,11 @@ Como consecuencia se iniciará el programa.
 
 <a name="uso"></a>
 ## Uso
-Una vez instalado el programa, podemos iniciarlo con el comando `make` desde el directorio [programa](programa) o utilizar el comando:
+Una vez instalado el programa, podemos iniciarlo con el comando `make` desde el directorio [program](program) o utilizar el comando:
 ```
 ./bin/program
 ```
-Al iniciarse utilizará siempre la última parametrización compilada, que se almacena en el fichero [lastParam.in](programa/variedades/lastParam.in).
+Al iniciarse utilizará siempre la última parametrización compilada, que se almacena en el fichero [lastParam.in](program/manifolds/lastParam.in).
 
 En caso de tener duda con algún elemento de la interfaz, basta con mantener el ratón encima de este durante unos segundos, para que aparezca una ventana aportando información relevante.
 
@@ -89,11 +89,11 @@ Para facilitar el uso del programa se han proporcionado atajos de teclado para a
 
 <a name="idioma"></a>
 ### Idioma
-Se puede seleccionar el idioma que se desee, de entre los disponibles (directorio [languages](programa/languages)), en la ventana **Menu** de la interfaz.
+Se puede seleccionar el idioma que se desee, de entre los disponibles (directorio [languages](program/languages)), en la ventana **Menu** de la interfaz.
 
 <a name="parametrizacion"></a>
 ### Parametrización
-Podrá seleccionar una parametrización ya definida (existen varias de ejemplo en el directorio [variedades](programa/variedades)) o crear una.
+Podrá seleccionar una parametrización ya definida (existen varias de ejemplo en el directorio [manifolds](program/manifolds)) o crear una.
 
 Si crea una desde cero, se iniciará el editor automáticamente con un código de ejemplo, para mostrar al usuario la estructura típica del código:
 ```
@@ -118,7 +118,7 @@ plot g;
 ```
 Dicho editor se puede abrir en cualquier momento para cambiar la definición actual de la variedad. En caso de que contenga algún error léxico, sintáctico o semántico se mostrará en un diálogo dentro de la ventana de edición (se abrirá automáticamente).
 
-Todo lo que se edite en dicha ventana, tras indicar que se compile, se almacenará en el fichero [lastParam.in](programa/variedades/lastParam.in). Para guardarlo en el fichero original deberá pulsar el botón **Save**.
+Todo lo que se edite en dicha ventana, tras indicar que se compile, se almacenará en el fichero [lastParam.in](program/manifolds/lastParam.in). Para guardarlo en el fichero original deberá pulsar el botón **Save**.
 
 A parte de los parámetros obligatorios para cada carta, es posible añadir parámetros adicionales para definir homotopías (parámetros de tiempo), que se podrán mostrar como una animación fluida.
 

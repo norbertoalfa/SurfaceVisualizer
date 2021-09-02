@@ -13,10 +13,10 @@ ProgramStatus::ProgramStatus(unsigned int width, unsigned int height)
 	actualLan = 0;
 	updateLanguages();
 
-	lastParamPath = "variedades";
+	lastParamPath = "manifolds";
 	lastParamFile = "lastParam.in";
 
-	dirPath = "variedades";
+	dirPath = "manifolds";
 	paramFile = "lastParam.in";
 	errorFile = "error.log";
 	frRateFile = "frameRateInfo.txt";

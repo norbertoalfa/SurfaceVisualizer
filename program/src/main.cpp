@@ -403,7 +403,7 @@ void render()
     }
 	
 	if (status.getLoadShader()) {
-        std::string cmd = "cd procesador && make read FILE=../" + status.getLastParamPath() + "/'" + status.getLastParamFile() + "' ||:";
+        std::string cmd = "cd processor && make read FILE=../" + status.getLastParamPath() + "/'" + status.getLastParamFile() + "' ||:";
 
 		system(cmd.c_str());
         if (status.checkErrorLog() != -1) {

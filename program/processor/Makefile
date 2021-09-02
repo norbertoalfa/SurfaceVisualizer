@@ -1,6 +1,6 @@
 .SUFFIXES:
 
-FILE?=../variedades/lastParam.in
+FILE?=../manifolds/lastParam.in
 EXE=bin/analizador
 SRC=src
 OBJ=obj
