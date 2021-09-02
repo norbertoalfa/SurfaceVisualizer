@@ -15,7 +15,6 @@ Compile				Compile
 Analizer_output		Analizer output
 
 Map_size			Map size
-Update				Update
 Parameters			Parameters
 Visualization		Visualization
 Invert_normal		Invert normal
@@ -51,12 +50,12 @@ Stop				Stop
 
 Invert_normal_info		To invert normal's direction
 Polygon_mode_info		Change visualization between filled and polygon mode
-AutoRotate_info			AutoRotate
+AutoRotate_info			Auto-rotate around the surface
 Vector_per_vertex_info	Vector per vertex
 Tessellate_info			Tessellate
 Threshold_K_info		Threshold K
 Improve_perf_info		Improve perf.
 Improve_perf_esp_info	Improve perf. esp.
-Auto_threshold_info		Auto threshold
-Target_info				Target
-Light_vector_info		Light vector
+Auto_threshold_info		Auto search threshold
+Target_info				Number of target triangles
+Light_vector_info		Shows light vector

@@ -97,7 +97,7 @@ void updateVariables(ProgramStatus &status, Light &light, Object &object, glm::m
 }
 
 void showInfo(std::string infoText, float width=100, float height=50) {
-    if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly)) {
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly) && ImGui::IsWindowHovered()) {
         if (lastHovTiem == 0) {
             lastHovTiem = ImGui::GetTime();
         }
@@ -170,11 +170,6 @@ void mainWindow(ProgramStatus &status, Object &object) {
     }
 
     if (ImGui::InputInt(status.getText("Map_size").c_str(), &sizeMap, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
-        status.setSizeMap(sizeMap);
-        status.changeSizeMap = true;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button(status.getText("Update").c_str())) {
         status.setSizeMap(sizeMap);
         status.changeSizeMap = true;
     }

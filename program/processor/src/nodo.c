@@ -940,6 +940,16 @@ void escribeNorm(atributos fun, atributos e1){
 			return;
 		}
 
+		// Debe tener al menos 2 parámetros
+		if (TS[indexFun].nParam < 2) {
+			return;
+		}
+
+		// Y deben ser reales
+		if (TS[indexFun + 1].tipo != REAL || TS[indexFun + 2].tipo != REAL) {
+			return;
+		}
+
 		nVarU = strdup(TS[indexFun + 1].lex);
 		nVarV = strdup(TS[indexFun + 2].lex);
 
@@ -989,6 +999,16 @@ void escribeArea(atributos fun, atributos e1){
 			return;
 		}
 
+		// Debe tener al menos 2 parámetros
+		if (TS[indexFun].nParam < 2) {
+			return;
+		}
+
+		// Y deben ser reales
+		if (TS[indexFun + 1].tipo != REAL || TS[indexFun + 2].tipo != REAL) {
+			return;
+		}
+
 		nVarU = strdup(TS[indexFun + 1].lex);
 		nVarV = strdup(TS[indexFun + 2].lex);
 
@@ -1035,6 +1055,16 @@ void escribeK(atributos fun, atributos e1){
 		indexFun = TS_BuscarFUN(fun.lex);
 
 		if (indexFun == -1) {
+			return;
+		}
+
+		// Debe tener al menos 2 parámetros
+		if (TS[indexFun].nParam < 2) {
+			return;
+		}
+
+		// Y deben ser reales
+		if (TS[indexFun + 1].tipo != REAL || TS[indexFun + 2].tipo != REAL) {
 			return;
 		}
 
