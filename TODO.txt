@@ -1,5 +1,15 @@
 Memoria:
-- Revisar memoria.
+- Revisar:
+    * Parte I
+    * Parte II
+    * Conclusiones
+    * Apéndices
+- Incluir correcciones:
+    * Frontmatter
+    * Parte I
+    * Parte II
+    * Conclusiones
+    * Apéndices
 
 Programa:
 - Simular error de opengl para mostrar una salida (antes de que dé core).
