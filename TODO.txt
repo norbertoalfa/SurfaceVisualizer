@@ -2,6 +2,7 @@ Memoria:
 - Revisar memoria.
 
 Programa:
+- Simular error de opengl para mostrar una salida (antes de que dé core).
 - Re-revisar todo.
 
 Opcional:
