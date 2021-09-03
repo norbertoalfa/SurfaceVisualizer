@@ -57,5 +57,4 @@ Threshold_K_info		Threshold K
 Improve_perf_info		Improve perf.
 Improve_perf_esp_info	Improve perf. esp.
 Auto_threshold_info		Auto search threshold
-Target_info				Number of target triangles
 Light_vector_info		Shows light vector

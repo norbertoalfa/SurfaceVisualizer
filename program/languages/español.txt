@@ -56,5 +56,4 @@ Threshold_K_info		Umbral de la medida basada en K
 Improve_perf_info		Mejora de rendimiento genérica
 Improve_perf_esp_info	Mejora de rendimiento específica
 Auto_threshold_info		Busca el umbral que genera el nº objetivo
-Target_info				Nº de primitivas objetivo
 Light_vector_info		Vector de la luz

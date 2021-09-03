@@ -299,7 +299,6 @@ void mainWindow(ProgramStatus &status, Object &object) {
             if (ImGui::InputInt(status.getText("Target").c_str(), &nTarget, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) {
                 status.targetNP = nTarget;
             }
-            showInfo(status.getText("Target_info"), 300);
         }
     }
 

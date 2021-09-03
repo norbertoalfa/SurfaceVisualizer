@@ -579,8 +579,9 @@ void TS_InsertaPLOT(char *id){
 		    printf("\n(Error semántico, línea %d) El número de parámetros de la función a dibujar %s debe ser al menos 2.\n", linea, id);
 		} else if (!validParam) {
 		    printf("\n(Error semántico, línea %d) Todos los parámetros de la función %s deben ser de tipo real.\n", linea, id);
-		} else {
-
+		} else if (TS[index].dimension != 1 || TS[index].tam != 3) {
+			printf("\n(Error semántico, línea %d) La función a dibujar %s debe devolver un tipo vec3.\n", linea, id);
+		} else{
 			entradaTS newIn;
 			newIn.entrada = PARA_FORM;
 			newIn.lex = TS[index].lex;
@@ -589,7 +590,6 @@ void TS_InsertaPLOT(char *id){
 			newIn.dimension=TS[index].dimension;
 			newIn.tam=TS[index].tam;
 			TS_InsertaEntrada(newIn);
-
 		}
 	}
 
