@@ -3,6 +3,9 @@ Memoria:
 
 Programa:
 - Simular error de opengl para mostrar una salida (antes de que dé core).
+- Añadir ejemplos:
+    * Esfera con dos cartas (parametrizar despejando z, una es la negativa de la otra).
+    * Homotopía que representa la proyección estereográfica.
 - Re-revisar todo.
 
 Opcional:
