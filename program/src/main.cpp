@@ -296,7 +296,7 @@ int initializeGLFW()
         return -1;
     }
     
-    glfwSwapInterval(0); // Enable vsync
+    glfwSwapInterval(0); // Disable vsync
     
     // configure global opengl state
     glEnable(GL_DEPTH_TEST);
@@ -470,7 +470,7 @@ void render()
     // check for errors
     GLenum error = glGetError();
     if(error != GL_NO_ERROR) {
-        //std::cerr << "Error " << error << std::endl;
+        std::cerr << "Error de OpenGL" << error << std::endl;
     }
     
     status.nPrimitives = numPrimitives;
