@@ -1,5 +1,12 @@
-- Indicar como ver la versión de OpenGL.
-- Arreglar info target.
+Memoria:
+- Añadir algo de historia en el summary
+- Añadir captura puntos críticos toro.
 
-- Opcional: renombrar como "renderData" y mover aquellos métodos no apropiados para esa clase.
-- Opcional: Separar codigo procesador.
+Programa:
+- Arreglar info target.
+- Revisar todo.
+- Tomar captura puntos críticos toro.
+
+Opcional:
+- Renombrar como "renderData" y mover aquellos métodos no apropiados para esa clase.
+- Separar codigo procesador.

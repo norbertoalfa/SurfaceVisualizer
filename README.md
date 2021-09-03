@@ -33,7 +33,10 @@ Also, it will show some characteristics of the Morse function **height**, which 
 ### Previous requirements
 These are the previous requirements to install de program:
 - Ubuntu 18.04 LTS OS or later (or similar).
-- GPU: compatible with OpenGL 4.4 version or later (for tessellation shader, etc).
+- GPU: compatible with OpenGL 4.4 version or later (for tessellation shader, etc). You can see it (after the installation) running the command:
+```
+glxinfo | grep "core profile version string"
+```
 - Dependencies: `make`, to run makefile and `apt` to install packages.
 
 For the compilation of the program, it will need the following dependencies, although they will be automatically upgrade during the installation process:

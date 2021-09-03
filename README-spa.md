@@ -33,7 +33,10 @@ Además, permitirá ver algunas características de la función de Morse **altur
 ### Requisitos previos
 Estos son los requisitos previos para la instalación del programa:
 - SO Ubuntu 18.04 LTS o superior (o distribuciones similares).
-- GPU: compatible con versión de OpenGL 4.4 o superior (para poder usar el tessellation shader, entre otros).
+- GPU: compatible con versión de OpenGL 4.4 o superior (para poder usar el tessellation shader, entre otros). Se puede ver la versión actualmente instalada (después de instalar como se indica más adelante) ejecutando el comando:
+```
+glxinfo | grep "core profile version string"
+```
 - Dependencias: `make`, para poder usar el makefile y `apt` para gestionar paquetes.
 
 Las dependencias para compilar el programa son las siguientes, aunque se actualizarán de manera automática durante el proceso de instalación:
