@@ -1,7 +1,5 @@
 Memoria:
-- Añadir algo de historia en el summary
-- Añadir captura puntos críticos toro.
-- Explicar (vias futuras) posibilidad de teselar sólo puntos críticos para encontrarlos.
+- Revisar memoria.
 
 Programa:
 - Re-revisar todo.

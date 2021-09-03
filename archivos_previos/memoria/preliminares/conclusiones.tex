@@ -20,6 +20,23 @@ Con este trabajo se ha intentado transmitir la importancia del teorema sobre var
 \\Por tanto, en el sentido matemático puedo decir que se han alcanzado los objetivos, tal y como se propusieron inicialmente, aunque implícitamente no hayamos abordado el caso de variedades con borde.\\
 \\Para la parte informática puedo decir que también se han alcanzado, e incluso se han conseguido otros objetivos que en un principio no estaban presentes, como el uso por parte del usuario de derivadas parciales y la visualización de algunas características de una función de Morse predefinida (la función altura).\\
 
+\newpage
+\begin{figure}[h]
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{morse_toro}
+		\caption{Niveles de la función altura en el toro.}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.5\textwidth]{criticos_toro}
+		\caption{Puntos críticos de la función altura en el toro (zonas oscuras).}
+	\end{minipage}
+ 		\label{fig:morse_toro}
+\end{figure}	
+
+Se pueden ver los puntos críticos en color negro, aunque sólo se pueden observar $3$ de los $4$ existentes para el toro ya que al ser una superficie opaca sólo se pueden ver los ocultos en modo malla y dependiendo de la posición de la cámara (se ha intentado capturar la escena en la que aparezcan el mayor nº de puntos críticos posible).
+
 \section*{Vías futuras}
 
 \subsection*{Resultados importantes}
@@ -35,7 +52,8 @@ El estudio de la teselación podría continuar por la técnica de ``Transform fe
 
 \subsection*{Funciones de Morse}
 Una funcionalidad que se podría añadir al programa en un futuro, es la visualización de una función de Morse para una superficie dada. Aprovechando que podemos definir una superficie mediante cartas, podemos mostrar datos interesantes de cualquier función de Morse que tenga como dominio dicha superficie, tales como puntos críticos e ``isobaras''. Los puntos críticos son fácilmente calculables teniendo en cuenta que si para una carta $\phi$ y una función de Morse $f$, tomando $g(u,v)=f \circ \phi (u,v)$, si tiene derivadas parciales iguales a $0$ en $p=\phi(u,v)$ y $p$ es un valor regular de $\phi$, entonces $p$ es un punto crítico de $f$.\\
-\\Teniendo en cuenta el lema $2.1$ del apartado de Teoría de Morse (parte I), se puede decir que nuestro programa actualmente es capaz de visualizar cualquier función de Morse si a las cartas a representar se les aplica previamente un embebimiento adecuado en $\R^3$ (ya que la función de Morse coincidiría con la función altura), aunque la superficie también se visualizaría a través de dicho embebimiento (puede aplicar una deformación drástica a la superficie). Es decir, la teoría apoya la posibilidad de representar cualquier función de Morse con domino una superficie de $\R^3$, pero visualmente sería incomprensible.
+\\Teniendo en cuenta el lema $2.1$ del apartado de Teoría de Morse (parte I), se puede decir que nuestro programa actualmente es capaz de visualizar cualquier función de Morse si a las cartas a representar se les aplica previamente un embebimiento adecuado en $\R^3$ (ya que la función de Morse coincidiría con la función altura), aunque la superficie también se visualizaría a través de dicho embebimiento (puede aplicar una deformación drástica a la superficie). Es decir, la teoría apoya la posibilidad de representar cualquier función de Morse con domino una superficie de $\R^3$, pero visualmente sería incomprensible.\\
+\\Para mejorar la visualización de los puntos críticos se podría añadir la funcionalidad de teselar sólo cerca de los puntos críticos, cuando se estén visualizando, para que se detecten con mayor precisión. Adicionalmente se podría renderizar la superficie controlando su opacidad, para así poder ver todos los puntos críticos a la vez, aunque estén en caras ocultas.
 
 \subsection*{WebGL}
 En cuanto a la portabilidad se podría estudiar implementarlo para sistemas operativos Windows o incluso hacer una versión web con WebGL.\\
