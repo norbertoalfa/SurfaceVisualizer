@@ -4,13 +4,13 @@
 A continuación se enuncian resultados de la Teoría de Morse, principalmente utilizados para la demostración de los Hechos.
 
 \begin{teorema}
-	Sea $M$ sub-variedad de un espacio euclídeo $E$. Entonces:
+	Sea $M$ subvariedad de un espacio euclídeo $E$. Entonces:
 	\begin{itemize}
-		\item Para casi todo $v \in E*$ y $p \in E$, las funciones $h_v, r_p : M \rightarrow \R$ definidas así:
+		\item Para casi todo $v \in E^*$ (dual de $E$) y $p \in E$, las funciones $h_v, r_p : M \rightarrow \R$ definidas así:
 			$$h_v(x)=v(x)$$
 			$$r_p(x)=\frac{1}{2}||x-p||^2$$
 		son funciones de Morse.
-		\item Si $M$ no contiene el origen, entonces la función $q_A: M \rightarrow \R$ definida:
+		\item Si $M$ no contiene al origen, entonces la función $q_A: M \rightarrow \R$ definida por:
 			$$q_A(x)=\frac{1}{2}<Ax,x>$$
 		es una función de Morse para casi todo $A$ endomorfismo simétrico positivo de $E$.
 	\end{itemize}
@@ -25,11 +25,11 @@ A continuación se enuncian resultados de la Teoría de Morse, principalmente ut
 \end{corolario}
 
 \begin{proof}
-	La primera parte es una consecuencia trivial del teorema 2.2, obteniendo una $f$ que por el lema anterior se pueda ver como la función altura (respecto a un embebimiento adecuado). La parte restante se puede conseguir deformando dicha $f$ para conseguir que los puntos críticos estén a distintos niveles, gracias a que son puntos aislados.
+	La primera parte es una consecuencia trivial del teorema $2.2$, obteniendo una $f$ que por el lema anterior se pueda ver como la función altura (respecto a un embebimiento adecuado). La parte restante se puede conseguir deformando dicha $f$ para conseguir que los puntos críticos estén a distintos niveles, gracias a que son puntos aislados.
 \end{proof}
 
 \begin{teorema}
-	Sea $S$ superficie y $f: S \rightarrow \R$ función de Morse. Tomamos $a < b$ valores regulares tal que $W(a,b)$ no contiene ningún punto crítico de $f$. Entonces:
+	Sea $S$ una superficie y $f: S \rightarrow \R$ una función de Morse. Tomamos $a < b$ valores regulares tales que $W(a,b)$ no contenga ningún punto crítico de $f$. Entonces:
 	\begin{itemize}
 		\item $M(b)$ es difeomorfo a $M(a)$.
 		\item $V(b)$ es difeomorfo a $V(a)$.
@@ -38,11 +38,11 @@ A continuación se enuncian resultados de la Teoría de Morse, principalmente ut
 \end{teorema}
 
 \begin{proof}
-	Se puede consultar en el artículo ``Clasification of Surface via Morse Theory'' \cite{MorseTh1}, el teorema 8.
+	Se puede consultar en el artículo ``Clasification of Surface via Morse Theory'' \cite{MorseTh1}, que corresponde con el teorema $8$.
 \end{proof}
 
 \begin{teorema}
-	Sea $S$ superficie diferenciable y $f: S \rightarrow \R$ función de Morse. Sea $p$ un punto crítico y $a < b$ valores regulares tal que $p \in W(a,b)$ y no contiene ningún punto crítico de $f$ aparte de $p$. Entonces:
+	Sea $S$ una superficie diferenciable y $f: S \rightarrow \R$ una función de Morse. Sea $p$ un punto crítico y $a < b$ valores regulares tales que $p \in W(a,b)$ y no contenga ningún punto crítico de $f$ aparte de $p$. Entonces:
 	\begin{itemize}
 		\item Si el índice de $p$ es $0$ o $2$, $M(b)$ es difeomorfo a la unión disjunta de $M(a)$ con un disco $D$, es decir, $W(a,b)$ es difeomorfo a un disco $D$.
 		\item Si el índice de $p$ es $1$, $M(b)$ es difeomorfo a $M(a)$ junto con un rectángulo pegado  en dos segmentos disjnutos de $V(a)$, que se puede ver como unos ``pantalones'' si el pegado se realiza de acuerdo a la orientación, o unos ``pantalones cruzados'' en caso contrario.
@@ -53,12 +53,12 @@ A continuación se enuncian resultados de la Teoría de Morse, principalmente ut
   	\centering
   	\includegraphics[width=0.4\textwidth]{pantalones_normales}
   	\includegraphics[width=0.4\textwidth]{pantalones_cruzados}
-  	\caption{Pantalones normales y cruzados}
+  	\caption{Pantalones normales y cruzados (esquematizado)}
   	\label{fig:pantalones}
 \end{figure}
 
 \begin{proof}
-	El primer punto se demuestra en el artículo ``Clasification of Surface via Morse Theory'' \cite{MorseTh1}, el teorema 13. El punto siguiente se demuestra en el mismo artículo, el teorema 16.
+	El primer punto se demuestra en el artículo ``Clasification of Surface via Morse Theory'' \cite{MorseTh1}, el teorema $13$. El punto siguiente se demuestra en el mismo artículo, el teorema $16$.
 \end{proof}
 
 \endinput

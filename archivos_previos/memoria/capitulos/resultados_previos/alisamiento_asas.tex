@@ -5,9 +5,9 @@
 \begin{teorema} (de ``alisamiento de asas'')
 	Sea S una superficie diferenciable, entonces:
 	\begin{enumerate}
-		\item Un embebimiento $\mathbb{R}^2 \rightarrow S$ puede isotoparse a un embebimiento diferenciable en un entorno compacto del origen. Además, la isotopía actúa como la identidad fuera de un entorno compacto que contiene al anterior.
-		\item Un embebimiento $D^1\times\mathbb{R} \rightarrow S$ que es diferenciable entorno a $\partial D^1\times\mathbb{R}$ puede isotoparse a un embebimiento diferenciable entorno a $D^1\times 0$. Dicha isotopía actúa como la identidad sobre un entorno de $\partial D^1 \times \R$ y fuera de un entorno compacto de $D^1 \times 0$.
-		\item Un embebimiento $D^2 \rightarrow S$ que es diferenciable entorno a $\partial D^2$ puede isotoparse a un embebimiento diferenciable en todo $D^2$. La isotopía actúa como la identidad en un entorno de $\partial D^2$.
+		\item Un embebimiento $h: \mathbb{R}^2 \rightarrow S$ puede isotoparse a un embebimiento diferenciable en un entorno compacto del origen. Además, la isotopía actúa como la identidad fuera de un entorno compacto que contiene al anterior.
+		\item Un embebimiento $h: D^1\times\mathbb{R} \rightarrow S$ que es diferenciable entorno a $\partial D^1\times\mathbb{R}$ puede isotoparse a un embebimiento diferenciable entorno a $D^1\times 0$. Dicha isotopía actúa como la identidad sobre un entorno de $\partial D^1 \times \R$ y fuera de un entorno compacto de $D^1 \times 0$.
+		\item Un embebimiento $h: D^2 \rightarrow S$ que es diferenciable entorno a $\partial D^2$ puede isotoparse a un embebimiento diferenciable en todo $D^2$. La isotopía actúa como la identidad en un entorno de $\partial D^2$.
 	\end{enumerate}
 \end{teorema}
 
@@ -39,7 +39,7 @@
   				\label{fig:fundamental}
 			\end{figure}
 			 
-			De esta forma construimos un difeomorfismo $\widehat{g}:\mathbb{R}^2_{E_1} \rightarrow \mathbb{R}^2$ como el levantamiento de $g$ fijando el origen, que de forma natural es doblemente periódico.\\
+			De esta forma construimos un difeomorfismo $\widehat{g}:\mathbb{R}^2_{E_1} \rightarrow \mathbb{R}^2$ como el levantamiento de $g$ fijando el origen, que de forma natural, al compararlo con la identidad ($\widehat{g}(x) - x$, $x \in \R^2$) es doblemente periódico.\\
 			
 			\begin{figure}[h]
   				\centering
@@ -82,11 +82,11 @@
 \end{corolario}
 
 \begin{proof}
-	Dado un punto $p \in W$, por ser un conjunto abierto existe una bola abierta $p \in B_p \subset W$. Tomamos $f: \R^2 \rightarrow B_p$ homeomorfismo que lleva el origen a $p$, cuya restricción a la bola abierta de radio $2$ centrada en el origen ($B((0,0), 2)=B_2$) es diferenciable. Tenemos que $f_{B_2} : B_2 \rightarrow f(B_2) \subset B_p$ es un difeomorfismo.\\
+	Dado un punto $p \in W$, por ser un conjunto abierto existe una bola abierta $p \in B_p \subset W$. Tomamos $f: \R^2 \rightarrow B_p$ homeomorfismo que lleva el origen a $p$, cuya restricción a la bola abierta de radio $2$ centrada en el origen ($B((0,0), 2)=B_2$) es diferenciable. Tenemos que $f|_{B_2} : B_2 \rightarrow f(B_2) \subset B_p$ es un difeomorfismo.\\
 	\\Definimos $g=h \circ f: \R^2 \rightarrow S$ que es trivialmente continua e inyectiva. Como $f$ es un homeomorfismo y $h$ un embebimiento, la restricción de $g$ a su imagen es un homeomorfismo, y por tanto $g$ es un embebimiento.\\
 	\\Aplicamos el primer apartado del teorema anterior a $g$, obteniendo la isotopía $g_t$, donde $g_1$ es diferenciable en un entorno del origen y queda fija fuera de un compacto que contiene al anterior. Además, por la demostración del teorema sabemos que dicho compacto está contenido en la bola abierta $B_2$, por lo que podemos construir la isotopía $h_t$ de la siguiente forma:
 	\begin{itemize}
-		\item $h_t(p)=(g_t \circ f_{f(B_2)}^{-1})(p)$ para todo $p \in f(B_2)$.
+		\item $h_t(p)=(g_t \circ f|_{f(B_2)}^{-1})(p)$ para todo $p \in f(B_2)$.
 		\item $h_t(p)=h(p)$ para todo $p \in W - f(B_2)$.
 	\end{itemize}
 	Sabemos que pega bien debido a que $g_t$ deja fija a $g$ fuera de un compacto que contiene al origen y está contenido en $B_2$. De esta forma tendríamos una isotopía que deforma $h$ en una función que es diferenciable en un entorno del punto $p$ y queda fija fuera de un compacto que contiene al anterior, concluyendo así la prueba.

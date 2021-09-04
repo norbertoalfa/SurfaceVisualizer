@@ -47,11 +47,7 @@ partir de la gramática del lenguaje y las acciones semánticas que construyen e
 - Revisar:
     * Parte II
 - Incluir correcciones:
-    * Frontmatter
-    * Parte I
     * Parte II
-    * Conclusiones
-    * Apéndices
 - Revisar imagenes.
 
 Programa:
