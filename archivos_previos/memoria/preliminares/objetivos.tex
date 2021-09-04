@@ -35,8 +35,9 @@ Objetivos alcanzados y métodos usados:
 	\item Ámbito de la Informática:
 	\begin{itemize}
 		\item Se ha desarrollado un software de visualización y animación $3$D de superficies definidas por cartas, que permitirá ilustrar visualmente conceptos matemáticos como el cálculo de normales, la curvatura de Gauss, funciones de Morse (sólo función altura) y sus puntos críticos.
+		\item El usuario puede escribir cualquier función, que pueda definir con el lenguaje, que seguidamente será traducida a un lenguaje de programación (GLSL) el cual se compilará para ejecutarse en la GPU.
 		\item Se han analizado los algoritmos de generación de árboles de expresión y árboles derivados, junto con algoritmos de teselado y procedimientos de muestreo. Se han implementado los más adecuados para la definición escogida de ``buena aproximación'' a una superficie, con el objetivo de mejorar la calidad visual con un buen rendimiento.
-		\item El software visualiza de manera eficiente las cartas indicadas, permitiendo animaciones fluidas y mejorando la gestión de recursos frente al uso de una malla de triángulos uniforme. Su portabilidad está sujeta a las librerías utilizadas, por lo que si es posible instalarlas con versiones iguales o superiores, será viable su instalación y ejecución.
+		\item El software realiza absolutamente todos los cálculos relativos a la teselación en la GPU, consiguiendo por tanto visualizar animaciones fluidas en tiempo real, con tiempos por cuadro del orden de milisegundos. Su portabilidad está sujeta a las librerías utilizadas, por lo que si es posible instalarlas con versiones iguales o superiores, será viable su instalación y ejecución.
 	\end{itemize}
 \end{itemize}
 Campos de estudio más utilizados:

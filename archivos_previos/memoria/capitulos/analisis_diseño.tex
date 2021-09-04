@@ -87,7 +87,8 @@ La estructura de datos más interesante y que destaca fuera de lo normal es la d
 Se generan de forma natural al realizar el análisis sintáctico con el procesador. Cuando se reduce la expresión por una regla, en dicha regla se crea un nodo de expresión nuevo y se le asigna a la variable a la que se reduce, con los hijos y características correspondientes.
 
 \subsection*{Obtener el árbol de la derivada parcial de una expresión}
-Dado un árbol de expresión y una variable, el cálculo del árbol de la derivada parcial respecto de dicha variable se realiza de manera recursiva, aplicando las reglas usuales de derivación. \\
+El software implementado es capaz de hacer derivación simbólica, útil para la generación automática de funciones típicas de una superficie, como la normal o la curvatura de Gauss.\\
+\\Dado un árbol de expresión y una variable, el cálculo del árbol de la derivada parcial respecto de dicha variable se realiza de manera recursiva, aplicando las reglas usuales de derivación. \\
 \\El caso más complejo, que cabe destacar, es cuando se trata de una llamada a otra función ya definida por el usuario, cuyos parámetros contienen la variable a derivar. Entonces se aplica la regla de la cadena para derivadas parciales, es decir:
 $$\frac{\partial}{\partial u}(f(exp_1, ..., exp_n)) = \sum_{i=1}^{n} \frac{\partial (exp_i)}{\partial u} \frac{\partial f}{\partial x_i}(exp_1, ..., exp_n))$$
 Pero es necesario definir la función $\frac{\partial f}{\partial x_i}$ $\forall i$, así que se comprobaría si existe ya dichas funciones y en caso negativo se definirán (se deriva su arbol de expresión asociado y se escribe en una función con nombre $fPx_i$).
@@ -117,6 +118,26 @@ La simplificación de una expresión consiste en quitar paréntesis redundantes 
 		\end{itemize}
 	\end{itemize}
 \end{enumerate}
+
+\newpage
+A continuación se ilustra el árbol asociado a la expresión  $u^\wedge 2 * v + 1$, junto con el árbol de su derivada parcial respecto de $u$ y su posterior simplificación (sólo teniendo en cuenta los operadores -, +, * y /). La potencia con exponente $1$ no se simplifica puesto que no se ha implementado (principalmente porque tras derivar siempre se escribe como un flotante), aunque en un futuro se podría mejorar, junto con técnicas de simplificación más complejas, para así reducir el tiempo de compilación de los shaders y realizar menos cálculos costosos.
+
+\begin{figure}[h]
+		\begin{minipage}{0.35\textwidth}
+  			\centering
+		  	\includegraphics[width=1\textwidth]{expresion}
+		\end{minipage}\hfill
+		\begin{minipage}{0.4\textwidth}
+  			\centering
+		  	\includegraphics[width=1\textwidth]{partial_expresion}
+		\end{minipage}\hfill
+		\begin{minipage}{0.23\textwidth}
+  			\centering
+		  	\includegraphics[width=1\textwidth]{simplified}
+		\end{minipage}\hfill
+	\caption{Árbol de la expresión, su parcial respecto $u$ y el mismo pero simplificado.}
+  	\label{fig:arbol_expresion}
+\end{figure}
 
 \endinput
 %------------------------------------------------------------------------------------
