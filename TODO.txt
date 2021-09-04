@@ -1,15 +1,58 @@
 Memoria:
+- Añadir:
+    * Creo que en el resumen en español, si hay espacio, puedes destacar más los logros de la parte informática. En concreto, me refiero a las cosas que te escribo aquí en los siguientes
+    puntos, en mis frases que comienzan con "Destacar ....", esas cosas se pueden añadir al resumen, aunque solo sea una frase de cada una (además de añadirse a las secciones 
+    correspondientes, en esas secciones con más detalle, lógicamente)
+
+    * Conceptos básicos vis (pag 27):
+        - hablar de representación computacional de objetos 3D, citar "representación de fronteras" (boundary representation), explicar que es un "malla indexada", explicar 
+que en este TFG se aproxima una variedad bidimensional en el espacio tridimensional como una malla indexada de triángulos, estando la variedad bidimensional o superficie definida por una 
+carta o función de parametrización analítica, parametrización que el usuario puede definir como una expresión en texto. Poner alguna figura que explique lo que es una carta (la puedes 
+tomar de internet o algún libro). Resaltar el hecho de que el usuario puede escribir funciones arbitrarias definidas por él, y que dichas expresiones son traducidas a un lenguaje de 
+programación que a su vez se compila para ejecutarse en la GPU.
+
+        - hablar del uso de las GPUs para, en general,  hacer de forma mucho más eficiente los cálculos asociados a la visualización en Informática Gráfica, descargando de esa
+ tarea a las CPUs, reduciendo el tráfico de datos (lento) a través del bus del sistema, y aprovechando la capacidad de procesamiento paralelo de las GPUs (que incorporan cientos o miles 
+ de unidades de cálculo en coma flotante). Resaltar que en tu proyecto se ha conseguido que absolutamente todos los cálculos relativos a la teselación se hagan en la GPU, y por tanto se 
+ consigue hacer en tiempo real, con tiempos por cada cuadro del orden de milisegundos.
+
+        - si te ves con tiempo, sería bueno incluir una figura con una DFD (diagrama de flujo de datos) de la aplicación que le de al lector una visión global de la estructura 
+y funcionamiento de la aplicación. Me refiero a una figura no muy compleja donde aparezcan 6 cajas o nodos correspondientes a estructuras de datos u algoritmos que leen o escribe las 
+estructuras, en concreto: el texto fuente de la parametrización (datos), el procesador del lenguaje (algoritmo), el código GLSL generado (datos), el visualizador de superficies (algoritmo),
+ la imagen de la superficie (datos), los parámetros de visualización (datos). Entre esos elementos pueden aparecer flechas que reflejen que un algoritmo escribe una estructura de datos o 
+ bien la lee. Creo que para que sea util debe ser sencillo, pero creo que ayudará a un lector a hacerse una idea de la relación entre los elementos del lenguaje.
+
+    * Estudio tess (pag 29):
+        - Antes de la sección 5.1: indicar que se pretende diseñar un algoritmo capaz de aproximar la superficie lo mejor posible pero con un número de triángulos que no sea muy alto. 
+        Explicar que siempre se pueden usar muchos triángulos muy pequeños para aproximar mejor cualquier superficie, pero que eso conlleva un coste en tiempo y memoria que puede ser 
+        innecesario en las partes de la superficie que sean más o menos planas. Frente a esto, buscamos un algoritmo que evite usar una resolución muy alta en esas regiones, para ello 
+        se parte de una resolución inicial y se subdividen los triángulos, iterativamente (cada subtriángulo se puede volver a subdividir varias veces), usando para ello las expresiones 
+        analíticas de la curvatura, obtenidas  derivando las expresiones de la parametrización. Resaltar que en tu proyecto se han diseñado medidas de error que sirven de guía para dicha 
+        teselación.
+
+        - Seguidamente indicar que para implementar el algoritmo de forma lo más eficiente posible se usa programación en la GPU, detallar los tipos de shaders más idóneos para esto y 
+        que tu has usado. Explicar que tu programa genera automáticamente el código GLSL que evalúa la parametrización y sus derivadas, a partir de las expresiones. Resaltar que tu 
+        proyecto, por tanto, en práctica conceptos de procesadores de lenguajes.
+
+    * Análisis y diseño, desarrollos algorítmicos (páginas 48 o 49): 
+    En el párrafo titulado "generación de árboles de expresión" incluir una figura que incluya una expresión sencilla y un esquema del correspondiente árbol sintáctico.
+    
+    * Implementación y pruebas, procesador:
+        - añadir textos indicando que se ha implementado el análisis léxico usando un generador de analizadores de léxico tipo 'lex' , a partir de las expresiones 
+regulares que definen los tokens de tu lenguaje de expresiones. Añadir que se ha implementado un analizador sintáctico LALR usando un generador de analizadores sintácticos tipo 'yacc', a 
+partir de la gramática del lenguaje y las acciones semánticas que construyen el árbol de expresión.
+
+
+
 - Revisar:
-    * Parte I
     * Parte II
-    * Conclusiones
-    * Apéndices
 - Incluir correcciones:
     * Frontmatter
     * Parte I
     * Parte II
     * Conclusiones
     * Apéndices
+- Revisar imagenes.
 
 Programa:
 - Re-revisar todo.
