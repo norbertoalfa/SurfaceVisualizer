@@ -126,7 +126,7 @@ Se describirá en esta sección de forma rigurosa el lenguaje que recibirá como
 \hline
 \end{tabular}
 \vspace{0.5cm}
-\\Además, está permitido llamar a la derivada parcial de una función ya definida. Por ejemplo, hemos definido ``f(u,v : real) : vec3'' y estamos definiendo ``g(u,v : real) : vec3 = fPuPv(u,v);'', donde ``Pu'' significa parcial respecto de la variable ``u'' y ``Pv'' la parcial respecto de ``v'' (conmutativo). Por tanto, podemos utilizar como llamada a una función el identificador ``<f><sucesión de P$x_i$>'', con ``f'' función base ya definida.
+\\Además, está permitido llamar a la derivada parcial de una función ya definida. Por ejemplo, supongamos que hemos definido ``f(u,v : real) : vec3'', entonces podemos definir después ``g(u,v : real) : vec3 = fPuPv(u,v);'', donde ``Pu'' significa parcial respecto de la variable ``u'' y ``Pv'' la parcial respecto de ``v'' (conmutativo). Por tanto, podemos utilizar como llamada a una función el identificador ``<f><sucesión de P$x_i$>'', con ``<f>'' función base ya definida y ``$x_i$'' variables suyas.
 
 \endinput
 %------------------------------------------------------------------------------------

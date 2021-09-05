@@ -29,7 +29,7 @@ En este capítulo se especificará toda aquella información referente a la estr
 			\begin{enumerate}
 				\item La curvatura de Gauss, asignando un color para la curvatura negativa y otro para la positiva, dependiendo de un parámetro de escala para resaltar las zonas.
 				\item El área diferencial de la parametrización, junto con un umbral y un factor de escala que se podrán modificar.
-				\item Se podrán visualizar los vectores tangente, normal y binormal de cada vértice generado.
+				\item Se podrán visualizar los vectores tangente, bitangente y normal de cada vértice generado.
 			\end{enumerate}
 			
 			\item El usuario tendrá la posibilidad de modificar los valores referentes a la iluminación.
@@ -51,7 +51,7 @@ En este capítulo se especificará toda aquella información referente a la estr
 	\end{enumerate}
 
 \section{Diagramas}
-En esta sección se ilustran ciertos diagramas que facilitan el entendimiento del programa. El siguiente diagrama es el de interacción de la acción ``compilar'', que es la que implica mayor comunicación entre entidades.\\
+En esta sección se ilustran ciertos diagramas que facilitan el entendimiento del programa. El siguiente diagrama es el de interacción de la acción ``compilar'', que es la que implica mayor comunicación entre entidades, donde cabe destacar que ``error.log'' es donde se almacena la salida de error, ``temp'' donde se indican el nº de cartas a visualizar (y el nº máximo de parámetros) y ``functions.s'' el código GLSL para los shaders.\\
 \begin{figure}[h]
   	\centering
   	\includegraphics[width=0.8\textwidth]{diagrama_interaccion}
@@ -91,11 +91,11 @@ El software implementado es capaz de hacer derivación simbólica, útil para la
 \\Dado un árbol de expresión y una variable, el cálculo del árbol de la derivada parcial respecto de dicha variable se realiza de manera recursiva, aplicando las reglas usuales de derivación. \\
 \\El caso más complejo, que cabe destacar, es cuando se trata de una llamada a otra función ya definida por el usuario, cuyos parámetros contienen la variable a derivar. Entonces se aplica la regla de la cadena para derivadas parciales, es decir:
 $$\frac{\partial}{\partial u}(f(exp_1, ..., exp_n)) = \sum_{i=1}^{n} \frac{\partial (exp_i)}{\partial u} \frac{\partial f}{\partial x_i}(exp_1, ..., exp_n))$$
-Pero es necesario definir la función $\frac{\partial f}{\partial x_i}$ $\forall i$, así que se comprobaría si existe ya dichas funciones y en caso negativo se definirán (se deriva su arbol de expresión asociado y se escribe en una función con nombre $fPx_i$).
+Pero es necesario definir la función $\frac{\partial f}{\partial x_i}$ $\forall i$, así que se comprobaría si existen ya dichas funciones y en caso negativo se definirán (se deriva su árbol de expresión asociado y se escribe en una función con nombre $fPx_i$).
 
 \subsection*{Simplificación de las expresiones}
 La simplificación de una expresión consiste en quitar paréntesis redundantes y eliminar aquellas operaciones evitables, como sumar $0$ o multiplicar por $1$. Esto mejora la legibilidad del código de salida.\\
-\\Dado un árbol de expresión, su simplificación se realiza de forma recursiva. Si denominamos $simplificar(n)$ la función que devuelve el árbol de expresión simplificado, con $n$ el nodo raíz, entonces el algoritmo es el siguiente:
+\\Dado un árbol de expresión, su simplificación se realiza de forma recursiva. Si denominamos $simplificar(n)$ a la función que devuelve el árbol de expresión simplificado, con $n$ el nodo raíz, entonces el algoritmo es el siguiente:
 \begin{enumerate}
 	\item Si $n$ tiene hijos $n_i$, ejecutar $simplificar(n_i)$.
 	\item Si $n$ es un nodo de paréntesis y su hijo no es un nodo de operación, sustituye $n$ por su propio hijo (quita los paréntesis).

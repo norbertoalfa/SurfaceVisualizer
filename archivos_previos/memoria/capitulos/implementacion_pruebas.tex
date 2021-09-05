@@ -35,7 +35,7 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 		\item Está pensado para realizar directamente el algoritmo de teselación, por lo que no hay que implementarlo.
 	\end{itemize}
 	
-	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación de un triángulo se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente.
+	Al tener implementado el algoritmo de teselación, el estudio se reduce a encontrar una medida que nos indique cómo de buena es la representación de la superficie. Como la teselación de un triángulo se indica por cada lado (outer tessellation factor) y en el interior (inner tessellation), para cada tipo de medida hay que proporcionar una adicional para los lados, para que la teselación sólo dependa de lo que sucede en ellos y de esta forma pegue correctamente con el triángulo adyacente. Dicho estudio ya se ha realizado en el apartado \textbf{Estudio de la teselación}, que es el capítulo $5$ de la parte II.
 
 \section*{Optimización del código GLSL}
 	Puesto que queremos que el programa renderice la escena en tiempo real, es necesario simplificar todo lo posible el código de los shaders, sobre todo del fragment shader (se va a ejecutar para cada vértice generado en el teselado). Para ello se han tenido en cuenta los siguientes hechos (obtenidos principalmente de la Wiki de Khronos \cite{KhronosWiki}, en la sección GLSL Optimizations):
@@ -43,27 +43,26 @@ En esta sección se justificará el uso del tesellation shader para el estudio d
 		\item Evitar el uso de saltos condicionales y de bucles. En caso de ser necesario algún bucle, usar los de la forma ``for(int i=$0$; i<n; i++)'' con $n$ entero constante, para permitir el desenrollado del bucle por el compilador.
 		\item Utilizar ``Swizzle'' en vez de asignar vectores componente a componente.
 		\item Utilizar ``MAD'', es decir, usar siempre que sea posible la multiplicación por el inverso en vez de la división (para aquellos valores ``uniform'' o constantes) y desarrollar las expresiones como una sumatoria de productos. Por ejemplo, utilizar $a*0.5 + b*0.5$ en vez de $(a+b)/2$.
-		\item Utilizar ``dot'' para agrupar varias expresiones en 1. De igual forma utilizar todo el cálculo vectorial y matricial posible para resumir las operaciones.
+		\item Utilizar ``dot'' para agrupar varias expresiones en una. De igual forma utilizar todo el cálculo vectorial y matricial posible para resumir las operaciones.
 		\item Si una expresión es común para un mismo frame, calcularlo en la CPU y asignarlo como otro ``uniform'' para quitarle carga a la GPU, ya que se ejecutaría para cada primitiva o vértice (dependiendo de en qué shader se realize el cálculo).
 	\end{itemize}
 	
-	Es cierto que el compilador ya realiza de manera automática algunas de estas optimizaciones, pero su puesta en práctica reduce ligeramente el tiempo de compilación.
+	Es cierto que el compilador ya realiza de manera automática algunas de estas optimizaciones, pero su puesta en práctica puede reducir ligeramente el tiempo de compilación.
 
 \section*{Procesador}
-La implementación del ``procesador'' nos se ha realizado desde cero, se ha partido de una implementación parcial que se aportaba en la asignatura de Procesadores de lenguajes. Dicha implementación, tras ser adaptada, sólo realizaba la traducción directa del código de entrada, junto con la comprobación de errores (léxicos, sintácticos y semánticos). La parte restante corresponde con la generación del árbol de expresión y calcular los árboles derivados, además de adecuar la salida correctamente para que se pueda utilizar como parte de un shader.\\
-\\Para dicho programa se ha implementado el análisis léxico usando un generador de analizadores de léxico tipo 'lex' (flex), a partir de las expresiones regulares que definen los tokens del lenguaje. También se ha implementado un analizador sintáctico LALR mediante un generador de analizadores sintácticos tipo 'yacc' (Bison), partiendo de la gramática del lenguaje, junto con las acciones semánticas que comprueban dichos errores (los errores semánticos) y generan los árboles de expresión.\\
+Para dicho programa se ha implementado el análisis léxico usando un generador de analizadores de léxico tipo 'lex' (flex), a partir de las expresiones regulares que definen los tokens del lenguaje. También se ha implementado un analizador sintáctico LALR mediante un generador de analizadores sintácticos tipo 'yacc' (Bison), partiendo de la gramática del lenguaje, junto con las acciones semánticas que comprueban dichos errores (los errores semánticos) y generan los árboles de expresión.\\
 \\Las expresiones regulares, la tabla de tokens y la gramática se han definido a partir de la especificiación BNF, ya citada en el desarrollo del proyecto (parte II, capítulo Procesador).
+\\La implementación del ``procesador'' no se ha realizado desde cero, es decir, se ha partido de una implementación parcial que se aportaba en la asignatura de Procesadores de lenguajes. Dicha implementación, tras ser adaptada, sólo realizaba la traducción directa del código de entrada, junto con la comprobación de errores (léxicos, sintácticos y semánticos). La parte restante corresponde con la generación del árbol de expresión y calcular los árboles derivados, además de adecuar la salida correctamente para que se pueda utilizar como parte de un shader.\\
 
 \section*{Visualizador}
-En un principio se propuso utilizar como código de partida el proporcionado en la asignatura de Informática Gráfica, pero se observó que tenía muchas funcionalidades que no se llegarían a utilizar y cuya adaptación requeriría más tiempo. Por ello se decidió empezar de cero, pero utilizando como ``esqueleto'' un código de ejemplo de la referencia LearnOpenGL \cite{LearnOGL}, que aportaban simplemente la visualización de un objeto en una escena $3$D con una fuente de luz y una cámara sencilla.
+En un principio se propuso utilizar como código de partida el proporcionado en la asignatura de Informática Gráfica, pero se observó que tenía muchas funcionalidades que no se llegarían a utilizar y cuya adaptación requeriría más tiempo. Por ello se decidió empezar de cero, pero utilizando como ``esqueleto'' un código de ejemplo de la referencia Learn OpenGL \cite{LearnOGL}, que aportaba simplemente la visualización de un objeto en una escena $3$D con una fuente de luz y una cámara sencilla.
 
 \section*{Interfaz}
-Para la implementación de la interfaz se ha utilizado la librería de código libre ``Dear ImGui'' \cite{DearImGui}, junto los complementos ``ImGui Quat'' \cite{LVector} para visualizar el vector de luz y modificarlo, e ``ImGui Dialog'' \cite{Dialog} para mostrar un diálogo con un explorador de archivo y así poder seleccionar la parametrización deseada.
+Para la implementación de la interfaz se ha utilizado la librería de código libre ``Dear ImGui'' \cite{DearImGui}, junto los complementos ``ImGui Quat'' \cite{LVector} para visualizar el vector de luz y modificarlo, e ``ImGui Dialog'' \cite{Dialog} para mostrar un diálogo con un explorador de archivos y así poder seleccionar la parametrización deseada.
 
 \section*{Generación de informes}
-
-	Para medir el rendimiento de la aplicación se han medido los fotogramas generados por segundo y las primitivas que hay presentes en la escena, incluyendo las que son producto del teselado.\\
-\\La medición del nº de primitivas se ha realizado mediante el uso de la estructura "query" de OpenGL, la cual se actualiza cada vez que renderiza la escena. El nº de fotogramas por segundo se ha calculado manualmente, a partir de la latencia entre fotogramas (cuando se acumula más de $1$ segundo de latencia, devuelve el nº de fps en ese segundo).\\
+Para conocer el rendimiento de la aplicación se han medido los fotogramas generados por segundo y las primitivas que hay presentes en la escena, incluyendo las que son producto del teselado.\\
+\\La medición del nº de primitivas se ha realizado mediante el uso de la estructura "query" de OpenGL, la cual se actualiza cada vez que renderiza la escena. El nº de fotogramas por segundo se ha calculado manualmente, contando los fotogramas generados en cada segundo.\\
 \\Además, para mayor comodidad se ha añadido una opción para realizar dichas mediciones de forma automática y escribir los resultados en un archivo cuyo nombre dependerá de la parametrización actual y el modo de visualización. Por defecto realiza $22$ medidas ($22$ segundos). Es ligeramente mayor que $20$ para después quitar la primera y/o última medida, ya que están influenciadas por la interacción del usuario con la interfaz.\\
 \\Estas medidas son suficientes para observar si la aplicación está aprovechando correctamente los recursos para obtener una buena visualización de la superficie, ya que el objetivo es que funcione en tiempo real ofreciendo la mínima carga posible al sistema.
 
@@ -143,7 +142,7 @@ Para la implementación de la interfaz se ha utilizado la librería de código l
 	
 	
 	\newpage
-	Las siguientes imágenes corresponden con la parametrización ``gaussiana.in'' con los distintos modos de visualización, donde para cada modo se ha buscado la configuración óptima, es decir, aquella en la que se ve visualmente bien y el nº de triángulos es mínimo. Por tanto, las $4$ imágenes debería ser exactamente iguales:
+	Las siguientes imágenes corresponden con la parametrización ``gaussiana.in'' con los distintos modos de visualización, donde para cada modo se ha buscado la configuración óptima, es decir, aquella en la que se ve visualmente bien y el nº de triángulos es mínimo. Por tanto, las $4$ imágenes debería ser exactamente iguales en modo relleno, en modo malla se verán las distintas distribuciones de triángulos subyacentes:
 	\begin{figure}[h]
 		\begin{minipage}{0.48\textwidth}
   			\centering

@@ -148,6 +148,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
     status.setWidth(width);
     status.setHeight(height);
+    status.updateFovs();
 }
 
 // glfw: whenever the mouse moves, this callback is called

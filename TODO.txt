@@ -54,19 +54,8 @@ regulares que definen los tokens de tu lenguaje de expresiones. Añadir que se h
 partir de la gramática del lenguaje y las acciones semánticas que construyen el árbol de expresión.
 
 
-- Revisar:
-    * Resumen.
-    * Introducción.
-    * Objetivos.
-    * Parte II
-- Incluir correcciones:
-    * Resumen.
-    * Introducción.
-    * Objetivos.
-    * Parte II
-- Revisar imagenes.
-
 Programa:
+- (comprobar) Recalcular maxdot para outview, cuando se cambia el tamaño de ventana.
 - Re-revisar todo.
 
 Opcional:

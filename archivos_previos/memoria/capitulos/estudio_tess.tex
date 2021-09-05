@@ -18,7 +18,7 @@ En este capítulo se pretende diseñar un algoritmo de teselación capaz de apro
 
 	\subsection*{Medida basada en el volumen}
 	
-	Consiste en estimar el volumen de la diferencia entre el poliedro generado y la superficie original a nivel local. Esta medida está asociada al primer concepto de superficie bien representada:
+	Consiste en estimar el volumen de la diferencia entre la malla indexada generada y la superficie original a nivel local. Esta medida está asociada al primer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 1]
 		Dada una superficie $S$ y una malla $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si el volumen contenido entre ambos es menor que $\epsilon$.
 	\end{definicion}
@@ -37,7 +37,8 @@ En este capítulo se pretende diseñar un algoritmo de teselación capaz de apro
   		\caption{Pico no teselado}
   		\label{fig:pico_volumen}
 	\end{figure}
-	
+
+	\newpage
 	\subsection*{Medida basada en el área}
 	
 	Consiste en estimar el área de la superficie original localmente. Esta medida está asociada al segundo concepto de superficie bien representada:
@@ -61,10 +62,10 @@ En este capítulo se pretende diseñar un algoritmo de teselación capaz de apro
 	\subsection*{Medida basada en la curvatura}
 	Consiste en estimar la curvatura de Gauss por área. Esta medida está asociada al tercer concepto de superficie bien representada:
 	\begin{definicion}[Superficie bien representada 3]
-		Dada una superficie $S$ y una malla $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si para todo triángulo $T$ del politopo se cumple que $K_T A(T) < \epsilon$, donde $K_T$ es el máximo valor de la curvatura de Gauss en valor absoluto en $T$.
+		Dada una superficie $S$ y una malla $P$ que la aproxima, se dice que la representa con una precisión de $\epsilon > 0$ si para todo triángulo $T$ de la malla se cumple que $K_T A(T) < \epsilon$, donde $K_T$ es el máximo valor de la curvatura de Gauss en valor absoluto en $T$.
 	\end{definicion}
 	
-	La medida equivalente para los lados es $K_l L$ donde $L$ es la longitud y $l$ el lado del triángulo.\\
+	La medida equivalente para los lados es $K_l L(l)$ donde $L$ es la longitud y $l$ el lado del triángulo.\\
 	\\Si utilizamos como medida sólo la curvatura, que no depende de la parametrización de la superficie, teselaríamos de igual forma en un triángulo grande $T_1$ y en uno pequeño $T_2$ si $K_{T_1}=K_{T_2}$, obteniendo subtriángulos distintos. Esto se debe a que la parametrización elegida deforma la malla inicial cambiando de forma irregular el tamaño de los triángulos. Un claro ejemplo es la reducción de la base de los triángulos a medida que nos acercamos a los polos en una esfera con la parametrización usual. Se puede observar en la siguiente imágen, donde el color indica el área diferencial de la parametrización.\\
 	\begin{figure}[h]
   		\centering
@@ -74,7 +75,6 @@ En este capítulo se pretende diseñar un algoritmo de teselación capaz de apro
 	\end{figure}
 	\newpage
 	Para evitarlo, multiplicamos por el área del triángulo, así que para el caso anterior el triángulo $T_1$ tendría un valor de dicha medida mayor que el triángulo $T_2$, por lo que sería necesario teselar más.\\
-	\\Puesto que la escena es dinámica y es posible mover el punto de visión, se puede utilizar el área relativa al ``ojo'' en vez del área real, es decir, variar la teselación necesaria según la distancia del ojo a la superficie. Esto permite que a medida que nos acerquemos a la superficie la teselación aumente, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$.\\
 	\\También tiene un punto negativo, y es que genera una excesiva teselación en zonas con una cruvatura de Gauss muy elevada (en valor absoluto), por lo que puede crear efectos antinaturales si hay zonas con poca curvatura cerca, ya que hay un cambio brusco de teselado:\\
 	\begin{figure}[h]
   		\centering
@@ -83,9 +83,10 @@ En este capítulo se pretende diseñar un algoritmo de teselación capaz de apro
 		\caption{Teselado basado en K.}
   		\label{fig:efecto_curvatura}
 	\end{figure}
+\\Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un exponente $\alpha>0$, en el que si $\alpha<1$ la teselación será más uniforme, manteniendo sin teselar las zonas planas, y si $\alpha\geq1$ se le dará más inportancia a las zonas curvas. En la práctica se recomienda usar $0.1<\alpha<0.5$ para un buen equilibrio calidad/rendimiento.\\
+
 \newpage
-Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un exponente $\alpha>0$, en el que si $\alpha<1$ la teselación será más uniforme, manteniendo sin teselar las zonas planas, y si $\alpha\geq1$ se le dará más inportancia a las zonas curvas. En la práctica se recomienda usar $0.1<\alpha<0.5$ para un buen equilibrio calidad/rendimiento.\\
-\\Las siguientes imágenes muestran el uso de esta funcionalidad, requeriendo el mismo número de triángulos que en las figuras anteriores:
+Las siguientes imágenes muestran el uso de esta funcionalidad, requeriendo el mismo número de triángulos que en las figuras anteriores:
 	\begin{figure}[h]
   		\centering
   		\includegraphics[width=0.45\textwidth]{teselado_homo}
@@ -106,13 +107,13 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
 	\end{figure}
 	\\La primera figura está aproximada con una cantidad muy inferior de primitivas con respecto a la segunda, y la última es la diferencia entre las dos primeras, para así ver la importancia de la correcta representación de bordes y texturas. Para el caso de la visualización de superficies tenemos que:
 	\begin{enumerate}
-		\item Visualizar una superficie a diferentes \textbf{distancias} equivale a visualizar la misma superficie pero con distinto tamaño, es por ello que el umbral utilizado para la definición de buena aproximación puede ser relativo a la distancia de la cámara al triángulo visualizado. De esta forma, para zonas con características similares y a diferentes distancias, el teselado será mayor en la que está más cerca de la cámara. Además, podemos complementarlo añadiendo una distancia máxima de teselado, para evitar teselar zonas alejadas en superficies no compactas.
+		\item Visualizar una superficie a diferentes \textbf{distancias} equivale a visualizar la misma superficie pero con distinto tamaño, es por ello que el umbral utilizado para la definición de buena aproximación puede ser relativo a la distancia de la cámara al triángulo visualizado. De esta forma, para zonas con características similares y a diferentes distancias, el teselado será mayor en las que estén más cerca de la cámara, funcionando de manera similar a un gráfico vectorial escalable (SVG), pero en $\R^3$. Además, podemos complementarlo añadiendo una distancia máxima de teselado, para evitar teselar zonas alejadas en superficies aparentemente no compactas.
 		\item Los únicos $\textbf{bordes}$ posibles son aquellas zonas donde el vector de visualización del punto (con origen la cámara y destino el punto a comprobar, normalizado) es perpendicular a la normal en el punto. Si reducimos el nivel de teselado en zonas que no sean bordes, teniendo cuidado en las zonas con mayor iluminación, mantedremos la misma calidad visual reduciendo el número de primitivas usadas. En la práctica se ha utilizado un factor de reducción de $\frac{2}{3}$.
 		\item Ver la $\textbf{textura}$ de una superficie equivale a ver cómo afecta la iluminación a la misma, por lo que en nuestro caso una zona con textura visible es aquella donde el factor de iluminación difusa es mayor que $0$. Además, podemos reducir el nivel de teselado como en el apartado anterior en caso de que la iluminación sea tenue, es decir, mayor que $0$ pero menor que un umbral $\alpha>0$ (en la práctica se ha utilizado $\alpha = 0.5$). El factor de iluminación difusa se calcula de la siguiente forma:
 		$$<N(u,v),\frac{P_L-p(u,v)}{|P_L-p(u,v)|}>$$
 		Con $p$ carta, $N(u,v)$ la normal en $p(u,v)$ y $P_L$ la posición de la luz actual.
-		\item Un elemento está $\textbf{fuera del campo de visión}$ si el vector frontal de la cámara y el vector de visualización del punto cumplen ciertas restricciones, cuya complejidad dependerá de la definición de campo de visión escogida. Simplificando el problema, podemos decir que esto sucede si su producto escalar es cercano al $0$, bajo un cierto umbral $\delta>0$ que definirá el campo de visión con forma de cono. Dado un ángulo de visión $\alpha$, el umbral se puede calcular como $cos(\frac{\alpha}{2})$, obtenido a partir de la expresión del producto escalar:
-		$$<p,q>=|p||q|cos(\angle(p,q))$$
+		\item Un elemento está $\textbf{fuera del campo de visión}$ si el vector frontal de la cámara y el vector de visualización del punto cumplen ciertas restricciones, cuya complejidad dependerá de la definición de campo de visión escogida. Simplificando el problema, podemos decir que esto sucede si su producto escalar es cercano al $0$, bajo un cierto umbral $\delta>0$ que definirá el campo de visión con forma de cono. Dado un ángulo de visión $\alpha$, el umbral se puede calcular como $cos(\frac{\alpha}{2})$, obtenido a partir de la expresión del producto escalar siguiente, donde $p$ es el vector frontal de la cámara y $q$ el de visualización del punto (normalizados):
+		$$<p,q>=|p||q|cos(\angle(p,q))=cos(\angle(p,q))$$
 		Para tener una visión de $75$º sería necesario un umbral de $0.793$ aproximadamente. En la prácitca se calcula automáticamente según el FoV en el eje X y el eje Y (se calcula el FoV de la diagonal, para encerrar la ``pirámide de visión'' en un ``cono de visión'' mayor).
 		\item Si la superficie es orientable y su complemento tiene 2 componentes conexas, entonces el punto $p$ está $\textbf{oculto por superposición}$ si el producto escalar del vector de visualización de $p$ con la normal en $p$ es mayor que $0$. Para evitar el solapamiento con la definición de borde, se puede proporcionar un umbral $\epsilon>0$, comprobando si dicho producto es mayor que $\epsilon$ en vez del $0$.
 	\end{enumerate}
@@ -125,7 +126,7 @@ Esto se puede corregir elevando el valor absoluto de la curvatura de Gauss a un 
 \section{Estimación de las medidas}
 	Debido al cálculo costoso que conlleva la obtención de dichas medidas en el interior del triángulo, el problema se ha reducido a calcular el nivel de teselado en las medianas del triángulo y posteriormente tomando el valor medio, para así evitar grandes diferencias de teselado con respecto a los lados del triángulo. Además, esto facilita compartir ciertos cálculos con los lados y así mejorar el rendimiento.\\
 	\\Para calcular la curvatura de Gauss por área y la iluminación en un segmento es necesaria una aproximación puesto que dichos valores normalmente no serán constantes. Para ello realizamos muestras equidistantes en el segmento a estudiar, de forma determinista para que triángulos adyacentes tengan el mismo nivel de teselado en el lado compartido.\\
-	\\Una vez tomadas las muestras, calculamos el valor de la curvatura de Gauss en valor absoluto y del producto escalar para la iluminación difusa y nos quedamos con el máximo para cada uno, contemplando así el peor caso posible. Se ha utilizado el máximo en vez de cualquier otra función para así detectar mejor la presencia de ``picos'' y otras zonas extremadamente curvadas con tamaño mucho menor que el del triángulo inicial.
+	\\Una vez tomadas las muestras, calculamos el valor de la curvatura de Gauss en valor absoluto y del producto escalar para la iluminación difusa y nos quedamos con el máximo para cada uno, contemplando así el peor caso posible. Se ha utilizado el máximo en vez de cualquier otra función para así detectar mejor la presencia de ``picos'' y otras zonas extremadamente curvadas.
 
 \endinput
 %------------------------------------------------------------------------------------
