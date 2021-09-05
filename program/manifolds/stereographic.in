@@ -12,7 +12,7 @@ compz(u, v : real) : real = 2*v;
 f(u, v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v))  / (1 + u^2 + v^2);
 
 // You can use another function to redefine the domain instead of [0,1]x[0,1].
-g(u, v : real, t0, t1 : real) : vec3 = f(10*(u-0.5), 10*(v-0.5)) * t0 + (1 - t0) * vec3(10*(u-0.5), -1, 10*(v-0.5));
+g(u, v : real, t0 : real) : vec3 = f(10*(u-0.5), 10*(v-0.5)) * t0 + (1 - t0) * vec3(10*(u-0.5), -1, 10*(v-0.5));
 
 esf(u,v : real) : vec3 = vec3(cos(v*PI)*cos(2*u*PI), cos(v*PI)*sin(2*u*PI), sin(v*PI));
 esfDom(u,v : real) : vec3 = esf(u-0.5, v-0.5);

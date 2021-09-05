@@ -1,15 +1,21 @@
-compzWaves(u, v :real, t0 :real) : real = 0.1*cos(u*u + v*v - 2*PI*t0);
+//-- Structure example with sphere parameterization --//
 
-f(u, v :real, t0, t1 : real) : vec3 = 4*vec3(u, t1 * compzWaves(4*u, 4*v, t0) / (u*u + v*v + 1.0), v);
-h(u, v :real, t0, t1 : real) : vec3 = f(10*(u-0.5), 10*(v-0.5), t0, t1);
+// Define constants 
+PI2 : real = 2*PI;
 
-r : real = 0.75;
+// Define aditional functions 
+compx(u, v : real) : real = 2*u;
+compy(u, v : real) : real = -1 + u^2 + v^2;
+compz(u, v : real) : real = 2*v;
 
-compx(u, v : real) : real = r*cos(v*PI)*cos(u*2*PI);
-compy(u, v : real) : real = r*cos(v*PI)*sin(u*2*PI);
-compz(u, v : real) : real = r*sin(v*PI);
+// Define de main function.
+f(u, v : real) : vec3 = vec3(compx(u,v), compy(u,v), compz(u,v))  / (1 + u^2 + v^2);
 
-esfera(u, v : real, t0, t1 :real) : vec3 = vec3(compx(u,v), compy(u,v) + 4*t1*compzWaves(0,0,t0), compz(u,v));
-g(u, v : real, t0, t1 : real) : vec3 = esfera(u-0.5, -(v-0.5), t0, t1);
+// You can use another function to redefine the domain instead of [0,1]x[0,1].
+g(u, v : real, t0 : real) : vec3 = f(10*(u-0.5), 10*(v-0.5)) * t0 + (1 - t0) * vec3(10*(u-0.5), -1, 10*(v-0.5));
 
-plot h, g;
+esf(u,v : real) : vec3 = vec3(cos(v*PI)*cos(2*u*PI), cos(v*PI)*sin(2*u*PI), sin(v*PI));
+esfDom(u,v : real) : vec3 = esf(u-0.5, v-0.5);
+
+// To plot 'g', it must return a 'vec3' type and the first two arguments must be reals.
+plot g, esfDom;
