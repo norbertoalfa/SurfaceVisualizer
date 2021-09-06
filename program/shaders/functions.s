@@ -58,249 +58,579 @@ mat3 funcionIf(bool cond, mat3 e1, mat3 e2)
 	 else
 		 return e2;
 }
-float PI2 = 2 * PI;
-
-float compx(float u, float v) {
-	return 2 * u;
+vec3 f(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(u, alt *  cos(Fr * (a * u + b * v) + 2 * PI * t), v));
 }
 
-float compy(float u, float v) {
-	return  - 1 +  pow(u, 2) +  pow(v, 2);
+vec3 fPu(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(1, (alt * (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (Fr * a))), 0));
 }
 
-float compz(float u, float v) {
-	return 2 * v;
+vec3 fPv(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (Fr * b))), 1));
 }
 
-vec3 f(float u, float v) {
-	return vec3( vec3( compx(u, v),  compy(u, v),  compz(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)));
+vec3 fNormal(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( normalize( cross( fPu(u, v, Fr, alt, a, b, t),  fPv(u, v, Fr, alt, a, b, t))));
 }
 
-float compxPu(float u, float v) {
-	return 2;
+float fArea(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return  distance( fPu(u, v, Fr, alt, a, b, t),  fPv(u, v, Fr, alt, a, b, t));
 }
 
-float compxPv(float u, float v) {
-	return 0;
+vec3 fPuPu(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * a))) * (Fr * a))), 0));
 }
 
-float compyPu(float u, float v) {
-	return (2 *  pow(u, 1.000000));
+vec3 fPvPv(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * b))) * (Fr * b))), 0));
 }
 
-float compyPv(float u, float v) {
-	return (2 *  pow(v, 1.000000));
+vec3 fPuPv(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * b))) * (Fr * a))), 0));
 }
 
-float compzPu(float u, float v) {
-	return 0;
+float fK(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return ( determinant( mat3( fPuPu(u, v, Fr, alt, a, b, t),  fPu(u, v, Fr, alt, a, b, t),  fPv(u, v, Fr, alt, a, b, t))) *  determinant( mat3( fPvPv(u, v, Fr, alt, a, b, t),  fPu(u, v, Fr, alt, a, b, t),  fPv(u, v, Fr, alt, a, b, t))) -  pow( determinant( mat3( fPuPv(u, v, Fr, alt, a, b, t),  fPu(u, v, Fr, alt, a, b, t),  fPv(u, v, Fr, alt, a, b, t))), 2)) /  pow( pow( length( fPu(u, v, Fr, alt, a, b, t)), 2) *  pow( length( fPv(u, v, Fr, alt, a, b, t)), 2) -  pow( dot( fPu(u, v, Fr, alt, a, b, t),  fPv(u, v, Fr, alt, a, b, t)), 2), 2);
 }
 
-float compzPv(float u, float v) {
-	return 2;
+vec3 g1(float u, float v, float Fr, float alt, float t0) {
+	return vec3( f(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
 }
 
-vec3 fPu(float u, float v) {
-	return vec3(( vec3( compxPu(u, v),  compyPu(u, v),  compzPu(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)) -  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 *  pow(u, 1.000000)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2))));
+vec3 fPFr(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (a * u + b * v))), 0));
 }
 
-vec3 fPv(float u, float v) {
-	return vec3(( vec3( compxPv(u, v),  compyPv(u, v),  compzPv(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)) -  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 *  pow(v, 1.000000)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2))));
+vec3 fPalt(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0,  cos(Fr * (a * u + b * v) + 2 * PI * t), 0));
 }
 
-vec3 fNormal(float u, float v) {
-	return vec3( normalize( cross( fPu(u, v),  fPv(u, v))));
+vec3 fPa(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (Fr * u))), 0));
 }
 
-float fArea(float u, float v) {
-	return  distance( fPu(u, v),  fPv(u, v));
+vec3 fPb(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (Fr * v))), 0));
 }
 
-float compxPuPu(float u, float v) {
-	return 0;
+vec3 fPt(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (2 * PI))), 0));
 }
 
-float compxPuPv(float u, float v) {
-	return 0;
+vec3 g1Pu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPu(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
 }
 
-float compyPuPu(float u, float v) {
-	return (2 * (1.000000 *  pow(u, 0.000000)));
+vec3 g1Pv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPv(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
 }
 
-float compyPuPv(float u, float v) {
-	return 0;
+vec3 g1Normal(float u, float v, float Fr, float alt, float t0) {
+	return vec3( normalize( cross( g1Pu(u, v, Fr, alt, t0),  g1Pv(u, v, Fr, alt, t0))));
 }
 
-float compzPuPu(float u, float v) {
-	return 0;
+float g1Area(float u, float v, float Fr, float alt, float t0) {
+	return  distance( g1Pu(u, v, Fr, alt, t0),  g1Pv(u, v, Fr, alt, t0));
 }
 
-float compzPuPv(float u, float v) {
-	return 0;
+vec3 fPuPFr(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (a * u + b * v))) * (Fr * a) + ( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * a)), 0));
 }
 
-vec3 fPuPu(float u, float v) {
-	return vec3((( vec3( compxPuPu(u, v),  compyPuPu(u, v),  compzPuPu(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)) -  vec3( compxPu(u, v),  compyPu(u, v),  compzPu(u, v)) * (2 *  pow(u, 1.000000)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2))) - (( vec3( compxPu(u, v),  compyPu(u, v),  compzPu(u, v)) * (2 *  pow(u, 1.000000)) +  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 * (1.000000 *  pow(u, 0.000000)))) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)) -  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 *  pow(u, 1.000000)) * (2 *  pow((1 +  pow(u, 2) +  pow(v, 2)), 1.000000) * (2 *  pow(u, 1.000000))) / ( pow(( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)), 2)))));
+vec3 fPuPalt(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (Fr * a)), 0));
 }
 
-float compxPvPu(float u, float v) {
-	return 0;
+vec3 fPuPa(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * u))) * (Fr * a) + ( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * Fr)), 0));
 }
 
-float compxPvPv(float u, float v) {
-	return 0;
+vec3 fPuPb(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * v))) * (Fr * a))), 0));
 }
 
-float compyPvPu(float u, float v) {
-	return 0;
+vec3 fPuPt(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (2 * PI))) * (Fr * a))), 0));
 }
 
-float compyPvPv(float u, float v) {
-	return (2 * (1.000000 *  pow(v, 0.000000)));
+vec3 g1PuPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPu(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
 }
 
-float compzPvPu(float u, float v) {
-	return 0;
+vec3 fPvPu(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * a))) * (Fr * b))), 0));
 }
 
-float compzPvPv(float u, float v) {
-	return 0;
+vec3 fPvPFr(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (a * u + b * v))) * (Fr * b) + ( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * b)), 0));
 }
 
-vec3 fPvPv(float u, float v) {
-	return vec3((( vec3( compxPvPv(u, v),  compyPvPv(u, v),  compzPvPv(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)) -  vec3( compxPv(u, v),  compyPv(u, v),  compzPv(u, v)) * (2 *  pow(v, 1.000000)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2))) - (( vec3( compxPv(u, v),  compyPv(u, v),  compzPv(u, v)) * (2 *  pow(v, 1.000000)) +  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 * (1.000000 *  pow(v, 0.000000)))) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)) -  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 *  pow(v, 1.000000)) * (2 *  pow((1 +  pow(u, 2) +  pow(v, 2)), 1.000000) * (2 *  pow(v, 1.000000))) / ( pow(( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)), 2)))));
+vec3 fPvPalt(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * (Fr * b)), 0));
 }
 
-vec3 fPuPv(float u, float v) {
-	return vec3((( vec3( compxPuPv(u, v),  compyPuPv(u, v),  compzPuPv(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)) -  vec3( compxPu(u, v),  compyPu(u, v),  compzPu(u, v)) * (2 *  pow(v, 1.000000)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2))) - (( vec3( compxPv(u, v),  compyPv(u, v),  compzPv(u, v)) * (2 *  pow(u, 1.000000)) +  vec3(0)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)) -  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 *  pow(u, 1.000000)) * (2 *  pow((1 +  pow(u, 2) +  pow(v, 2)), 1.000000) * (2 *  pow(v, 1.000000))) / ( pow(( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)), 2)))));
+vec3 fPvPa(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * u))) * (Fr * b))), 0));
 }
 
-float fK(float u, float v) {
-	return ( determinant( mat3( fPuPu(u, v),  fPu(u, v),  fPv(u, v))) *  determinant( mat3( fPvPv(u, v),  fPu(u, v),  fPv(u, v))) -  pow( determinant( mat3( fPuPv(u, v),  fPu(u, v),  fPv(u, v))), 2)) /  pow( pow( length( fPu(u, v)), 2) *  pow( length( fPv(u, v)), 2) -  pow( dot( fPu(u, v),  fPv(u, v)), 2), 2);
+vec3 fPvPb(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (Fr * v))) * (Fr * b) + ( -  sin(Fr * (a * u + b * v) + 2 * PI * t)) * Fr)), 0));
 }
 
-vec3 g(float u, float v, float t0) {
-	return vec3( f(10 * (u - 0.5), 10 * (v - 0.5)) * t0 + (1 - t0) *  vec3(10 * (u - 0.5),  - 1, 10 * (v - 0.5)));
+vec3 fPvPt(float u, float v, float Fr, float alt, float a, float b, float t) {
+	return vec3( vec3(0, (alt * (( - ( cos(Fr * (a * u + b * v) + 2 * PI * t) * (2 * PI))) * (Fr * b))), 0));
 }
 
-vec3 gPu(float u, float v, float t0) {
-	return vec3(((( fPu(10 * (u - 0.5), 10 * (v - 0.5)) * 10) * t0) + ( vec3(0) + (1 - t0) *  vec3(10, 0, 0))));
+vec3 g1PvPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPv(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
 }
 
-vec3 gPv(float u, float v, float t0) {
-	return vec3(((( fPv(10 * (u - 0.5), 10 * (v - 0.5)) * 10) * t0) + ( vec3(0) + (1 - t0) *  vec3(0, 0, 10))));
+vec3 g1PuPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPv(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
 }
 
-vec3 gNormal(float u, float v, float t0) {
-	return vec3( normalize( cross( gPu(u, v, t0),  gPv(u, v, t0))));
+float g1K(float u, float v, float Fr, float alt, float t0) {
+	return ( determinant( mat3( g1PuPu(u, v, Fr, alt, t0),  g1Pu(u, v, Fr, alt, t0),  g1Pv(u, v, Fr, alt, t0))) *  determinant( mat3( g1PvPv(u, v, Fr, alt, t0),  g1Pu(u, v, Fr, alt, t0),  g1Pv(u, v, Fr, alt, t0))) -  pow( determinant( mat3( g1PuPv(u, v, Fr, alt, t0),  g1Pu(u, v, Fr, alt, t0),  g1Pv(u, v, Fr, alt, t0))), 2)) /  pow( pow( length( g1Pu(u, v, Fr, alt, t0)), 2) *  pow( length( g1Pv(u, v, Fr, alt, t0)), 2) -  pow( dot( g1Pu(u, v, Fr, alt, t0),  g1Pv(u, v, Fr, alt, t0)), 2), 2);
 }
 
-float gArea(float u, float v, float t0) {
-	return  distance( gPu(u, v, t0),  gPv(u, v, t0));
+vec3 g2(float u, float v, float Fr, float alt, float t0) {
+	return vec3( f(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
 }
 
-vec3 gPuPu(float u, float v, float t0) {
-	return vec3((((( fPuPu(10 * (u - 0.5), 10 * (v - 0.5)) * 10) * 10) * t0) + ( vec3(0) + ( vec3(0) + (1 - t0) *  vec3(0, 0, 0)))));
+vec3 g2Pu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPu(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
 }
 
-vec3 fPvPu(float u, float v) {
-	return vec3((( vec3( compxPvPu(u, v),  compyPvPu(u, v),  compzPvPu(u, v)) / (1 +  pow(u, 2) +  pow(v, 2)) -  vec3( compxPv(u, v),  compyPv(u, v),  compzPv(u, v)) * (2 *  pow(u, 1.000000)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2))) - (( vec3( compxPu(u, v),  compyPu(u, v),  compzPu(u, v)) * (2 *  pow(v, 1.000000)) +  vec3(0)) / ( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)) -  vec3( compx(u, v),  compy(u, v),  compz(u, v)) * (2 *  pow(v, 1.000000)) * (2 *  pow((1 +  pow(u, 2) +  pow(v, 2)), 1.000000) * (2 *  pow(u, 1.000000))) / ( pow(( pow((1 +  pow(u, 2) +  pow(v, 2)), 2)), 2)))));
+vec3 g2Pv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPv(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
 }
 
-vec3 gPvPv(float u, float v, float t0) {
-	return vec3((((( fPvPv(10 * (u - 0.5), 10 * (v - 0.5)) * 10) * 10) * t0) + ( vec3(0) + ( vec3(0) + (1 - t0) *  vec3(0, 0, 0)))));
+vec3 g2Normal(float u, float v, float Fr, float alt, float t0) {
+	return vec3( normalize( cross( g2Pu(u, v, Fr, alt, t0),  g2Pv(u, v, Fr, alt, t0))));
 }
 
-vec3 gPuPv(float u, float v, float t0) {
-	return vec3((((( fPuPv(10 * (u - 0.5), 10 * (v - 0.5)) * 10) * 10) * t0) + ( vec3(0) + ( vec3(0) + (1 - t0) *  vec3(0, 0, 0)))));
+float g2Area(float u, float v, float Fr, float alt, float t0) {
+	return  distance( g2Pu(u, v, Fr, alt, t0),  g2Pv(u, v, Fr, alt, t0));
 }
 
-float gK(float u, float v, float t0) {
-	return ( determinant( mat3( gPuPu(u, v, t0),  gPu(u, v, t0),  gPv(u, v, t0))) *  determinant( mat3( gPvPv(u, v, t0),  gPu(u, v, t0),  gPv(u, v, t0))) -  pow( determinant( mat3( gPuPv(u, v, t0),  gPu(u, v, t0),  gPv(u, v, t0))), 2)) /  pow( pow( length( gPu(u, v, t0)), 2) *  pow( length( gPv(u, v, t0)), 2) -  pow( dot( gPu(u, v, t0),  gPv(u, v, t0)), 2), 2);
+vec3 g2PuPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPu(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
 }
 
-vec3 esf(float u, float v) {
-	return vec3( vec3( cos(v * PI) *  cos(2 * u * PI),  cos(v * PI) *  sin(2 * u * PI),  sin(v * PI)));
+vec3 g2PvPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPv(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
 }
 
-vec3 esfPu(float u, float v) {
-	return vec3( vec3(( cos(v * PI) * (( -  sin(2 * u * PI)) * (2 * PI))), ( cos(v * PI) * ( cos(2 * u * PI) * (2 * PI))), 0));
+vec3 g2PuPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPv(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
 }
 
-vec3 esfPv(float u, float v) {
-	return vec3( vec3(((( -  sin(v * PI)) * PI) *  cos(2 * u * PI)), ((( -  sin(v * PI)) * PI) *  sin(2 * u * PI)), ( cos(v * PI) * PI)));
+float g2K(float u, float v, float Fr, float alt, float t0) {
+	return ( determinant( mat3( g2PuPu(u, v, Fr, alt, t0),  g2Pu(u, v, Fr, alt, t0),  g2Pv(u, v, Fr, alt, t0))) *  determinant( mat3( g2PvPv(u, v, Fr, alt, t0),  g2Pu(u, v, Fr, alt, t0),  g2Pv(u, v, Fr, alt, t0))) -  pow( determinant( mat3( g2PuPv(u, v, Fr, alt, t0),  g2Pu(u, v, Fr, alt, t0),  g2Pv(u, v, Fr, alt, t0))), 2)) /  pow( pow( length( g2Pu(u, v, Fr, alt, t0)), 2) *  pow( length( g2Pv(u, v, Fr, alt, t0)), 2) -  pow( dot( g2Pu(u, v, Fr, alt, t0),  g2Pv(u, v, Fr, alt, t0)), 2), 2);
 }
 
-vec3 esfNormal(float u, float v) {
-	return vec3( normalize( cross( esfPu(u, v),  esfPv(u, v))));
+vec3 g3(float u, float v, float Fr, float alt, float t0) {
+	return vec3( f(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
 }
 
-float esfArea(float u, float v) {
-	return  distance( esfPu(u, v),  esfPv(u, v));
+vec3 g3Pu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPu(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
 }
 
-vec3 esfPuPu(float u, float v) {
-	return vec3( vec3(( cos(v * PI) * (( - ( cos(2 * u * PI) * (2 * PI))) * (2 * PI))), ( cos(v * PI) * ((( -  sin(2 * u * PI)) * (2 * PI)) * (2 * PI))), 0));
+vec3 g3Pv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPv(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
 }
 
-vec3 esfPvPv(float u, float v) {
-	return vec3( vec3(((( - ( cos(v * PI) * PI)) * PI) *  cos(2 * u * PI)), ((( - ( cos(v * PI) * PI)) * PI) *  sin(2 * u * PI)), ((( -  sin(v * PI)) * PI) * PI)));
+vec3 g3Normal(float u, float v, float Fr, float alt, float t0) {
+	return vec3( normalize( cross( g3Pu(u, v, Fr, alt, t0),  g3Pv(u, v, Fr, alt, t0))));
 }
 
-vec3 esfPuPv(float u, float v) {
-	return vec3( vec3(((( -  sin(v * PI)) * PI) * (( -  sin(2 * u * PI)) * (2 * PI))), ((( -  sin(v * PI)) * PI) * ( cos(2 * u * PI) * (2 * PI))), 0));
+float g3Area(float u, float v, float Fr, float alt, float t0) {
+	return  distance( g3Pu(u, v, Fr, alt, t0),  g3Pv(u, v, Fr, alt, t0));
 }
 
-float esfK(float u, float v) {
-	return ( determinant( mat3( esfPuPu(u, v),  esfPu(u, v),  esfPv(u, v))) *  determinant( mat3( esfPvPv(u, v),  esfPu(u, v),  esfPv(u, v))) -  pow( determinant( mat3( esfPuPv(u, v),  esfPu(u, v),  esfPv(u, v))), 2)) /  pow( pow( length( esfPu(u, v)), 2) *  pow( length( esfPv(u, v)), 2) -  pow( dot( esfPu(u, v),  esfPv(u, v)), 2), 2);
+vec3 g3PuPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPu(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
 }
 
-vec3 esfDom(float u, float v) {
-	return vec3( esf(u - 0.5, v - 0.5));
+vec3 g3PvPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPv(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
 }
 
-vec3 esfDomPu(float u, float v) {
-	return vec3( esfPu(u - 0.5, v - 0.5));
+vec3 g3PuPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPv(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
 }
 
-vec3 esfDomPv(float u, float v) {
-	return vec3( esfPv(u - 0.5, v - 0.5));
+float g3K(float u, float v, float Fr, float alt, float t0) {
+	return ( determinant( mat3( g3PuPu(u, v, Fr, alt, t0),  g3Pu(u, v, Fr, alt, t0),  g3Pv(u, v, Fr, alt, t0))) *  determinant( mat3( g3PvPv(u, v, Fr, alt, t0),  g3Pu(u, v, Fr, alt, t0),  g3Pv(u, v, Fr, alt, t0))) -  pow( determinant( mat3( g3PuPv(u, v, Fr, alt, t0),  g3Pu(u, v, Fr, alt, t0),  g3Pv(u, v, Fr, alt, t0))), 2)) /  pow( pow( length( g3Pu(u, v, Fr, alt, t0)), 2) *  pow( length( g3Pv(u, v, Fr, alt, t0)), 2) -  pow( dot( g3Pu(u, v, Fr, alt, t0),  g3Pv(u, v, Fr, alt, t0)), 2), 2);
 }
 
-vec3 esfDomNormal(float u, float v) {
-	return vec3( normalize( cross( esfDomPu(u, v),  esfDomPv(u, v))));
+vec3 g4(float u, float v, float Fr, float alt, float t0) {
+	return vec3( f(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
 }
 
-float esfDomArea(float u, float v) {
-	return  distance( esfDomPu(u, v),  esfDomPv(u, v));
+vec3 g4Pu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPu(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
 }
 
-vec3 esfDomPuPu(float u, float v) {
-	return vec3( esfPuPu(u - 0.5, v - 0.5));
+vec3 g4Pv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPv(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
 }
 
-vec3 esfPvPu(float u, float v) {
-	return vec3( vec3(((( -  sin(v * PI)) * PI) * (( -  sin(2 * u * PI)) * (2 * PI))), ((( -  sin(v * PI)) * PI) * ( cos(2 * u * PI) * (2 * PI))), 0));
+vec3 g4Normal(float u, float v, float Fr, float alt, float t0) {
+	return vec3( normalize( cross( g4Pu(u, v, Fr, alt, t0),  g4Pv(u, v, Fr, alt, t0))));
 }
 
-vec3 esfDomPvPv(float u, float v) {
-	return vec3( esfPvPv(u - 0.5, v - 0.5));
+float g4Area(float u, float v, float Fr, float alt, float t0) {
+	return  distance( g4Pu(u, v, Fr, alt, t0),  g4Pv(u, v, Fr, alt, t0));
 }
 
-vec3 esfDomPuPv(float u, float v) {
-	return vec3( esfPuPv(u - 0.5, v - 0.5));
+vec3 g4PuPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPu(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
 }
 
-float esfDomK(float u, float v) {
-	return ( determinant( mat3( esfDomPuPu(u, v),  esfDomPu(u, v),  esfDomPv(u, v))) *  determinant( mat3( esfDomPvPv(u, v),  esfDomPu(u, v),  esfDomPv(u, v))) -  pow( determinant( mat3( esfDomPuPv(u, v),  esfDomPu(u, v),  esfDomPv(u, v))), 2)) /  pow( pow( length( esfDomPu(u, v)), 2) *  pow( length( esfDomPv(u, v)), 2) -  pow( dot( esfDomPu(u, v),  esfDomPv(u, v)), 2), 2);
+vec3 g4PvPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPv(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
+}
+
+vec3 g4PuPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPv(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
+}
+
+float g4K(float u, float v, float Fr, float alt, float t0) {
+	return ( determinant( mat3( g4PuPu(u, v, Fr, alt, t0),  g4Pu(u, v, Fr, alt, t0),  g4Pv(u, v, Fr, alt, t0))) *  determinant( mat3( g4PvPv(u, v, Fr, alt, t0),  g4Pu(u, v, Fr, alt, t0),  g4Pv(u, v, Fr, alt, t0))) -  pow( determinant( mat3( g4PuPv(u, v, Fr, alt, t0),  g4Pu(u, v, Fr, alt, t0),  g4Pv(u, v, Fr, alt, t0))), 2)) /  pow( pow( length( g4Pu(u, v, Fr, alt, t0)), 2) *  pow( length( g4Pv(u, v, Fr, alt, t0)), 2) -  pow( dot( g4Pu(u, v, Fr, alt, t0),  g4Pv(u, v, Fr, alt, t0)), 2), 2);
+}
+
+vec3 g(float u, float v, float Fr, float alt, float t0) {
+	return vec3( g1(u, v, Fr, alt, t0) +  g2(u, v, Fr, alt, t0) +  g3(u, v, Fr, alt, t0) +  g4(u, v, Fr, alt, t0));
+}
+
+vec3 g4PFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPFr(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI) * 1.3));
+}
+
+vec3 g4Palt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPalt(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI) * 0.7));
+}
+
+vec3 g4Pt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPt(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
+}
+
+vec3 g3PFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPFr(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI) * 1.1));
+}
+
+vec3 g3Palt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPalt(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI) * 1.3));
+}
+
+vec3 g3Pt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPt(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
+}
+
+vec3 g2PFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPFr(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0) * 0.9));
+}
+
+vec3 g2Palt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPalt(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0) * 1.1));
+}
+
+vec3 g2Pt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPt(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
+}
+
+vec3 g1PFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPFr(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0) * 0.7));
+}
+
+vec3 g1Palt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPalt(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0) * 0.9));
+}
+
+vec3 g1Pt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPt(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
+}
+
+vec3 gPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1Pu(u, v, Fr, alt, t0) +  g2Pu(u, v, Fr, alt, t0)) +  g3Pu(u, v, Fr, alt, t0)) +  g4Pu(u, v, Fr, alt, t0)));
+}
+
+vec3 gPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1Pv(u, v, Fr, alt, t0) +  g2Pv(u, v, Fr, alt, t0)) +  g3Pv(u, v, Fr, alt, t0)) +  g4Pv(u, v, Fr, alt, t0)));
+}
+
+vec3 gNormal(float u, float v, float Fr, float alt, float t0) {
+	return vec3( normalize( cross( gPu(u, v, Fr, alt, t0),  gPv(u, v, Fr, alt, t0))));
+}
+
+float gArea(float u, float v, float Fr, float alt, float t0) {
+	return  distance( gPu(u, v, Fr, alt, t0),  gPv(u, v, Fr, alt, t0));
+}
+
+vec3 g4PuPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPFr(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI) * 1.3));
+}
+
+vec3 g4PuPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPalt(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI) * 0.7));
+}
+
+vec3 g4PuPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPt(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
+}
+
+vec3 g3PuPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPFr(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI) * 1.1));
+}
+
+vec3 g3PuPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPalt(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI) * 1.3));
+}
+
+vec3 g3PuPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPt(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
+}
+
+vec3 g2PuPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPFr(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0) * 0.9));
+}
+
+vec3 g2PuPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPalt(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0) * 1.1));
+}
+
+vec3 g2PuPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPt(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
+}
+
+vec3 g1PuPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPFr(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0) * 0.7));
+}
+
+vec3 g1PuPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPuPalt(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0) * 0.9));
+}
+
+vec3 g1PuPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPuPt(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
+}
+
+vec3 gPuPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PuPu(u, v, Fr, alt, t0) +  g2PuPu(u, v, Fr, alt, t0)) +  g3PuPu(u, v, Fr, alt, t0)) +  g4PuPu(u, v, Fr, alt, t0)));
+}
+
+vec3 g4PvPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPu(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
+}
+
+vec3 g4PvPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPFr(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI) * 1.3));
+}
+
+vec3 g4PvPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPalt(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI) * 0.7));
+}
+
+vec3 g4PvPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPt(u, v, 1.3 * Fr, 0.7 * alt, 0, 1, t0 + 0.25 * PI));
+}
+
+vec3 g3PvPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPu(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
+}
+
+vec3 g3PvPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPFr(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI) * 1.1));
+}
+
+vec3 g3PvPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPalt(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI) * 1.3));
+}
+
+vec3 g3PvPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPt(u, v, 1.1 * Fr, 1.3 * alt, 0.7, 0.3, t0 + 0.25 * PI));
+}
+
+vec3 g2PvPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPu(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
+}
+
+vec3 g2PvPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPFr(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0) * 0.9));
+}
+
+vec3 g2PvPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPalt(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0) * 1.1));
+}
+
+vec3 g2PvPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPt(u, v, 0.9 * Fr, 1.1 * alt, 0.3, 0.7, t0));
+}
+
+vec3 g1PvPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPu(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
+}
+
+vec3 g1PvPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPFr(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0) * 0.7));
+}
+
+vec3 g1PvPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(( fPvPalt(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0) * 0.9));
+}
+
+vec3 g1PvPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3( fPvPt(u, v, 0.7 * Fr, 0.9 * alt, 1, 0, t0));
+}
+
+vec3 gPvPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PvPv(u, v, Fr, alt, t0) +  g2PvPv(u, v, Fr, alt, t0)) +  g3PvPv(u, v, Fr, alt, t0)) +  g4PvPv(u, v, Fr, alt, t0)));
+}
+
+vec3 gPuPv(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PuPv(u, v, Fr, alt, t0) +  g2PuPv(u, v, Fr, alt, t0)) +  g3PuPv(u, v, Fr, alt, t0)) +  g4PuPv(u, v, Fr, alt, t0)));
+}
+
+float gK(float u, float v, float Fr, float alt, float t0) {
+	return ( determinant( mat3( gPuPu(u, v, Fr, alt, t0),  gPu(u, v, Fr, alt, t0),  gPv(u, v, Fr, alt, t0))) *  determinant( mat3( gPvPv(u, v, Fr, alt, t0),  gPu(u, v, Fr, alt, t0),  gPv(u, v, Fr, alt, t0))) -  pow( determinant( mat3( gPuPv(u, v, Fr, alt, t0),  gPu(u, v, Fr, alt, t0),  gPv(u, v, Fr, alt, t0))), 2)) /  pow( pow( length( gPu(u, v, Fr, alt, t0)), 2) *  pow( length( gPv(u, v, Fr, alt, t0)), 2) -  pow( dot( gPu(u, v, Fr, alt, t0),  gPv(u, v, Fr, alt, t0)), 2), 2);
+}
+
+vec3 h(float u, float v, float t0) {
+	return vec3( g(10 * u, 10 * v, 1.7, 0.5, 2 * t0));
+}
+
+vec3 gPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PFr(u, v, Fr, alt, t0) +  g2PFr(u, v, Fr, alt, t0)) +  g3PFr(u, v, Fr, alt, t0)) +  g4PFr(u, v, Fr, alt, t0)));
+}
+
+vec3 gPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1Palt(u, v, Fr, alt, t0) +  g2Palt(u, v, Fr, alt, t0)) +  g3Palt(u, v, Fr, alt, t0)) +  g4Palt(u, v, Fr, alt, t0)));
+}
+
+vec3 gPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1Pt0(u, v, Fr, alt, t0) +  g2Pt0(u, v, Fr, alt, t0)) +  g3Pt0(u, v, Fr, alt, t0)) +  g4Pt0(u, v, Fr, alt, t0)));
+}
+
+vec3 hPu(float u, float v, float t0) {
+	return vec3(( gPu(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 10));
+}
+
+vec3 hPv(float u, float v, float t0) {
+	return vec3(( gPv(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 10));
+}
+
+vec3 hNormal(float u, float v, float t0) {
+	return vec3( normalize( cross( hPu(u, v, t0),  hPv(u, v, t0))));
+}
+
+float hArea(float u, float v, float t0) {
+	return  distance( hPu(u, v, t0),  hPv(u, v, t0));
+}
+
+vec3 gPuPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PuPFr(u, v, Fr, alt, t0) +  g2PuPFr(u, v, Fr, alt, t0)) +  g3PuPFr(u, v, Fr, alt, t0)) +  g4PuPFr(u, v, Fr, alt, t0)));
+}
+
+vec3 gPuPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PuPalt(u, v, Fr, alt, t0) +  g2PuPalt(u, v, Fr, alt, t0)) +  g3PuPalt(u, v, Fr, alt, t0)) +  g4PuPalt(u, v, Fr, alt, t0)));
+}
+
+vec3 gPuPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PuPt0(u, v, Fr, alt, t0) +  g2PuPt0(u, v, Fr, alt, t0)) +  g3PuPt0(u, v, Fr, alt, t0)) +  g4PuPt0(u, v, Fr, alt, t0)));
+}
+
+vec3 hPuPu(float u, float v, float t0) {
+	return vec3((( gPuPu(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 10) * 10));
+}
+
+vec3 gPvPu(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PvPu(u, v, Fr, alt, t0) +  g2PvPu(u, v, Fr, alt, t0)) +  g3PvPu(u, v, Fr, alt, t0)) +  g4PvPu(u, v, Fr, alt, t0)));
+}
+
+vec3 gPvPFr(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PvPFr(u, v, Fr, alt, t0) +  g2PvPFr(u, v, Fr, alt, t0)) +  g3PvPFr(u, v, Fr, alt, t0)) +  g4PvPFr(u, v, Fr, alt, t0)));
+}
+
+vec3 gPvPalt(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PvPalt(u, v, Fr, alt, t0) +  g2PvPalt(u, v, Fr, alt, t0)) +  g3PvPalt(u, v, Fr, alt, t0)) +  g4PvPalt(u, v, Fr, alt, t0)));
+}
+
+vec3 gPvPt0(float u, float v, float Fr, float alt, float t0) {
+	return vec3(((( g1PvPt0(u, v, Fr, alt, t0) +  g2PvPt0(u, v, Fr, alt, t0)) +  g3PvPt0(u, v, Fr, alt, t0)) +  g4PvPt0(u, v, Fr, alt, t0)));
+}
+
+vec3 hPvPv(float u, float v, float t0) {
+	return vec3((( gPvPv(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 10) * 10));
+}
+
+vec3 hPuPv(float u, float v, float t0) {
+	return vec3((( gPuPv(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 10) * 10));
+}
+
+float hK(float u, float v, float t0) {
+	return ( determinant( mat3( hPuPu(u, v, t0),  hPu(u, v, t0),  hPv(u, v, t0))) *  determinant( mat3( hPvPv(u, v, t0),  hPu(u, v, t0),  hPv(u, v, t0))) -  pow( determinant( mat3( hPuPv(u, v, t0),  hPu(u, v, t0),  hPv(u, v, t0))), 2)) /  pow( pow( length( hPu(u, v, t0)), 2) *  pow( length( hPv(u, v, t0)), 2) -  pow( dot( hPu(u, v, t0),  hPv(u, v, t0)), 2), 2);
+}
+
+vec3 plano(float u, float v, float t0, float t1, float t2) {
+	return vec3(0.2 * (u - 0.5) *  hPu(t1, t2, t0) + 0.2 * (v - 0.5) *  hPv(t1, t2, t0) +  h(t1, t2, t0) +  vec3(0, 1, 0));
+}
+
+vec3 hPt0(float u, float v, float t0) {
+	return vec3(( gPt0(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 2));
+}
+
+vec3 hPvPu(float u, float v, float t0) {
+	return vec3((( gPvPu(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 10) * 10));
+}
+
+vec3 hPvPt0(float u, float v, float t0) {
+	return vec3((( gPvPt0(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 2) * 10));
+}
+
+vec3 hPuPt0(float u, float v, float t0) {
+	return vec3((( gPuPt0(10 * u, 10 * v, 1.7, 0.5, 2 * t0) * 2) * 10));
+}
+
+vec3 planoPu(float u, float v, float t0, float t1, float t2) {
+	return vec3(((0.2 *  hPu(t1, t2, t0)) +  vec3(0, 0, 0)));
+}
+
+vec3 planoPv(float u, float v, float t0, float t1, float t2) {
+	return vec3(((0.2 *  hPv(t1, t2, t0)) +  vec3(0, 0, 0)));
+}
+
+vec3 planoNormal(float u, float v, float t0, float t1, float t2) {
+	return vec3( normalize( cross( planoPu(u, v, t0, t1, t2),  planoPv(u, v, t0, t1, t2))));
+}
+
+float planoArea(float u, float v, float t0, float t1, float t2) {
+	return  distance( planoPu(u, v, t0, t1, t2),  planoPv(u, v, t0, t1, t2));
+}
+
+vec3 planoPuPu(float u, float v, float t0, float t1, float t2) {
+	return vec3( vec3(0, 0, 0));
+}
+
+vec3 planoPvPv(float u, float v, float t0, float t1, float t2) {
+	return vec3( vec3(0, 0, 0));
+}
+
+vec3 planoPuPv(float u, float v, float t0, float t1, float t2) {
+	return vec3( vec3(0, 0, 0));
+}
+
+float planoK(float u, float v, float t0, float t1, float t2) {
+	return ( determinant( mat3( planoPuPu(u, v, t0, t1, t2),  planoPu(u, v, t0, t1, t2),  planoPv(u, v, t0, t1, t2))) *  determinant( mat3( planoPvPv(u, v, t0, t1, t2),  planoPu(u, v, t0, t1, t2),  planoPv(u, v, t0, t1, t2))) -  pow( determinant( mat3( planoPuPv(u, v, t0, t1, t2),  planoPu(u, v, t0, t1, t2),  planoPv(u, v, t0, t1, t2))), 2)) /  pow( pow( length( planoPu(u, v, t0, t1, t2)), 2) *  pow( length( planoPv(u, v, t0, t1, t2)), 2) -  pow( dot( planoPu(u, v, t0, t1, t2),  planoPv(u, v, t0, t1, t2)), 2), 2);
 }
 
 vec3 functionParam(vec2 p) {
 	if (funPlot==0) {
-		return g(p.x, p.y, param_t[0]);
+		return h(p.x, p.y, param_t[0]);
 	} else if (funPlot==1) {
-		return esfDom(p.x, p.y);
+		return plano(p.x, p.y, param_t[0], param_t[1], param_t[2]);
 	}
 
 	return vec3(0.0, 0.0, 0.0);
@@ -308,9 +638,9 @@ vec3 functionParam(vec2 p) {
 
 vec3 normalParam(vec2 p) {
 	if (funPlot==0) {
-		return gNormal(p.x, p.y, param_t[0]);
+		return hNormal(p.x, p.y, param_t[0]);
 	} else if (funPlot==1) {
-		return esfDomNormal(p.x, p.y);
+		return planoNormal(p.x, p.y, param_t[0], param_t[1], param_t[2]);
 	}
 
 	return vec3(0.0, 0.0, 0.0);
@@ -318,9 +648,9 @@ vec3 normalParam(vec2 p) {
 
 vec3 tangentParam(vec2 p) {
 	if (funPlot==0) {
-		return gPu(p.x, p.y, param_t[0]);
+		return hPu(p.x, p.y, param_t[0]);
 	} else if (funPlot==1) {
-		return esfDomPu(p.x, p.y);
+		return planoPu(p.x, p.y, param_t[0], param_t[1], param_t[2]);
 	}
 
 	return vec3(0.0, 0.0, 0.0);
@@ -328,9 +658,9 @@ vec3 tangentParam(vec2 p) {
 
 vec3 cotangentParam(vec2 p) {
 	if (funPlot==0) {
-		return gPv(p.x, p.y, param_t[0]);
+		return hPv(p.x, p.y, param_t[0]);
 	} else if (funPlot==1) {
-		return esfDomPv(p.x, p.y);
+		return planoPv(p.x, p.y, param_t[0], param_t[1], param_t[2]);
 	}
 
 	return vec3(0.0, 0.0, 0.0);
@@ -338,9 +668,9 @@ vec3 cotangentParam(vec2 p) {
 
 float areaParam(vec2 p) {
 	if (funPlot==0) {
-		return gArea(p.x, p.y, param_t[0]);
+		return hArea(p.x, p.y, param_t[0]);
 	} else if (funPlot==1) {
-		return esfDomArea(p.x, p.y);
+		return planoArea(p.x, p.y, param_t[0], param_t[1], param_t[2]);
 	}
 
 	return 0.0;
@@ -348,9 +678,9 @@ float areaParam(vec2 p) {
 
 float curvatureParam(vec2 p) {
 	if (funPlot==0) {
-		return gK(p.x, p.y, param_t[0]);
+		return hK(p.x, p.y, param_t[0]);
 	} else if (funPlot==1) {
-		return esfDomK(p.x, p.y);
+		return planoK(p.x, p.y, param_t[0], param_t[1], param_t[2]);
 	}
 
 	return 0.0;
