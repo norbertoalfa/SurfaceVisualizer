@@ -90,7 +90,8 @@ La estructura de datos más interesante y que destaca fuera de lo normal es la d
 
 \section{Principales desarrollos algorítmicos}
 
-Aunque en el capítulo $5$ de esta segunda parte se ha descrito con detalle el estudio del teselado, que está directamente ligado con el algoritmo de teselación, en esta sección se hablará del resto de desarrollos algorítmicos, los cuales están relacionados con el procesador del lenguaje (programa ``Procesador'').
+Aunque en el capítulo $5$ de esta segunda parte se ha descrito con detalle el estudio del teselado, que está directamente ligado con el algoritmo de teselación, en esta sección se hablará del resto de desarrollos algorítmicos, los cuales están mayormente relacionados con el procesador del lenguaje (programa ``Procesador'').\\
+\\Dicho procesador se ha implementado mediante un generador de analizadores léxicos tipo 'lex' (flex) junto con un generador de analizadores sintácticos y semánticos tipo 'yacc' (Bison). La especificación BNF del lenguaje se desarrolla en el capítulo $6$ ``Procesador''. La implementación de las expresiones regulares, la gramática y las acciones que se ejecutan al reducir una regla, se han realizado tal y como se procedió en la asignatura de Procesadores de Lenguajes. No se indicarán explicitamente tales implementaciones puesto que la especificación BNF es suficiente para comprender el lenguaje diseñado.
 
 \subsection*{Generación de árboles de expresión}
 Se generan de forma natural al realizar el análisis sintáctico con el procesador. Cuando se reduce la expresión por una regla, en dicha regla se crea un nodo de expresión nuevo y se le asigna a la variable a la que se reduce, con los hijos y características correspondientes.
@@ -127,8 +128,6 @@ La simplificación de una expresión consiste en quitar paréntesis redundantes 
 		\end{itemize}
 	\end{itemize}
 \end{enumerate}
-
-\newpage
 A continuación se ilustra el árbol asociado a la expresión  $u^\wedge 2 * v + 1$, junto con el árbol de su derivada parcial respecto de $u$ y su posterior simplificación (sólo teniendo en cuenta los operadores -, +, * y /). La potencia con exponente $1$ no se simplifica puesto que no se ha implementado (principalmente porque tras derivar siempre se escribe como un flotante), aunque en un futuro se podría mejorar, junto con técnicas de simplificación más complejas, para así reducir el tiempo de compilación de los shaders y realizar menos cálculos costosos.
 
 \begin{figure}[h]
@@ -147,6 +146,19 @@ A continuación se ilustra el árbol asociado a la expresión  $u^\wedge 2 * v +
 	\caption{Árbol de la expresión, su parcial respecto $u$ y el mismo pero simplificado.}
   	\label{fig:arbol_expresion}
 \end{figure}
+
+\subsection*{Auto-umbral}
+Para mayor comodidad a la hora de estudiar el comportamiento del programa, implementé un algoritmo sencillo para encontrar de manera automática el umbral de la medida para el que se mostrarán $n$ triángulos, donde $n$ es un número natural mayor que el nº de primitivas de la malla inicial. El objetivo era comparar las distintas versiones del programa cuando muestran casi el mismo nº de triángulos.\\
+\\El funcionamiento del algoritmo es sencillo. Dados los siguientes elementos:
+\begin{itemize}
+	\item $n_f$ número objetivo.
+	\item $n_0$ el número de primitivas actual.
+	\item $\epsilon_0$ el umbral actual.
+	\item $\lambda >0$ una constante cuya finalidad es similar a un ``Learning Rate'' o ratio de aprendizaje, es decir, el tamaño de los pasos con los que se aproximará al objetivo.
+\end{itemize}
+Entonces el nuevo umbral $\epsilon$ se calcula de la siguiente manera:
+$$\epsilon = \epsilon_0 + \lambda (\frac{n_0}{n_f} - 1)$$
+De esta forma, si el nº objetivo es muy grande, el cociente está muy cercano a $0$, por lo que la componente a sumar al umbral $\epsilon_0$ está cerca del $-\lambda$ (reduce enormemente el umbral). Si por el contrario el nº objetivo es muy pequeño, el cociente será mucho más grande que $1$ y por tanto el incremento será positivo (el umbral subirá para reducir el nº de subdivisiones). En caso de que el nuevo $\epsilon$ esté fuera del intervalo $[\epsilon_{min}, \epsilon_{max}]$, se quedará en el extremo más cercano.
 
 \endinput
 %------------------------------------------------------------------------------------

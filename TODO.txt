@@ -1,62 +1,28 @@
-Memoria:
-- Añadir:
-    v* Resumen:
-        v- Resaltar que en tu proyecto se ha conseguido que absolutamente todos los cálculos relativos a la teselación se hagan en la GPU, y por tanto se consigue hacer en tiempo real, 
-        con tiempos por cada cuadro del orden de milisegundos.
-        v- Resaltar el hecho de que el usuario puede escribir funciones arbitrarias definidas por él, y que dichas expresiones son traducidas a un lenguaje de programación que a su vez 
-        se compila para ejecutarse en la GPU.
-        v- Explicar que en este TFG se aproxima una variedad bidimensional en el espacio tridimensional como una malla indexada de triángulos, estando la variedad bidimensional o 
-        superficie definida por una carta o función de parametrización analítica, parametrización que el usuario puede definir como una expresión en texto. 
-
-    v* Introducción:
-        v- Explicar que en este TFG se aproxima una variedad bidimensional en el espacio tridimensional como una malla indexada de triángulos, estando la variedad bidimensional o 
-        superficie definida por una carta o función de parametrización analítica, parametrización que el usuario puede definir como una expresión en texto. 
-
-    v* Objetivos:
-        v- Resaltar que en tu proyecto se ha conseguido que absolutamente todos los cálculos relativos a la teselación se hagan en la GPU, y por tanto se consigue hacer en tiempo real, 
-        con tiempos por cada cuadro del orden de milisegundos.
-        v- Resaltar el hecho de que el usuario puede escribir funciones arbitrarias definidas por él, y que dichas expresiones son traducidas a un lenguaje de programación que a su vez 
-        se compila para ejecutarse en la GPU.
-
-    v* Conceptos básicos parte I:
-        v- Añadir figura carta (sistema coordenado).
-
-    v* Conceptos básicos vis (pag 27):
-        v- hablar de representación computacional de objetos 3D, citar "representación de fronteras" (boundary representation), explicar que es un "malla indexada".
-
-        v- hablar del uso de las GPUs para, en general,  hacer de forma mucho más eficiente los cálculos asociados a la visualización en Informática Gráfica, descargando de esa
- tarea a las CPUs, reduciendo el tráfico de datos (lento) a través del bus del sistema, y aprovechando la capacidad de procesamiento paralelo de las GPUs (que incorporan cientos o miles 
- de unidades de cálculo en coma flotante).
-
-    v* Estudio tess (pag 29):
-        v- Antes de la sección 5.1: indicar que se pretende diseñar un algoritmo capaz de aproximar la superficie lo mejor posible pero con un número de triángulos que no sea muy alto. 
-        Explicar que siempre se pueden usar muchos triángulos muy pequeños para aproximar mejor cualquier superficie, pero que eso conlleva un coste en tiempo y memoria que puede ser 
-        innecesario en las partes de la superficie que sean más o menos planas. Frente a esto, buscamos un algoritmo que evite usar una resolución muy alta en esas regiones, para ello 
-        se parte de una resolución inicial y se subdividen los triángulos, iterativamente (cada subtriángulo se puede volver a subdividir varias veces), usando para ello las expresiones 
-        analíticas de la curvatura, obtenidas  derivando las expresiones de la parametrización. Resaltar que en tu proyecto se han diseñado medidas de error que sirven de guía para dicha 
-        teselación.
-
-        v- Seguidamente indicar que para implementar el algoritmo de forma lo más eficiente posible se usa programación en la GPU, detallar los tipos de shaders más idóneos para esto y 
-        que tu has usado. Explicar que tu programa genera automáticamente el código GLSL que evalúa la parametrización y sus derivadas, a partir de las expresiones. Resaltar que tu proyecto 
-        implementa un traductor o compilador desde expresiones de cartas hacia GLSL.
-
-    v?* Análisis y diseño, desarrollos algorítmicos (páginas 48 o 49): 
-        v- Desarrollos algorítmicos: Resaltar que tu software es capaz de hacer derivación simbólica para obtener automáticamente expresiones analíticas de la curvatura y la normal. 
-        v?- Diseño: si te ves con tiempo, sería bueno incluir una figura con una DFD (diagrama de flujo de datos) de la aplicación que le de al lector una visión global de la estructura 
-y funcionamiento de la aplicación. Me refiero a una figura no muy compleja donde aparezcan 6 cajas o nodos correspondientes a estructuras de datos u algoritmos que leen o escribe las 
-estructuras, en concreto: el texto fuente de la parametrización (datos), el procesador del lenguaje (algoritmo), el código GLSL generado (datos), el visualizador de superficies (algoritmo),
- la imagen de la superficie (datos), los parámetros de visualización (datos). Entre esos elementos pueden aparecer flechas que reflejen que un algoritmo escribe una estructura de datos o 
- bien la lee. Creo que para que sea util debe ser sencillo, pero creo que ayudará a un lector a hacerse una idea de la relación entre los elementos del lenguaje.
-    
-    v* Implementación y pruebas, procesador:
-        v- añadir textos indicando que se ha implementado el análisis léxico usando un generador de analizadores de léxico tipo 'lex' , a partir de las expresiones 
-regulares que definen los tokens de tu lenguaje de expresiones. Añadir que se ha implementado un analizador sintáctico LALR usando un generador de analizadores sintácticos tipo 'yacc', a 
-partir de la gramática del lenguaje y las acciones semánticas que construyen el árbol de expresión.
-
-
-Programa:
-- (comprobar) Recalcular maxdot para outview, cuando se cambia el tamaño de ventana.
-- Re-revisar todo.
+Exposición:
+    - 15 min de presentación de ambas partes.
+        * Parte matemática
+        * Parte informática:
+            > Derivación simbólica: waves3.in con el plano tangente.
+            > Funciones calculadas (para el toro):
+                o Área diferencial.
+                o Curvatura de Gauss.
+                o Función altura (niveles y puntos críticos).
+            > Detección de picos: gaussiana.
+            > Superficie compleja: waves.in comparado con math3d.
+            > Mejoras:
+                o Improve1: esfera.
+                o Improve2: esfera.
+                
+    - 5 min de vídeo sin sonido para el programa:
+        * Mostar animación fluida, cálculo de normales y parciales:
+            > waves3.in con el plano tangente (modo malla y modo relleno, ver normales).
+        * Mostrar picos y funciones calculadas:
+            > esfera_picos (en modo malla y relleno, improve2).
+        * Mostrar superficie compleja para mostrar teselado más o menos uniforme:
+            > waves2.in.
+        * Mostrar aplicaciones interesantes:
+            > animación catenoide.
+            > Proyección estereográfica.
 
 Opcional:
 - Renombrar como "renderData" y mover aquellos métodos no apropiados para esa clase.
