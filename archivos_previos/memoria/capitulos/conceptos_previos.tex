@@ -59,6 +59,9 @@ Este capítulo tiene el objetivo de introduccir los conceptos básicos utilizado
 		\item $H(\cdot, t) : N \rightarrow M$ es un embebimiento $\forall t \in [0,1]$.
 		\item $H(p, 0) = f(p)$, $H(p, 1) = g(p)$ $\forall p \in N$.
 	\end{enumerate}
+Dados dos embebimientos $f,g : N \rightarrow M$, en la mayoría de casos las isotopías $H: N \times [0,1] \rightarrow M$ que consideraremos entre ambos serán de la siguiente forma:
+$$H=H_0 \circ (f \times Id_{[0,1]})$$
+Donde $H_0: M \times [0,1] \rightarrow M$ es una isotopía en $M$ que deforma $Id_M$ en un homeomorfismo $g_0: M \to M$, en particular, $g=g_0 \circ f = H_0(f,1)$.
 \end{definicion}
 
 \begin{definicion} Sea $M$ una variedad diferenciable y $f: M \rightarrow \R$ una función diferenciable en $M$. Un punto $p \in M$ se dice que es un $\textbf{punto crítico}$ de $f$ si $Df(p) = 0$ en $T_pM$. A su imagen por $f$, $f(p)$, se le dice $\textbf{valor crítico}$ de $f$.

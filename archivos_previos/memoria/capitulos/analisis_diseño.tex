@@ -51,7 +51,14 @@ En este capítulo se especificará toda aquella información referente a la estr
 	\end{enumerate}
 
 \section{Diagramas}
-En esta sección se ilustran ciertos diagramas que facilitan el entendimiento del programa. El siguiente diagrama es el de interacción de la acción ``compilar'', que es la que implica mayor comunicación entre entidades, donde cabe destacar que ``error.log'' es donde se almacena la salida de error, ``temp'' donde se indican el nº de cartas a visualizar (y el nº máximo de parámetros) y ``functions.s'' el código GLSL para los shaders.\\
+En esta sección se ilustran ciertos diagramas que facilitan el entendimiento del programa. Los siguientes diagramas están relacionados con la acción ``compilar'', que es la que implica mayor comunicación entre entidades, donde cabe destacar que ``lastParam.in'' es donde se encuentra la parametrización de la superficie en texto, ``error.log'' es donde se almacena la salida de error, ``temp'' donde se indican el nº de cartas a visualizar (y el nº máximo de parámetros) y ``functions.s'' el código GLSL para los shaders.\\
+\begin{figure}[h]
+  	\centering
+  	\includegraphics[width=1\textwidth]{diagrama_dfd}
+  	\caption{Diagrama de flujo de datos tras ejecutar la acción ``compilar''.}
+  	\label{fig:diagrama_dfd}
+\end{figure}
+\newpage
 \begin{figure}[h]
   	\centering
   	\includegraphics[width=0.8\textwidth]{diagrama_interaccion}
@@ -82,6 +89,8 @@ La estructura de datos más interesante y que destaca fuera de lo normal es la d
 \end{itemize}
 
 \section{Principales desarrollos algorítmicos}
+
+Aunque en el capítulo $5$ de esta segunda parte se ha descrito con detalle el estudio del teselado, que está directamente ligado con el algoritmo de teselación, en esta sección se hablará del resto de desarrollos algorítmicos, los cuales están relacionados con el procesador del lenguaje (programa ``Procesador'').
 
 \subsection*{Generación de árboles de expresión}
 Se generan de forma natural al realizar el análisis sintáctico con el procesador. Cuando se reduce la expresión por una regla, en dicha regla se crea un nodo de expresión nuevo y se le asigna a la variable a la que se reduce, con los hijos y características correspondientes.
